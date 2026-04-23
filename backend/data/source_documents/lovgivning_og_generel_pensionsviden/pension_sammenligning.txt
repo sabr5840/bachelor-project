@@ -1,0 +1,17 @@
+Førtidspension:
+- Helbredsbetinget
+- Kræver godkendelse
+- Varig løsning
+
+Seniorpension:
+- Delvist arbejdsevne
+- Tæt på pensionsalder
+
+Tidlig pension:
+- Baseret på antal år arbejdet
+- Ingen helbredsvurdering
+
+Forskelle:
+- Førtid = sygdom
+- Senior = nedsat arbejdsevne
+- Tidlig = anciennitet

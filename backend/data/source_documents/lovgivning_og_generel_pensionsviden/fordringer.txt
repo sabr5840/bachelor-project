@@ -1,0 +1,25 @@
+Fordringer:
+
+Definition:
+- Et krav på penge (fx gæld)
+
+Kan:
+- Sælges
+- Pantsættes
+
+Indsigelser:
+- Afhænger af typen
+
+Typer:
+- Simpel → alle indsigelser bevares
+- Omsætningsbeskyttet → svage indsigelser bortfalder
+
+Stærke indsigelser:
+- Kan altid bruges (fx svig)
+
+Betaling:
+- Skal ske til den med legitimation
+
+Vigtigt:
+- Kreditor garanterer for kravet findes
+- Ikke for betalingsevne
