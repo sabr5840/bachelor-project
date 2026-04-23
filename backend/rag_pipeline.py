@@ -41,7 +41,7 @@ def read_source_documents() -> List[Dict[str, Any]]:
 
         documents.append(
             {
-                "document_id": file_path.stem,
+                "document_id": str(file_path.relative_to(SOURCE_DIR)).replace("/", "_").replace(".txt", ""), # in case, more txt-files has same name but are in different folders
                 "title": file_path.stem.replace("_", " ").title(),
                 "source_folder": str(file_path.parent.relative_to(SOURCE_DIR)),
                 "filename": file_path.name,
@@ -179,7 +179,7 @@ def cosine_similarity(vec_a: List[float], vec_b: List[float]) -> float:
     return dot_product / (norm_a * norm_b)
 
 
-def retrieve_top_chunks(query: str, top_k: int = 3, min_score: float = 0.75) -> List[Dict[str, Any]]:
+def retrieve_top_chunks(query: str, top_k: int = 3, min_score: float = 0.65) -> List[Dict[str, Any]]:
     embedded_chunks = load_json(EMBEDDINGS_FILE)
     query_embedding = embed_text(query, task_type="RETRIEVAL_QUERY")
 

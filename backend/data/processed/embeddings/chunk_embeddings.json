@@ -55476,11 +55476,11 @@
     ]
   },
   {
-    "chunk_id": "begustigelse_og_efterladte_chunk_1",
-    "document_id": "begustigelse_og_efterladte",
-    "title": "Begustigelse Og Efterladte",
+    "chunk_id": "begunstigelse_og_efterladte_chunk_1",
+    "document_id": "begunstigelse_og_efterladte",
+    "title": "begunstigelse Og Efterladte",
     "source_folder": "pensam_virksomhedsviden",
-    "filename": "begustigelse_og_efterladte.txt",
+    "filename": "begunstigelse_og_efterladte.txt",
     "text": "Kilder: - https://www.pensam.dk/pension/aendringer-i-dit-liv/aendringer-i-dit-privatliv/du-mister-livet/du_mister_livet_kunde Begunstigelse og efterladte Ved dødsfald fra en pensionsordning bliver en eventuel udbetaling som udgangspunkt givet til de nærmeste pårørende, hvis der ikke er truffet et andet valg. Nærmeste pårørende omfatter typisk ægtefælle, samlever og børn, afhængigt af den konkrete situation og de gældende regler. Det er muligt selv at bestemme, hvem der skal modtage en eventuel udbetaling fra pensionen. Dette kaldes begunstigelse. Hvis der ikke er valgt en specifik modtager, vil udbetalingen følge standardreglerne for nærmeste pårørende. Valg af modtager kan have stor betydning, især i situationer med samlevende, børn fra tidligere forhold eller andre komplekse familieforhold. Opsparing til livsvarig pension bliver som udgangspunkt ikke udbetalt til efterladte, mens andre ordninger som ratepension eller aldersopsparing kan blive",
     "embedding": [
       -0.0055327727,
@@ -58558,11 +58558,11 @@
     ]
   },
   {
-    "chunk_id": "begustigelse_og_efterladte_chunk_2",
-    "document_id": "begustigelse_og_efterladte",
-    "title": "Begustigelse Og Efterladte",
+    "chunk_id": "begunstigelse_og_efterladte_chunk_2",
+    "document_id": "begunstigelse_og_efterladte",
+    "title": "begunstigelse Og Efterladte",
     "source_folder": "pensam_virksomhedsviden",
-    "filename": "begustigelse_og_efterladte.txt",
+    "filename": "begunstigelse_og_efterladte.txt",
     "text": "Opsparing til livsvarig pension bliver som udgangspunkt ikke udbetalt til efterladte, mens andre ordninger som ratepension eller aldersopsparing kan blive det. Udbetaling fra en pensionsordning går som hovedregel uden om dødsboet og følger derfor ikke nødvendigvis bestemmelser i et testamente, medmindre der er truffet et særligt valg.",
     "embedding": [
       -0.009663041,

@@ -48,6 +48,11 @@ def classify_question(user_text: str) -> str:
         "mit afkast",
         "hvad vil du anbefale",
         "hvornår kan jeg gå på pension",
+        "hvad har jeg stående",
+        "hvor meget har jeg",
+        "mine penge",
+        "min pension",
+        "min opsparing",
     ]):
         return "complex"
 
@@ -62,12 +67,34 @@ def classify_question(user_text: str) -> str:
 
     return "simple"
 
+# Keyword-based check to determine if the question is about pension.
+# Filters out out-of-scope questions before running retrieval and LLM.
+def is_pension_related(user_text: str) -> bool:
+    text = user_text.lower()
+
+    pension_keywords = [
+        "pension",
+        "ratepension",
+        "livrente",
+        "aldersopsparing",
+        "folkepension",
+        "atp",
+        "opsparing",
+        "indbetaling",
+        "udbetaling",
+        "efterladte",
+        "begunstigelse",
+        "forsikring",
+        "skat",
+        "pensionsalder",
+    ]
+    return any(word in text for word in pension_keywords)
 
 def get_fallback_reply() -> str:
     return (
         "Det spørgsmål kræver en vurdering af din konkrete situation. "
         "Jeg kan ikke give personlig rådgivning, men jeg kan godt forklare de generelle regler."
-    )
+)
 
 
 SYSTEM_PROMPT = """
@@ -101,6 +128,14 @@ def chat(msg: Message):
     try:
         print("User text:", user_text)
 
+        # Check if the question is related to pension.
+        # If not, stop early and return a scope fallback to avoid irrelevant answers.
+        if not is_pension_related(user_text):
+            return {
+                "reply": "Jeg kan kun hjælpe med generelle spørgsmål om pension.",
+                "sources": []
+            }
+
         question_type = classify_question(user_text)
         print("Question type:", question_type)
 
@@ -112,6 +147,14 @@ def chat(msg: Message):
             }
 
         top_chunks = retrieve_top_chunks(user_text, top_k=3)
+
+        # If no relevant chunks are found, return fallback to avoid hallucinated answers
+        if not top_chunks:
+            return {
+                "reply": "Jeg kan desværre ikke finde tilstrækkelig information om dette i mit datagrundlag.",
+                "sources": []
+            }
+
         context = build_context(top_chunks)
 
         print("----- RETRIEVED CONTEXT -----")
