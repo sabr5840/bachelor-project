@@ -1,0 +1,33 @@
+Konkurs:
+
+Formål:
+- Sælge skyldners aktiver
+- Fordele pengene ligeligt mellem kreditorer
+
+Betingelser:
+- Insolvens (kan ikke betale regninger)
+- Kreditor har krav
+- Interesse i konkurs
+
+Vigtige begreber:
+
+Fristdag:
+- Når konkurs begæres
+
+Dekretdag:
+- Når konkurs starter
+- Skyldner mister kontrol
+
+Prioritet:
+- Først: kurator, lønkrav
+- Dernæst: simple kreditorer
+
+Panthavere:
+- Har sikkerhed (separatister)
+
+Urådighed:
+- Skyldner må ikke disponere over aktiver
+
+Konsekvens:
+- Virksomhed lukker
+- Personlig gæld kan bestå

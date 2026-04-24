@@ -1,0 +1,24 @@
+Valg af pension afhænger af:
+
+Helbred:
+- Dårligt helbred → førtidspension eller seniorpension
+
+Alder:
+- Tæt på pensionsalder → tidlig pension eller seniorpension
+
+Arbejdshistorik:
+- Mange år → tidlig pension
+- Kortere → andre ordninger
+
+Økonomi:
+- Lav opsparing → offentlig pension vigtig
+- Høj opsparing → mere fleksibilitet
+
+Arbejdsevne:
+- Kan arbejde delvist → seniorpension
+- Kan ikke arbejde → førtidspension
+
+Tommelregel:
+- Tidlig pension = mange år arbejdet
+- Seniorpension = fysisk/psykisk nedslidning
+- Førtidspension = varigt ude af stand til arbejde
