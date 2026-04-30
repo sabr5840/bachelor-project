@@ -1,5 +1,6 @@
 import json
 import math
+import os
 from pathlib import Path
 from typing import List, Dict, Any
 
@@ -20,10 +21,12 @@ CHUNKS_FILE = CHUNKS_DIR / "chunks.json"
 EMBEDDINGS_FILE = EMBEDDINGS_DIR / "chunk_embeddings.json"
 
 # --- Gemini client ---
-client = genai.Client()
+api_key = os.getenv("GEMINI_API_KEY")
+if not api_key:
+    raise RuntimeError("GEMINI_API_KEY mangler i .env")
 
-# Google documents the current embedding models in the Gemini API docs.
-# We pick the stable text embedding model for a simple bachelor-project setup.
+client = genai.Client(api_key=api_key)
+
 EMBED_MODEL = "gemini-embedding-001"
 
 
