@@ -1,0 +1,34 @@
+Kilder:
+- https://star.dk/ydelser/pension-og-efterloen/folkepension-tidlig-pension-foertidspension-og-seniorpension/seniorpension
+- https://www.borger.dk/pension-og-efterloen/seniorpension/hvis-du-vil-soege-seniorpension
+- https://www.borger.dk/kampagnesider/seniorpension
+- https://www.aeldresagen.dk/viden-og-raadgivning/penge-og-pension/foertidspension/faa-gode-raad/se-regler-og-satser-for-seniorpension
+- https://www.foa.dk/raad-regler/pension/seniorpension
+- https://www.retsinformation.dk/eli/retsinfo/2021/9513
+
+Titel:
+Seniorpension (tidlig pension ved nedsat arbejdsevne)
+
+Kort forklaring i naturligt sprog.
+Seniorpension er en offentlig pension for personer, der er tæt på folkepensionsalderen og har en varigt nedsat arbejdsevne efter et langt arbejdsliv. Den giver mulighed for at trække sig tidligere tilbage fra arbejdsmarkedet.
+
+Vigtige punkter:
+- Seniorpension er for personer med højst 6 år til folkepensionsalderen :contentReference[oaicite:0]{index=0}  
+- Du skal have en varigt nedsat arbejdsevne (maks. ca. 15 timer om ugen) :contentReference[oaicite:1]{index=1}  
+- Arbejdsevnen vurderes i forhold til dit seneste job :contentReference[oaicite:2]{index=2}  
+- Du skal have haft langvarig tilknytning til arbejdsmarkedet (typisk 20–25 år) :contentReference[oaicite:3]{index=3}  
+- Du må ikke allerede være på førtidspension :contentReference[oaicite:4]{index=4}  
+- Det er Seniorpensionsenheden (under ATP), der træffer afgørelsen :contentReference[oaicite:5]{index=5}  
+- Du søger via borger.dk med MitID :contentReference[oaicite:6]{index=6}  
+- Seniorpension udbetales frem til folkepensionsalderen  
+
+Evt. særlige forhold:
+- Du skal ikke igennem arbejdsprøvning eller udviklingsforløb som ved førtidspension :contentReference[oaicite:7]{index=7}  
+- Din ægtefælles arbejdsindkomst påvirker ikke retten til seniorpension :contentReference[oaicite:8]{index=8}  
+- Pensionen kan blive sat ned, hvis du har anden indkomst :contentReference[oaicite:9]{index=9}  
+- Du kan ofte få supplerende udbetaling fra pensionsordninger (fx PenSam)  
+
+Forbehold:
+- Det er en individuel vurdering om du kan få seniorpension  
+- Regler og satser ændres løbende  
+- AI bør ikke afgøre om en person er berettiget  

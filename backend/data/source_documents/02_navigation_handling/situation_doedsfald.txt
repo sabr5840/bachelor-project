@@ -1,3 +1,8 @@
+TYPE: navigation
+INTENT: dødsfald
+DOMAIN: pension
+PRIORITY: high
+
 Kilder:
 - https://www.pensam.dk/pension/aendringer-i-dit-liv/aendringer-i-dit-privatliv/du-mister-livet
 - https://www.borger.dk/politi-retsvaesen-faengsler/Arv-og-testamente
@@ -6,58 +11,51 @@ Titel:
 Hvad gør jeg hvis en pårørende dør
 
 Kategori:
-Situation
+Navigation / handling
 
 Tags:
-dødsfald, efterladt, mister pårørende, arv, pension dødsfald
+dødsfald, efterladt, mister pårørende, arv, pension ved dødsfald, begunstigelse, udbetaling til efterladte
 
-Kort forklaring i naturligt sprog:
-Hvis en pårørende dør, kan der være pension og forsikringer, der skal udbetales. Det er vigtigt at få overblik og kontakte pensionsselskabet for at sikre, at udbetalingen sker korrekt.
+Kort forklaring:
+Hvis en pårørende dør, kan der være pension eller forsikringer, der skal udbetales til efterladte. Brugeren bør kontakte pensionsselskabet og få overblik over pension, begunstigelse og eventuelle dækninger.
 
 Trigger / situation:
 - dødsfald
+- en pårørende dør
 - mister pårørende
 - efterladt
 - familiemedlem dør
+- ægtefælle dør
+- samlever dør
 
-Hvad sker der typisk:
-- Pensionsordninger kan blive udbetalt til efterladte
-- Forsikringer kan blive udbetalt
-- Pensionsselskabet skal informeres
-- Der kan være dokumentation, der skal indsendes
+Formål:
+Hjælp brugeren med at finde næste handling og relevant pensionsside ved dødsfald.
 
-Hvad skal du gøre:
-- Kontakt pensionsselskabet
+Ikke formål:
+- At afgøre hvem der har ret til udbetaling
+- At beregne arv, skat eller boafgift
+- At vurdere juridiske arveforhold
+- At erstatte kontakt til pensionsselskab eller myndigheder
+
+Hvad sker der:
+- Pension eller forsikringer kan blive udbetalt til efterladte
+- Udbetaling afhænger af pensionsordning og begunstigelse
+- Pension udbetales ofte uden om dødsboet
+- Pensionsselskabet kan kræve dokumentation
+
+Hvad skal brugeren gøre:
+- Kontakte pensionsselskabet
 - Få overblik over pension og forsikringer
-- Indsend nødvendige oplysninger
-- Følg op på udbetalingen
+- Undersøge hvem der er begunstiget
+- Indsende nødvendig dokumentation
+- Følge op på behandling og udbetaling
 
 Valgmuligheder:
-- Modtage udbetaling som engangsbeløb
-- Modtage løbende udbetaling (afhænger af ordning)
-- Afklare hvordan midlerne skal anvendes
-- Søge rådgivning ved behov
+- Kontakte pensionsselskab for afklaring
+- Undersøge begunstigelse
+- Søge rådgivning ved arv eller juridisk tvivl
+- Få overblik over eventuelle forsikringsudbetalinger
 
-Hvornår du bør kontakte PenSam:
+Hvornår brugeren bør kontakte pensionsselskab:
 - Hurtigst muligt efter dødsfald
-- Hvis du er i tvivl om rettigheder
-- Hvis du mangler overblik over pension
-- Hvis der er spørgsmål til udbetaling
-
-Handling (trin-for-trin):
-1. Kontakt pensionsselskabet
-2. Oplys om dødsfaldet
-3. Indsend nødvendig dokumentation
-4. Afvent behandling og udbetaling
-
-Links (start her):
-- https://www.pensam.dk/pension
-- https://www.pensam.dk/pension/aendringer-i-dit-liv
-
-Evt. særlige forhold:
-Udbetaling afhænger af begunstigelse og pensionsordning. Pension udbetales ofte uden om dødsboet.
-
-Forbehold:
-- Afhænger af pensionsordning
-- Dækning og rettigheder varierer
-- AI bør ikke afgøre konkrete rettigheder
+- Hvis brugeren er i tvivl om r

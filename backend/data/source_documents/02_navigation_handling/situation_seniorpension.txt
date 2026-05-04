@@ -1,3 +1,8 @@
+TYPE: navigation
+INTENT: seniorpension
+DOMAIN: pension
+PRIORITY: high
+
 Kilder:
 - https://www.borger.dk/pension-og-efterloen/Seniorpension
 - https://www.pensam.dk/pension/gaa-paa-pension
@@ -6,60 +11,60 @@ Titel:
 Hvad gør jeg hvis jeg får seniorpension
 
 Kategori:
-Situation
+Navigation / handling
 
 Tags:
-seniorpension, tidlig pension, nedsat arbejdsevne, før folkepension
+seniorpension, tidlig pension, nedsat arbejdsevne, før folkepension, overgang til pension
 
-Kort forklaring i naturligt sprog:
-Seniorpension er en offentlig ydelse til personer tæt på pensionsalderen med nedsat arbejdsevne. Det påvirker din økonomi og din pensionsopsparing, fordi du ikke længere arbejder på samme måde.
+Kort forklaring:
+Hvis du får seniorpension, ændrer din økonomi sig fra løn til offentlig ydelse. Du bør få overblik over dine pensioner og planlægge, hvordan de skal udbetales frem mod folkepension.
 
 Trigger / situation:
 - seniorpension
 - får seniorpension
 - tidlig pension
 - nedsat arbejdsevne tæt på pension
+- godkendt seniorpension
 
-Hvad sker der typisk:
-- Du modtager seniorpension fra det offentlige
+Formål:
+Hjælp brugeren med at få overblik og planlægge pension ved overgang til seniorpension.
+
+Ikke formål:
+- At afgøre ret til seniorpension
+- At beregne udbetaling eller skat
+- At anbefale konkret udbetalingsstrategi
+
+Hvad sker der:
+- Indkomst ændres fra løn til offentlig ydelse
 - Indbetaling til pension stopper eller reduceres
-- Din økonomi ændrer sig fra løn til ydelse
 - Pensionsopsparing fortsætter uden nye indbetalinger
+- Overgang til pension nærmer sig
 
-Hvad skal du gøre:
-- Få overblik over dine pensionsordninger
-- Tjek hvornår dine pensioner kan udbetales
-- Gennemgå din samlede økonomi
-- Planlæg overgang til pension
+Hvad skal brugeren gøre:
+- Få overblik over pensionsordninger
+- Tjek hvornår pensioner kan udbetales
+- Overveje hvornår pension skal starte
+- Gennemgå samlet økonomi
 
 Valgmuligheder:
 - Starte pension tidligt (hvis muligt)
-- Udskyde udbetaling af pension
+- Udskyde udbetaling
+- Kombinere forskellige pensioner
 - Tilpasse økonomi til ny situation
-- Søge rådgivning
 
-Hvornår du bør kontakte PenSam:
-- Når du får tilkendt seniorpension
-- Hvis du vil planlægge din pension
-- Hvis du er i tvivl om udbetaling
-- Hvis du vil have overblik over dine muligheder
+Hvornår brugeren bør kontakte pensionsselskab:
+- Når seniorpension er tilkendt
+- Hvis der er tvivl om udbetaling
+- Hvis brugeren vil planlægge pension
+- Hvis der mangler overblik
 
-Handling (trin-for-trin):
-1. Log ind på din pensionsoversigt
-2. Få overblik over dine ordninger
+Handling trin-for-trin:
+1. Log ind på pensionsoversigten
+2. Få overblik over pensionsordninger
 3. Tjek udbetalingsmuligheder
-4. Kontakt PenSam for planlægning af pension
+4. Vurder hvornår pension skal starte
+5. Kontakt pensionsselskab ved behov
 
-Links (start her):
-- https://www.pensam.dk/pension
+Links start her:
 - https://www.pensam.dk/pension/gaa-paa-pension
-
-Evt. særlige forhold:
-Seniorpension gives før folkepensionsalderen og afhænger af arbejdsevne. Det er en overgangsydelse frem mod pension.
-
-Forbehold:
-- Afhænger af din pensionsordning
-- Offentlige regler har betydning
-- Dækning og muligheder varierer
-- AI bør ikke afgøre konkrete rettigheder
-
+- http
