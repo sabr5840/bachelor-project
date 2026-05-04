@@ -85,3 +85,13 @@ if (userInput) {
     }
   });
 }
+
+
+
+chatToggle.addEventListener("click", () => {
+  chatWidget.classList.add("open");
+});
+
+chatClose.addEventListener("click", () => {
+  chatWidget.classList.remove("open");
+});
