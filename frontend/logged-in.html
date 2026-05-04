@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Min Pension - PenSam</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="page">
+
+    <header class="topbar">
+      <div class="topbar-left">
+        <a href="index.html" class="logo-link">
+          <img src="Billeder/Pensam_logo.png" alt="PenSam logo" class="logo-img" />
+        </a>
+
+        <nav class="nav">
+          <a href="#">Min pension</a>
+          <a href="#">Indbetalinger</a>
+          <a href="#">Forsikringer</a>
+          <a href="#">Dokumenter</a>
+        </nav>
+      </div>
+
+      <div class="topbar-right">
+        <span class="logged-user">Mette Larsen</span>
+        <a href="index.html" class="login-btn">Log ud</a>
+      </div>
+    </header>
+
+    <main class="pension-dashboard">
+
+      <section class="welcome-section">
+        <div>
+          <p class="eyebrow">Mit PenSam</p>
+          <h1>Hej Mette</h1>
+        </div>
+      </section>
+
+      <section class="overview-grid">
+        <div class="overview-card highlight">
+          <span>Samlet pensionsopsparing</span>
+          <h2>695.000 kr.</h2>
+          <p>Ratepension og livrente samlet</p>
+        </div>
+
+        <div class="overview-card">
+          <span>Månedlig indbetaling</span>
+          <h2>5.800 kr.</h2>
+          <p>Inkl. arbejdsgiverbidrag</p>
+        </div>
+
+        <div class="overview-card">
+          <span>Forventet udbetaling</span>
+          <h2>18.500 kr.</h2>
+          <p>Pr. måned ved pension</p>
+        </div>
+
+        <div class="overview-card">
+          <span>Risikoprofil</span>
+          <h2>Middel</h2>
+          <p>Balanceret investeringsprofil</p>
+        </div>
+      </section>
+
+      <section class="dashboard-columns">
+
+        <div class="dashboard-panel">
+          <h2>Dine pensionsordninger</h2>
+
+          <div class="info-row">
+            <div>
+              <strong>Ratepension</strong>
+              <p>Policenummer: POL-10001</p>
+            </div>
+            <span>485.000 kr.</span>
+          </div>
+
+          <div class="info-row">
+            <div>
+              <strong>Livrente</strong>
+              <p>Policenummer: POL-10002</p>
+            </div>
+            <span>210.000 kr.</span>
+          </div>
+        </div>
+
+        <div class="dashboard-panel">
+          <h2>Dine forsikringer</h2>
+
+          <div class="info-row">
+            <div>
+              <strong>Tab af erhvervsevne</strong>
+              <p>Dækning: 28.000 kr.</p>
+            </div>
+            <span>Aktiv</span>
+          </div>
+
+          <div class="info-row">
+            <div>
+              <strong>Kritisk sygdom</strong>
+              <p>Dækning: 150.000 kr.</p>
+            </div>
+            <span>Aktiv</span>
+          </div>
+        </div>
+
+      </section>
+
+      <section class="dashboard-columns">
+
+        <div class="dashboard-panel">
+          <h2>Skat og afkast</h2>
+          <div class="metric-list">
+            <p><strong>Afkast 2024:</strong> 6,10%</p>
+            <p><strong>Rente:</strong> 1,40%</p>
+            <p><strong>PAL-skat:</strong> 7.300 kr.</p>
+            <p><strong>Skattekode:</strong> A-skat</p>
+          </div>
+        </div>
+
+        <div class="dashboard-panel">
+          <h2>Omkostninger</h2>
+          <div class="metric-list">
+            <p><strong>ÅOP:</strong> 1,10%</p>
+            <p><strong>ÅOK:</strong> 5.335 kr.</p>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- Chat -->
+  <button id="chat-toggle" class="chat-toggle" aria-label="Åbn chat">
+    <img src="Billeder/rådgiver_ikon.png" alt="AI rådgiver ikon" />
+  </button>
+
+  <div id="chat-widget" class="chat-widget">
+    <div class="chat-header">
+      <span>Din personlige pensionsrådgiver</span>
+      <button id="chat-close" class="chat-close" aria-label="Luk chat">×</button>
+    </div>
+
+    <div id="chat-box" class="chat-box">
+      <div class="message bot">
+        Hej Mette! Jeg kan hjælpe dig med spørgsmål om dine simulerede pensionsoplysninger.
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <input type="text" id="user-input" placeholder="Spørg om din pension" />
+      <button type="button" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script src="logged-in.js"></script>
+
+</body>
+</html>

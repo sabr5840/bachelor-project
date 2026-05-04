@@ -1,0 +1,37 @@
+Kilder:
+- https://www.borger.dk/pension-og-efterloen/Folkepension-oversigt
+- https://www.borger.dk/pension-og-efterloen/Folkepension-oversigt/foer-du-gaar-paa-folkepension
+- https://www.borger.dk/pension-og-efterloen/Folkepension-oversigt/naar-du-er-paa-folkepension
+- https://www.aeldresagen.dk/viden-og-raadgivning/penge-og-pension/folkepension
+- https://bm.dk/satser/satser-for-2025/folkepension
+- https://www.retsinformation.dk/eli/lta/2017/1208
+
+Titel:
+Folkepension (offentlig pension i Danmark)
+
+Kort forklaring i naturligt sprog.
+Folkepension er en offentlig pension, som du kan få, når du når folkepensionsalderen. Den skal sikre en grundlæggende indkomst som pensionist og er en central del af det danske pensionssystem.
+
+Vigtige punkter:
+- Folkepension er en offentlig ydelse (offentlig pension, statslig pension)
+- Du får folkepension, når du når folkepensionsalderen (typisk 67 år, afhænger af fødselsår)
+- Folkepension består af:
+  - Grundbeløb (samme for alle)
+  - Pensionstillæg (afhænger af indkomst) 
+- Grundbeløbet udbetales uanset indkomst 
+- Pensionstillæg kan blive reduceret, hvis du har anden indkomst 
+- Du skal som udgangspunkt selv ansøge om folkepension (typisk via borger.dk)
+- Pensionen udbetales månedligt til din NemKonto 
+- Folkepension er livsvarig (udbetales resten af livet) 
+- Du kan arbejde samtidig med folkepension, men indkomst kan påvirke tillæg
+
+Evt. særlige forhold:
+- Folkepensionsalderen reguleres løbende og forventes at stige i fremtiden  
+- Du kan i nogle tilfælde udskyde din folkepension og få højere udbetaling  
+- Der findes ekstra ydelser som ældrecheck, boligstøtte og varmetillæg  
+
+Forbehold:
+- Beløb og satser ændrer sig hvert år  
+- Pensionstillæg afhænger af din indkomst og civilstand  
+- Regler kan variere afhængigt af bopæl og optjening  
+- AI bør ikke beregne konkret folkepension

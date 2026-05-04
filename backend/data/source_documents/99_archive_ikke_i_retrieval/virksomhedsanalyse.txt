@@ -1,0 +1,30 @@
+
+Virksomhedsanalyse:
+
+Typer:
+- Produktionsvirksomhed
+- Handelsvirksomhed
+- Servicevirksomhed
+
+Distributionskæde:
+- Producent → Engros → Detail → Forbruger
+
+SWOT-analyse:
+
+Interne:
+- Styrker
+- Svagheder
+
+Eksterne:
+- Muligheder
+- Trusler
+
+Vigtigt:
+- Muligheder = noget virksomheden ikke selv styrer
+
+Mål:
+- Skal være konkrete og målbare
+
+Eksempel:
+- Ikke: "bedre service"
+- Men: "reducere ventetid med 20%"
