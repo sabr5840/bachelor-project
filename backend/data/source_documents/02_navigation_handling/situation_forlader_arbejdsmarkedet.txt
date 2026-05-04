@@ -1,3 +1,8 @@
+TYPE: navigation
+INTENT: forlader arbejdsmarkedet
+DOMAIN: pension
+PRIORITY: high
+
 Kilder:
 - https://www.pensam.dk/pension/gaa-paa-pension
 - https://www.borger.dk/pension-og-efterloen
@@ -6,59 +11,50 @@ Titel:
 Hvad gør jeg hvis jeg forlader arbejdsmarkedet
 
 Kategori:
-Situation
+Navigation / handling
 
 Tags:
-forlader arbejdsmarkedet, stopper arbejde, pension overgang, går fra arbejde
+forlader arbejdsmarkedet, stopper arbejde, pension overgang, går fra arbejde, pension snart, pensionering
 
-Kort forklaring i naturligt sprog:
-Når du forlader arbejdsmarkedet, stopper din løn og ofte også indbetaling til pension. Det er vigtigt at tage stilling til, hvornår og hvordan din pension skal udbetales.
+Kort forklaring:
+Når du forlader arbejdsmarkedet, stopper løn og pensionsindbetaling typisk. Du bør få overblik over dine pensioner og tage stilling til, hvornår og hvordan de skal udbetales.
 
 Trigger / situation:
 - forlader arbejdsmarkedet
 - stopper arbejde
 - går fra job
 - går på pension snart
+- pensionering
+- sidste arbejdsdag
 
-Hvad sker der typisk:
-- Indbetaling til pension stopper
-- Du skal selv tage stilling til udbetaling
-- Din økonomi ændrer sig fra løn til pension
-- Flere pensionsordninger kan blive relevante samtidig
+Formål:
+Hjælp brugeren med at finde relevante handlinger og næste skridt ved overgang fra arbejde til pension.
 
-Hvad skal du gøre:
-- Få overblik over alle dine pensioner
-- Tjek hvornår de kan udbetales
-- Planlæg hvornår du vil starte udbetaling
-- Gennemgå din samlede økonomi
+Ikke formål:
+- At beregne pension eller skat
+- At anbefale konkret udbetalingstidspunkt
+- At afgøre om brugeren bør stoppe med at arbejde
+
+Hvad sker der:
+- Løn og pensionsindbetaling stopper typisk
+- Brugeren skal tage stilling til pension og udbetaling
+- Flere pensionsordninger kan være relevante samtidig
+- Samlet økonomi ændrer sig fra løn til pension og evt. andre indtægter
+
+Hvad skal brugeren gøre:
+- Få overblik over alle pensionsordninger
+- Tjek hvornår pensionerne kan udbetales
+- Overvej hvornår udbetaling skal starte
+- Gennemgå samlet økonomi før beslutning
 
 Valgmuligheder:
 - Starte pension med det samme
 - Udskyde udbetaling
-- Kombinere arbejde og pension
-- Tilpasse udbetalingsformer
+- Kombinere arbejde og pension i en periode
+- Tilpasse udbetalingsform og udbetalingstidspunkt
 
-Hvornår du bør kontakte PenSam:
-- Hvis du vil starte udbetaling
-- Hvis du er i tvivl om dine muligheder
-- Hvis du vil planlægge din pension
-- Hvis du mangler overblik
-
-Handling (trin-for-trin):
-1. Log ind på din pensionsoversigt
-2. Få overblik over dine ordninger
-3. Vælg hvornår du vil starte udbetaling
-4. Kontakt PenSam for at igangsætte udbetaling
-
-Links (start her):
-- https://www.pensam.dk/pension
-- https://www.pensam.dk/pension/gaa-paa-pension
-
-Evt. særlige forhold:
-Du kan i nogle tilfælde kombinere arbejde og pension i en periode. Regler afhænger af din situation og pensionsordning.
-
-Forbehold:
-- Afhænger af din pensionsordning
-- Dækning og rettigheder varierer
-- AI bør ikke afgøre konkrete rettigheder
-
+Hvornår brugeren bør kontakte pensionsselskab:
+- Hvis brugeren vil starte udbetaling
+- Hvis der er tvivl om udbetalingsmuligheder
+- Hvis brugeren vil planlægge overgangen til pension
+- Hvis brugeren mangler overblik over fl

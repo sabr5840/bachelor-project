@@ -1,3 +1,8 @@
+TYPE: navigation
+INTENT: skilsmisse
+DOMAIN: pension
+PRIORITY: high
+
 Kilder:
 - https://www.pensam.dk/pension/aendringer-i-dit-liv/aendringer-i-dit-privatliv
 - https://www.borger.dk/politi-retsvaesen-faengsler/Skilsmisse-og-separation
@@ -6,59 +11,64 @@ Titel:
 Hvad gør jeg hvis jeg bliver skilt
 
 Kategori:
-Situation
+Navigation / handling
 
 Tags:
-skilsmisse, separation, bliver skilt, pension skilsmisse, dele pension
+skilsmisse, separation, bliver skilt, pension skilsmisse, begunstigelse, ægteskab ophør
 
-Kort forklaring i naturligt sprog:
-Ved skilsmisse skal pension som udgangspunkt ikke deles på samme måde som formue, men der er undtagelser. Det er vigtigt at få overblik over dine pensionsordninger og forstå, hvad der gælder i din situation.
+Kort forklaring:
+Ved skilsmisse ændrer din situation sig, og det kan påvirke din pension og dine forsikringer. Du bør få overblik over dine pensionsordninger og opdatere relevante oplysninger, især begunstigelse.
 
 Trigger / situation:
 - skilsmisse
 - separation
 - bliver skilt
 - ophør af ægteskab
+- går fra partner
 
-Hvad sker der typisk:
-- Pension deles normalt ikke automatisk ved skilsmisse
-- Hver part beholder som udgangspunkt sin egen pension
-- Der kan være undtagelser afhængigt af pensionsordning
+Formål:
+Hjælp brugeren med at finde relevante handlinger og få overblik over pension ved skilsmisse.
+
+Ikke formål:
+- At afgøre hvordan pension deles
+- At give juridisk rådgivning
+- At vurdere konkrete aftaler mellem parter
+
+Hvad sker der:
+- Pensionsordninger påvirkes normalt ikke automatisk
+- Begunstigelse kan være forældet
 - Forsikringsdækninger kan ændre sig
+- Økonomien ændrer sig efter skilsmisse
 
-Hvad skal du gøre:
-- Få overblik over dine pensionsordninger
-- Undersøg hvordan dine ordninger behandles ved skilsmisse
-- Opdater begunstigelse (meget vigtigt)
-- Overvej at søge rådgivning
+Hvad skal brugeren gøre:
+- Få overblik over pensionsordninger
+- Tjek og opdater begunstigelse
+- Gennemgå forsikringsdækninger
+- Overvej behov for rådgivning
 
 Valgmuligheder:
-- Beholde din egen pension
-- Indgå aftale om deling (i særlige tilfælde)
+- Beholde egen pension
 - Ændre begunstigelse
-- Tilpasse din pensionsordning
+- Tilpasse pensionsordning eller dækning
+- Søge juridisk eller økonomisk rådgivning
 
-Hvornår du bør kontakte PenSam:
-- Hvis du er i tvivl om dine pensionsordninger
-- Hvis du vil ændre begunstigelse
-- Hvis du har spørgsmål om dækning
-- Hvis du ønsker overblik over dine muligheder
+Hvornår brugeren bør kontakte pensionsselskab:
+- Hvis begunstigelse skal ændres
+- Hvis der er tvivl om dækninger
+- Hvis pensionsordningen skal gennemgås
+- Hvis brugeren ønsker overblik
 
-Handling (trin-for-trin):
-1. Log ind på din pensionsoversigt
-2. Tjek dine pensionsordninger og dækninger
-3. Opdater begunstigelse efter skilsmisse
-4. Kontakt PenSam ved behov for ændringer
+Handling trin-for-trin:
+1. Log ind på pensionsoversigten
+2. Tjek pensionsordninger og dækninger
+3. Opdater begunstigelse
+4. Gennemgå forsikringsdækning
+5. Kontakt pensionsselskab ved behov
 
-Links (start her):
-- https://www.pensam.dk/pension
+Links start her:
 - https://www.pensam.dk/pension/aendringer-i-dit-liv
+- https://www.pensam.dk/pension
+- https://www.borger.dk/politi-retsvaesen-faengsler/Skilsmisse-og-separation
 
-Evt. særlige forhold:
-Der kan være særlige regler ved ægteskabets længde eller ved meget skæve pensionsforhold. Juridisk rådgivning kan være relevant i komplekse tilfælde.
-
-Forbehold:
-- Afhænger af din pensionsordning
-- Regler kan være komplekse
-- Individuelle forhold har stor betydning
-- AI bør ikke afgøre juridiske forhold
+Relaterede vidensfiler:
+- do

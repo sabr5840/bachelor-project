@@ -1,3 +1,8 @@
+TYPE: navigation
+INTENT: nyt job
+DOMAIN: pension
+PRIORITY: high
+
 Kilder:
 - https://www.pensam.dk/pension/pension-i-pensam/samle_pension
 - https://www.borger.dk/pension-og-efterloen/Pensionssystemet-i-Danmark/Arbejdsmarkedspensioner
@@ -6,58 +11,60 @@ Titel:
 Hvad gør jeg hvis jeg får nyt job
 
 Kategori:
-Situation
+Navigation / handling
 
 Tags:
-nyt job, skifter job, ny arbejdsgiver, jobskifte, pension nyt job
+nyt job, skifter job, ny arbejdsgiver, jobskifte, pension nyt job, pensionsordning, samle pension
 
-Kort forklaring i naturligt sprog:
-Når du får nyt job, kan din pensionsordning ændre sig. Det er vigtigt at få overblik over din nye pension og tage stilling til, hvad der skal ske med din gamle ordning.
+Kort forklaring:
+Når du får nyt job, ændrer din pensionsordning sig ofte. Du bør få overblik over din nye og gamle pension og tage stilling til, hvad der skal ske med dine opsparinger.
 
 Trigger / situation:
 - nyt job
 - skifter job
 - ny arbejdsgiver
 - starter nyt arbejde
+- jobskifte
 
-Hvad sker der typisk:
-- Du får en ny pensionsordning gennem din arbejdsgiver
-- Din gamle pensionsordning stopper med at få indbetalinger
-- Du kan få flere pensionsopsparinger forskellige steder
+Formål:
+Hjælp brugeren med at få overblik over pension og finde næste skridt ved jobskifte.
+
+Ikke formål:
+- At anbefale om pension skal flyttes
+- At beregne pension eller indbetaling
+- At afgøre hvad der er økonomisk bedst
+
+Hvad sker der:
+- Ny pensionsordning oprettes typisk via arbejdsgiver
+- Indbetaling til gammel ordning stopper
+- Brugeren kan få flere pensionsordninger
 - Dækninger og forsikringer kan ændre sig
 
-Hvad skal du gøre:
-- Få overblik over din nye pensionsordning
-- Tjek hvad der sker med din gamle pension
-- Vurder om du vil samle dine pensioner
-- Gennemgå dine forsikringer
+Hvad skal brugeren gøre:
+- Få overblik over ny pensionsordning
+- Tjek status på eksisterende pensioner
+- Undersøg muligheder for at samle pension
+- Gennemgå forsikringsdækninger
 
 Valgmuligheder:
-- Beholde din gamle pensionsordning
+- Beholde eksisterende pensionsordninger
 - Flytte pension til ny ordning
-- Samle flere pensioner ét sted
+- Samle pension ét sted
 - Justere indbetaling eller dækning
 
-Hvornår du bør kontakte PenSam:
-- Hvis du er i tvivl om din nye ordning
-- Hvis du vil flytte eller samle pension
-- Hvis du vil ændre dækning eller indbetaling
-- Hvis du mangler overblik over dine pensioner
+Hvornår brugeren bør kontakte pensionsselskab:
+- Hvis der er tvivl om ny pensionsordning
+- Hvis pension skal flyttes eller samles
+- Hvis dækning eller indbetaling skal ændres
+- Hvis brugeren mangler overblik
 
-Handling (trin-for-trin):
-1. Log ind på din pensionsoversigt
-2. Tjek din nye pensionsordning fra arbejdsgiver
-3. Find oplysninger om din gamle pension
-4. Tag stilling til om du vil samle eller beholde ordninger
+Handling trin-for-trin:
+1. Log ind på pensionsoversigten
+2. Tjek ny pensionsordning fra arbejdsgiver
+3. Find oplysninger om eksisterende pensioner
+4. Vurder om pensioner skal samles eller beholdes
+5. Kontakt pensionsselskab ved behov
 
-Links (start her):
-- https://www.pensam.dk/pension
+Links start her:
 - https://www.pensam.dk/pension/samle_pension
-
-Evt. særlige forhold:
-Din nye pensionsordning kan være bestemt af overenskomst eller ansættelsesaftale. Der kan også være forskel i forsikringsdækning mellem ordninger.
-
-Forbehold:
-- Afhænger af din pensionsordning
-- Dækning og rettigheder varierer
-- AI bør ikke afgøre konkrete rettigheder
+- https://www.pen

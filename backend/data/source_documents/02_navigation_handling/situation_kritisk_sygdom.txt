@@ -1,3 +1,8 @@
+TYPE: navigation
+INTENT: kritisk sygdom
+DOMAIN: pension
+PRIORITY: high
+
 Kilder:
 - https://www.pensam.dk/pension/aendringer-i-dit-liv/aendringer-i-dit-helbred
 - https://www.borger.dk/sundhed-og-sygdom
@@ -6,59 +11,59 @@ Titel:
 Hvad gør jeg hvis jeg får en kritisk sygdom
 
 Kategori:
-Situation
+Navigation / handling
 
 Tags:
-kritisk sygdom, alvorlig sygdom, forsikring sygdom, engangsudbetaling
+kritisk sygdom, alvorlig sygdom, forsikring sygdom, engangsudbetaling, diagnose, sygdom pension
 
-Kort forklaring i naturligt sprog:
-Hvis du får en kritisk sygdom, kan din pensionsordning indeholde en forsikring, der giver en engangsudbetaling. Det kræver typisk, at sygdommen er omfattet af ordningen og bliver anmeldt.
+Kort forklaring:
+Hvis du får en kritisk sygdom, kan din pensionsordning indeholde en forsikring, der giver en engangsudbetaling. Du bør tjekke din dækning og anmelde sygdommen, hvis den er omfattet.
 
 Trigger / situation:
 - kritisk sygdom
 - alvorlig sygdom
 - kræft
 - får diagnose
+- alvorlig diagnose
 
-Hvad sker der typisk:
-- Du kan være dækket af en forsikring ved kritisk sygdom
+Formål:
+Hjælp brugeren med at finde relevante handlinger og få overblik over dækning ved kritisk sygdom.
+
+Ikke formål:
+- At afgøre om sygdommen er dækket
+- At beregne udbetaling
+- At vurdere medicinske eller juridiske forhold
+
+Hvad sker der:
+- Brugeren kan være dækket af forsikring ved kritisk sygdom
 - Der kan udbetales et engangsbeløb
 - Udbetaling afhænger af diagnose og ordning
 - Dokumentation er normalt nødvendig
 
-Hvad skal du gøre:
-- Tjek om du har dækning ved kritisk sygdom
-- Undersøg hvilke sygdomme der er dækket
+Hvad skal brugeren gøre:
+- Tjek om der er dækning for kritisk sygdom
+- Undersøg hvilke diagnoser der er omfattet
 - Anmeld sygdom til pensionsselskabet
 - Indsend nødvendig dokumentation
 
 Valgmuligheder:
 - Modtage engangsudbetaling (hvis dækket)
 - Beholde øvrige dækninger
-- Få overblik over din samlede økonomi
+- Få overblik over økonomien
 - Søge rådgivning
 
-Hvornår du bør kontakte PenSam:
-- Så snart du har fået diagnosen
-- Hvis du er i tvivl om din dækning
-- Hvis du vil anmelde sygdom
-- Hvis du har spørgsmål til udbetalingen
+Hvornår brugeren bør kontakte pensionsselskab:
+- Så snart diagnosen er stillet
+- Hvis der er tvivl om dækning
+- Hvis sygdom skal anmeldes
+- Hvis der er spørgsmål til udbetaling
 
-Handling (trin-for-trin):
-1. Log ind på din pensionsordning
-2. Tjek din dækning for kritisk sygdom
+Handling trin-for-trin:
+1. Log ind på pensionsordningen
+2. Tjek dækning for kritisk sygdom
 3. Anmeld sygdom til pensionsselskabet
-4. Indsend dokumentation og følg op på sagen
+4. Indsend dokumentation
+5. Følg op på sagen
 
-Links (start her):
-- https://www.pensam.dk/pension
-- https://www.pensam.dk/pension/aendringer-i-dit-liv
-
-Evt. særlige forhold:
-Ikke alle sygdomme er dækket. Hvilke diagnoser der giver ret til udbetaling, afhænger af din pensionsordning og forsikringsbetingelser.
-
-Forbehold:
-- Afhænger af din pensionsordning
-- Dækning og rettigheder varierer
-- Dokumentation er nødvendig
-- AI bør ikke afgøre konkrete rettigheder
+Links start her:
+- https://www.pensam.dk/pension/aendringer-i-dit-liv/aendringer-i-dit-hel

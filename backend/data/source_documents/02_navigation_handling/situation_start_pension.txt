@@ -1,3 +1,8 @@
+TYPE: navigation
+INTENT: start pension
+DOMAIN: pension
+PRIORITY: high
+
 Kilder:
 - https://www.pensam.dk/pension/gaa-paa-pension/saet-pension-i-gang
 - https://www.borger.dk/pension-og-efterloen
@@ -6,59 +11,57 @@ Titel:
 Hvad gør jeg hvis jeg vil starte min pension
 
 Kategori:
-Situation
+Navigation / handling
 
 Tags:
-start pension, udbetaling pension, gå på pension, starte udbetaling
+start pension, udbetaling pension, gå på pension, starte udbetaling, pensionering
 
-Kort forklaring i naturligt sprog:
-Når du vil starte din pension, skal du selv tage initiativ til udbetalingen. Det er vigtigt at vælge, hvordan og hvornår din pension skal udbetales.
+Kort forklaring:
+Når du vil starte din pension, skal du selv tage initiativ til udbetalingen. Du bør få overblik over dine pensioner og vælge, hvornår og hvordan de skal udbetales.
 
 Trigger / situation:
 - starte pension
 - udbetaling pension
 - gå på pension
 - få pension udbetalt
+- starte udbetaling
 
-Hvad sker der typisk:
+Formål:
+Hjælp brugeren med at finde næste skridt og starte udbetaling af pension.
+
+Ikke formål:
+- At beregne pension eller skat
+- At anbefale konkret udbetalingstidspunkt
+- At vælge udbetalingsform for brugeren
+
+Hvad sker der:
 - Pension udbetales ikke automatisk
-- Du skal vælge udbetalingsform og tidspunkt
-- Din økonomi ændrer sig fra løn til pension
+- Brugeren skal vælge udbetalingsform og tidspunkt
+- Økonomien ændrer sig fra løn til pension
 - Flere pensioner kan starte samtidig
 
-Hvad skal du gøre:
-- Få overblik over dine pensionsordninger
-- Vælg hvornår du vil starte udbetaling
-- Vælg hvordan pensionen skal udbetales
-- Planlæg din samlede økonomi
+Hvad skal brugeren gøre:
+- Få overblik over pensionsordninger
+- Tjek hvornår de kan udbetales
+- Vælge starttidspunkt
+- Vælge udbetalingsform
+- Planlægge samlet økonomi
 
 Valgmuligheder:
 - Starte udbetaling med det samme
 - Udskyde udbetaling
 - Vælge løbende udbetaling eller engangsbeløb (afhænger af pensionstype)
-- Kombinere forskellige pensioner
+- Kombinere flere pensioner
 
-Hvornår du bør kontakte PenSam:
-- Når du vil starte udbetaling
-- Hvis du er i tvivl om dine muligheder
-- Hvis du vil planlægge din pension
-- Hvis du har flere pensioner
+Hvornår brugeren bør kontakte pensionsselskab:
+- Når udbetaling skal startes
+- Hvis der er tvivl om muligheder
+- Hvis brugeren vil planlægge pension
+- Hvis der er flere pensionsordninger
 
-Handling (trin-for-trin):
-1. Log ind på din pensionsoversigt
-2. Få overblik over dine pensionsordninger
-3. Vælg udbetalingsform og tidspunkt
-4. Kontakt PenSam for at starte udbetalingen
-
-Links (start her):
-- https://www.pensam.dk/pension/gaa-paa-pension
-- https://www.pensam.dk/pension
-
-Evt. særlige forhold:
-Valg af udbetalingsform og tidspunkt kan have stor betydning for din økonomi som pensionist.
-
-Forbehold:
-- Afhænger af din pensionsordning
-- Udbetalingsmuligheder varierer
-- AI bør ikke afgøre konkrete valg
-
+Handling trin-for-trin:
+1. Log ind på pensionsoversigten
+2. Få overblik over pensionsordninger
+3. Tjek udbetalingsmuligheder
+4. Vælg udbetalingsform og tidspunkt
+5. Kontakt pensionsse

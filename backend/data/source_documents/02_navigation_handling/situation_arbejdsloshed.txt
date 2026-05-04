@@ -1,3 +1,8 @@
+TYPE: navigation
+INTENT: arbejdsløshed
+DOMAIN: pension
+PRIORITY: high
+
 Kilder:
 - https://www.pensam.dk/pension/aendringer-i-dit-liv/aendringer-i-dit-job
 - https://www.borger.dk/arbejde-dagpenge-ferie/Dagpenge
@@ -6,58 +11,55 @@ Titel:
 Hvad gør jeg hvis jeg bliver arbejdsløs
 
 Kategori:
-Situation
+Navigation / handling
 
 Tags:
-arbejdsløs, mister job, ledig, uden arbejde, dagpenge
+arbejdsløs, mister job, ledig, uden arbejde, dagpenge, jobtab, pension ved arbejdsløshed
 
-Kort forklaring i naturligt sprog:
-Hvis du bliver arbejdsløs, stopper din arbejdsgivers indbetaling til pension. Det er vigtigt at få overblik over din pensionsordning og tage stilling til, om du selv vil indbetale eller ændre din dækning.
+Kort forklaring:
+Hvis du bliver arbejdsløs, stopper eller ændrer indbetalingen til pension typisk. Du bør få overblik over din pensionsordning, dine dækninger og dine muligheder.
 
 Trigger / situation:
 - arbejdsløs
 - mister job
 - bliver ledig
 - uden arbejde
+- opsagt
+- jobtab
 
-Hvad sker der typisk:
-- Indbetaling til pension stopper eller reduceres
-- Din pensionsordning fortsætter uden nye indbetalinger
-- Forsikringer kan ændre sig eller bortfalde
-- Din økonomi kan blive påvirket
+Formål:
+Hjælp brugeren med at finde næste handling og den relevante pensionsside ved arbejdsløshed.
 
-Hvad skal du gøre:
-- Få overblik over din pensionsordning
-- Tjek hvilke dækninger du stadig har
-- Vurder om du vil fortsætte indbetaling selv
-- Gennemgå din økonomi og behov
+Ikke formål:
+- At beregne pension, skat eller dagpenge
+- At afgøre konkrete rettigheder
+- At vurdere om brugeren bør ændre pensionsordning
+
+Hvad sker der:
+- Indbetaling til pension stopper eller reduceres typisk
+- Pensionsordningen kan fortsætte uden nye indbetalinger
+- Forsikringer og dækninger kan ændre sig eller bortfalde
+- Brugerens samlede økonomi kan ændre sig
+
+Hvad skal brugeren gøre:
+- Få overblik over pensionsordningen
+- Tjek hvilke dækninger og forsikringer der stadig gælder
+- Undersøg om egen indbetaling er mulig eller relevant
+- Gennemgå økonomien i den nye situation
 
 Valgmuligheder:
 - Fortsætte indbetaling selv
 - Stoppe indbetaling midlertidigt
 - Justere eller opsige forsikringer
-- Lade pension stå uden ændringer
+- Lade pensionen stå uden ændringer
+- Kontakte pensionsselskab for rådgivning
 
-Hvornår du bør kontakte PenSam:
-- Hvis du vil fortsætte indbetaling selv
-- Hvis du vil ændre eller opsige dækninger
-- Hvis du er i tvivl om din pensionsordning
-- Hvis du vil have rådgivning om dine muligheder
+Hvornår brugeren bør kontakte pensionsselskab:
+- Hvis brugeren vil fortsætte indbetaling selv
+- Hvis brugeren vil ændre eller opsige dækninger
+- Hvis brugeren er i tvivl om sin pensionsordning
+- Hvis brugeren vil have rådgivning om mulighederne
 
-Handling (trin-for-trin):
-1. Log ind på din pensionsoversigt
-2. Tjek din nuværende pensionsordning og dækninger
-3. Undersøg muligheder for egen indbetaling
-4. Kontakt PenSam ved behov for ændringer
-
-Links (start her):
-- https://www.pensam.dk/pension
-- https://www.pensam.dk/pension/aendringer-i-dit-liv
-
-Evt. særlige forhold:
-Nogle pensionsordninger giver mulighed for fortsat dækning i en periode uden indbetaling. Det afhænger af din ordning.
-
-Forbehold:
-- Afhænger af din pensionsordning
-- Dækning og rettigheder varierer
-- AI bør ikke afgøre konkrete rettigheder
+Handling trin-for-trin:
+1. Log ind på pensionsoversigten
+2. Tjek nuværende pensionsordning og dækning
