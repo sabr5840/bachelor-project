@@ -47,11 +47,17 @@ def classify_question(user_text: str) -> str:
         "bør jeg",
         "skal jeg",
         "hvad er bedst",
+        "kan jeg få",
+
         "hvad passer bedst",
         "for mig",
         "min situation",
         "min opsparing er",
         "mit afkast",
+        "har jeg ret til",
+        "må jeg",
+        "kan det betale sig",
+        "anbefaler du",
         "hvad vil du anbefale",
         "hvornår kan jeg gå på pension",
     ]):
@@ -61,6 +67,12 @@ def classify_question(user_text: str) -> str:
         "samle",
         "udbetaling",
         "begunstiget",
+        "hvad gør jeg",
+        "hvad skal jeg gøre",
+        "jeg er blevet",
+        "jeg har fået",
+        "jeg mister",
+        "jeg er syg",
     ]):
         return "semi"
 
@@ -99,6 +111,10 @@ Ved hvorfor-spørgsmål skal du starte med en direkte årsagsforklaring i først
 
 Hvis spørgsmålet er generelt, fx "kan jeg få pension udbetalt som engangsbeløb", skal du tydeligt afgrænse svaret og forklare, at det afhænger af typen af pension.
 Undgå at starte med "Ja", hvis svaret ikke gælder alle tilfælde.
+Brug ikke markdown-formattering. Skriv i almindelig tekst.
+Hvis konteksten indeholder centrale tal som satser, perioder eller grænser, må du gerne nævne dem kort i svaret.
+
+Du må aldrig bruge markdown. Brug ikke stjerner, punktopstillinger, fed skrift eller nummererede lister, medmindre brugeren specifikt beder om en liste.
 """
 
 
@@ -135,6 +151,8 @@ Nyeste spørgsmål:
         # Use fewer chunks for simple questions and more chunks for broader questions.
         if question_type == "simple":
             top_k = 3
+        elif question_type == "semi":
+            top_k = 3
         else:
             top_k = 5
 
@@ -163,22 +181,23 @@ Du skal:
 """
         elif question_type == "semi":
             extra_instruction = """
-Spørgsmålet ligger i en gråzone.
-Du skal derfor:
-- give et kort og klart svar
-- forklare kort hvordan det typisk gøres, hvis konteksten indeholder det
+Spørgsmålet handler om en handling eller situation.
+Du skal:
+- give et kort svar på hvad situationen betyder
+- hvis konteksten indeholder trin-for-trin handlinger, gengiv dem kort og konkret
 - inkludere ét kort forbehold
 - anbefale kontakt til en rådgiver, hvis spørgsmålet kræver personlig vurdering
-- undgå lange forklaringer og lister
-- hvis konteksten indeholder en selvbetjeningsside eller login-løsning, må du kort forklare, hvor brugeren kan finde oplysningerne
-
-Eksempel på godt forbehold:
-"Det er en god idé at tjekke, om du mister vigtige vilkår eller dækninger, og kontakte en rådgiver ved tvivl."
+- undgå lange forklaringer
+- skriv i almindelig tekst uden markdown
 """
         else:
             extra_instruction = """
 Spørgsmålet er et first-level spørgsmål.
 Du skal give et kort, klart og direkte svar.
+Brug ikke markdown, punktlister, stjerner eller overskrifter.
+Skriv i almindelig tekst.
+Hvis konteksten indeholder centrale tal som satser, perioder eller grænser, må du gerne nævne dem kort i svaret.
+- hvis konteksten indeholder trin-for-trin handlinger, skal du gengive dem kort og konkret
 """
 
         prompt = f"""
