@@ -1,3 +1,4 @@
+
 import json
 from pathlib import Path
 
@@ -164,6 +165,16 @@ test_cases = [
         "expected_sources": [],
         "expected_behavior": "out_of_scope",
     },
+    {
+        "question": "Hvordan laver jeg pasta?",
+        "expected_sources": [],
+        "expected_behavior": "out_of_scope",
+    },
+    {
+        "question": "Hvad er hovedstaden i Frankrig?",
+        "expected_sources": [],
+        "expected_behavior": "out_of_scope",
+    },
 ]
 
 
@@ -201,12 +212,11 @@ def call_api(question: str) -> dict:
         }
 
 
-def evaluate_sources(expected_sources: list[str], actual_sources: list[str]) -> bool | None:
-    if not expected_sources:
-        return None
+def evaluate_sources(expected_sources: list[str], actual_sources: list[str], expected_behavior: str) -> bool:
+    if expected_behavior == "out_of_scope":
+        return actual_sources == []
 
     return any(expected in actual_sources for expected in expected_sources)
-
 
 def main() -> None:
     results = []
@@ -220,7 +230,11 @@ def main() -> None:
         api_result = call_api(question)
 
         actual_sources = api_result["sources"]
-        source_match = evaluate_sources(expected_sources, actual_sources)
+        source_match = evaluate_sources(
+            expected_sources,
+            actual_sources,
+            test_case["expected_behavior"]
+        )
 
         result = {
             "number": index,
