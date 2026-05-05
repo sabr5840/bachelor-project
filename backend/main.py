@@ -85,6 +85,54 @@ def get_fallback_reply() -> str:
         "Jeg kan ikke give personlig rådgivning, men jeg kan godt forklare de generelle regler."
     )
 
+def is_pension_related(user_text: str) -> bool:
+    text = user_text.lower()
+
+    pension_keywords = [
+        "pension",
+        "ratepension",
+        "livrente",
+        "aldersopsparing",
+        "folkepension",
+        "atp",
+        "seniorpension",
+        "førtidspension",
+        "tidlig pension",
+        "pal-skat",
+        "pensionsafkastskat",
+        "skat ved pension",
+        "beskatning af pension",
+        "skattemæssige",
+        "indbetaling",
+        "udbetaling",
+        "begunstiget",
+        "begunstigelse",
+        "kritisk sygdom",
+        "forsikring",
+        "arbejdsevne",
+        "opsparing",
+        "modregning",
+        "skifte job",
+        "nyt job",
+        "sygdom",
+        "syg",
+        "blevet syg",
+        "jeg er blevet syg",
+        "hvad gør jeg",
+        "hvad skal jeg gøre",
+        "dødsfald",
+    ]
+    return any(keyword in text for keyword in pension_keywords)
+
+def clean_reply(reply: str) -> str:
+    return (
+        reply
+        .replace("*   ", "")
+        .replace("* ", "")
+        .replace("**", "")
+        .replace("#", "")
+        .strip()
+    )
 
 SYSTEM_PROMPT = """
 Du er en AI-assistent i et bachelorprojekt om pensionsrådgivning.
@@ -129,6 +177,12 @@ def chat(msg: Message):
 
     if not user_text:
         raise HTTPException(status_code=400, detail="Beskeden er tom.")
+
+    if not is_pension_related(user_text):
+        return {
+            "reply": "Det spørgsmål ligger uden for mit område. Jeg kan kun hjælpe med generelle spørgsmål om pension.",
+            "sources": []
+    }
 
     try:
         print("User text:", user_text)
@@ -209,6 +263,7 @@ Ekstra instruktion:
 Kontekst:
 {context}
 
+
 Tidligere samtale:
 {conversation_history}
 
@@ -221,7 +276,7 @@ Brugerens nyeste spørgsmål:
             contents=prompt,
         )
 
-        reply = response.text if response.text else "Jeg kunne ikke generere et svar."
+        reply = clean_reply(response.text) if response.text else "Jeg kunne ikke generere et svar."
 
         sources = [
             {
