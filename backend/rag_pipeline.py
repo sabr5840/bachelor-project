@@ -55,7 +55,7 @@ def read_source_documents() -> List[Dict[str, Any]]:
     return documents
 
 
-def chunk_text(text: str, chunk_size_words: int = 120, overlap_words: int = 20) -> List[str]:
+def chunk_text(text: str, chunk_size_words: int = 320, overlap_words: int = 60) -> List[str]:
     """
     Splits text into overlapping chunks by word count.
     Overlap helps preserve context across chunk boundaries.
@@ -87,7 +87,7 @@ def create_chunks(documents: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     all_chunks = []
 
     for doc in documents:
-        chunk_texts = chunk_text(doc["text"], chunk_size_words=120, overlap_words=20)
+        chunk_texts = chunk_text(doc["text"], chunk_size_words=320, overlap_words=60)
 
         for i, text in enumerate(chunk_texts, start=1):
             all_chunks.append(
@@ -149,7 +149,7 @@ def build_chunks_file() -> None:
 
         print(f"Creating chunks for new or changed document: {document_id}")
 
-        chunk_texts = chunk_text(doc["text"], chunk_size_words=120, overlap_words=20)
+        chunk_texts = chunk_text(doc["text"], chunk_size_words=320, overlap_words=60)
 
         for i, text in enumerate(chunk_texts, start=1):
             updated_chunks.append(
@@ -174,7 +174,6 @@ def embed_text(text: str, task_type: str) -> List[float]:
     """
     Generates an embedding vector for text.
     """
-    # Google documents Gemini embedding models and embedding endpoints in the API docs.
     response = client.models.embed_content(
         model=EMBED_MODEL,
         contents=text,
@@ -246,19 +245,34 @@ def retrieve_top_chunks(query: str, top_k: int = 3, min_score: float = 0.55) -> 
     query_embedding = embed_text(query, task_type="RETRIEVAL_QUERY")
 
     scored = []
+
     for chunk in embedded_chunks:
         score = cosine_similarity(query_embedding, chunk["embedding"])
 
         if score >= min_score:
-            scored.append(
-                {
-                    "score": score,
-                    "chunk": chunk,
-                }
-            )
+            scored.append({
+                "score": score,
+                "chunk": chunk,
+            })
 
     scored.sort(key=lambda x: x["score"], reverse=True)
-    top_chunks = [item["chunk"] for item in scored[:top_k]]
+
+    top_chunks = []
+    used_documents = set()
+
+    for item in scored:
+        chunk = item["chunk"]
+        document_id = chunk["document_id"]
+
+        if document_id in used_documents:
+            continue
+
+        top_chunks.append(chunk)
+        used_documents.add(document_id)
+
+        if len(top_chunks) >= top_k:
+            break
+
     return top_chunks
 
 
