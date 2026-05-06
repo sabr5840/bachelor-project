@@ -2,19 +2,149 @@ const chatToggle = document.getElementById("chat-toggle");
 const chatWidget = document.getElementById("chat-widget");
 const chatClose = document.getElementById("chat-close");
 const userInput = document.getElementById("user-input");
+const chatBox = document.getElementById("chat-box");
+const suggestionButtons = document.querySelectorAll(".chat-suggestions button");
 let chatHistory = [];
+const customerId = localStorage.getItem("customer_id");
+const customerName = localStorage.getItem("customer_name");
+const customerFullName = localStorage.getItem("customer_full_name") || customerName;
+const shouldOpenChat = sessionStorage.getItem("open_chat_after_login") === "true";
+const shouldKeepChatOpen = sessionStorage.getItem("chat_widget_open") === "true";
+const shouldShowLoginCompletedMessage = sessionStorage.getItem("chat_login_completed") === "true";
+const topbarRight = document.querySelector(".topbar-right");
+const isLoginPage = document.body.classList.contains("login-body");
+
+function getStoredChatMessages() {
+  try {
+    return JSON.parse(sessionStorage.getItem("chat_messages")) || [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveChatMessage(sender, text) {
+  const storedMessages = getStoredChatMessages();
+  storedMessages.push({ sender, text });
+  sessionStorage.setItem("chat_messages", JSON.stringify(storedMessages.slice(-12)));
+}
+
+function restoreChatMessages() {
+  const storedMessages = getStoredChatMessages();
+
+  if (!storedMessages.length || !chatBox) {
+    return false;
+  }
+
+  chatBox.innerHTML = "";
+
+  storedMessages.forEach((message) => {
+    appendMessage(message.text, message.sender, false);
+  });
+
+  chatHistory = storedMessages.map((message) => ({
+    role: message.sender === "user" ? "user" : "assistant",
+    content: message.text
+  }));
+
+  return true;
+}
+
+if (customerId && customerName && topbarRight) {
+  const loginLink = topbarRight.querySelector(".login-btn");
+  const loggedUser = document.createElement("span");
+
+  loggedUser.classList.add("logged-user");
+  loggedUser.textContent = customerFullName;
+
+  if (loginLink) {
+    loginLink.textContent = "Log ud";
+    loginLink.href = "index.html";
+    loginLink.addEventListener("click", () => {
+      localStorage.removeItem("customer_id");
+      localStorage.removeItem("customer_name");
+      localStorage.removeItem("customer_full_name");
+      sessionStorage.removeItem("open_chat_after_login");
+      sessionStorage.removeItem("chat_return_url");
+      sessionStorage.removeItem("chat_widget_open");
+      sessionStorage.removeItem("chat_messages");
+      sessionStorage.removeItem("chat_login_completed");
+    });
+
+    topbarRight.insertBefore(loggedUser, loginLink);
+  }
+}
+
+const restoredChat = restoreChatMessages();
+
+if (
+  customerId &&
+  customerName &&
+  chatBox &&
+  !restoredChat &&
+  !shouldShowLoginCompletedMessage
+) {
+  chatBox.innerHTML = "";
+  appendMessage(
+    `hej ${customerName}! Du kan her stillede generelle eller personlige spørgsmål om din pension`,
+    "bot",
+    false
+  );
+
+  if (userInput) {
+    userInput.placeholder = "Spørg om din pension";
+  }
+}
+
+if (customerId && customerName && shouldShowLoginCompletedMessage && chatBox && !isLoginPage) {
+  appendMessage(
+    `Du er nu logget ind, ${customerName}! Jeg kan stadig svare på generelle spørgsmål, og du kan også spørge om dine egne pensionsoplysninger.`,
+    "bot"
+  );
+  sessionStorage.removeItem("chat_login_completed");
+}
 
 if (chatToggle && chatWidget) {
   chatToggle.addEventListener("click", () => {
     chatWidget.classList.toggle("open");
+    sessionStorage.setItem("chat_widget_open", chatWidget.classList.contains("open") ? "true" : "false");
+    sessionStorage.setItem("chat_return_url", window.location.href);
   });
+}
+
+if ((shouldOpenChat || (shouldKeepChatOpen && !isLoginPage)) && chatWidget) {
+  chatWidget.classList.add("open");
+  sessionStorage.setItem("chat_widget_open", "true");
+  sessionStorage.removeItem("open_chat_after_login");
+} else if (isLoginPage) {
+  sessionStorage.setItem("chat_widget_open", "false");
 }
 
 if (chatClose && chatWidget) {
   chatClose.addEventListener("click", () => {
     chatWidget.classList.remove("open");
+    sessionStorage.setItem("chat_widget_open", "false");
   });
 }
+
+const loginBtn = document.getElementById("loginBtn");
+
+if (loginBtn) {
+  loginBtn.addEventListener("click", () => {
+    const returnUrl = sessionStorage.getItem("chat_return_url") || window.location.href;
+    sessionStorage.setItem("chat_widget_open", "false");
+    sessionStorage.setItem("chat_return_url", returnUrl);
+    window.location.href = `login.html?returnTo=${encodeURIComponent(returnUrl)}`;
+  });
+}
+
+suggestionButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    if (!userInput) return;
+
+    userInput.value = button.textContent;
+    sendMessage();
+  });
+});
 
 async function sendMessage() {
   const input = document.getElementById("user-input");
@@ -30,7 +160,7 @@ async function sendMessage() {
     content: message
   });
 
-  const loadingElement = appendMessage("Genererer svar...", "bot");
+  const loadingElement = appendMessage("Genererer svar...", "bot", false);
 
   try {
     const response = await fetch("http://127.0.0.1:8000/chat", {
@@ -40,6 +170,7 @@ async function sendMessage() {
       },
       body: JSON.stringify({
         message: message,
+        customer_id: customerId,
         history: chatHistory.slice(-6)
       })
     });
@@ -65,7 +196,7 @@ async function sendMessage() {
   }
 }
 
-function appendMessage(text, sender) {
+function appendMessage(text, sender, shouldPersist = true) {
   const chatBox = document.getElementById("chat-box");
   const messageDiv = document.createElement("div");
 
@@ -74,6 +205,10 @@ function appendMessage(text, sender) {
 
   chatBox.appendChild(messageDiv);
   chatBox.scrollTop = chatBox.scrollHeight;
+
+  if (shouldPersist) {
+    saveChatMessage(sender, text);
+  }
 
   return messageDiv;
 }
@@ -85,13 +220,3 @@ if (userInput) {
     }
   });
 }
-
-
-
-chatToggle.addEventListener("click", () => {
-  chatWidget.classList.add("open");
-});
-
-chatClose.addEventListener("click", () => {
-  chatWidget.classList.remove("open");
-});

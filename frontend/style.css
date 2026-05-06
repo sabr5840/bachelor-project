@@ -14,7 +14,7 @@ body {
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 14px 24px 40px;
+  padding: 0;
 }
 
 /* Topbar */
@@ -276,6 +276,57 @@ body {
   background: #e5f2e9;
 }
 
+.chat-welcome {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 86%;
+}
+
+.chat-welcome p {
+  margin: 0;
+  line-height: 1.35;
+}
+
+.chat-login-btn {
+  align-self: flex-start;
+  border: none;
+  background: #004230;
+  color: #ffffff;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.chat-login-btn:hover {
+  background: #006044;
+}
+
+.chat-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 92%;
+}
+
+.chat-suggestions button {
+  border: 1px solid #cbded4;
+  background: #ffffff;
+  color: #004230;
+  padding: 8px 11px;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.chat-suggestions button:hover {
+  border-color: #004230;
+  background: #f4faf7;
+}
+
 .chat-input-area {
   display: flex;
   gap: 10px;
@@ -438,6 +489,273 @@ body {
 
 .metric-list p:last-child {
   border-bottom: none;
+}
+
+/* Login with MitID page */
+.mitid-login-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: calc(100vh - 86px);
+}
+
+.mitid-login-panel {
+  padding: 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+.mitid-login-panel h1,
+.mitid-login-panel p,
+.mitid-steps,
+.login-back-link {
+  align-self: flex-start;
+}
+
+.mitid-login-panel h1 {
+  font-size: 38px;
+  margin-bottom: 24px;
+}
+
+.login-back-link {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  color: #004230;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 700;
+  border: 1px solid #cbded4;
+  border-radius: 999px;
+  padding: 9px 13px;
+  margin-bottom: 28px;
+}
+
+.login-back-link:hover {
+  background: #e5f2e9;
+}
+
+.mitid-session-header {
+  width: 520px;
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.mitid-status-pill,
+.mitid-session-id {
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.mitid-status-pill {
+  background: #e5f2e9;
+  color: #004230;
+}
+
+.mitid-status-pill.verified {
+  background: #004230;
+  color: #ffffff;
+}
+
+.mitid-session-id {
+  background: #f2f2f2;
+  color: #333333;
+}
+
+.mitid-auth-layout {
+  width: 520px;
+  display: grid;
+  grid-template-columns: 1fr 230px;
+  gap: 24px;
+  align-items: start;
+  margin-bottom: 26px;
+}
+
+.mitid-steps {
+  counter-reset: mitid-step;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.mitid-steps li {
+  counter-increment: mitid-step;
+  position: relative;
+  padding: 0 0 18px 38px;
+  color: #777777;
+}
+
+.mitid-steps li::before {
+  content: counter(mitid-step);
+  position: absolute;
+  left: 0;
+  top: -2px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1px solid #cbded4;
+  background: #ffffff;
+  color: #004230;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.mitid-steps li::after {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: 28px;
+  bottom: 4px;
+  width: 2px;
+  background: #dce9e2;
+}
+
+.mitid-steps li:last-child::after {
+  display: none;
+}
+
+.mitid-steps li.active {
+  color: #004230;
+  font-weight: 700;
+}
+
+.mitid-steps li.done {
+  color: #222222;
+}
+
+.mitid-steps li.done::before {
+  content: "✓";
+  background: #004230;
+  border-color: #004230;
+  color: #ffffff;
+}
+
+.mitid-login-image {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.mitid-login-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.qr-card {
+  width: 230px;
+  border: 2px solid #004230;
+  border-radius: 10px;
+  padding: 18px 16px 16px;
+  margin: 0;
+  text-align: center;
+}
+
+.login-primary-btn,
+.login-secondary-btn {
+  width: 520px;
+}
+
+.fake-qr {
+  width: 160px;
+  height: 160px;
+  margin: 0 auto 14px;
+  position: relative;
+  background:
+          linear-gradient(90deg, transparent 8px, #111 8px 12px, transparent 12px 16px, #111 16px 20px, transparent 20px) 0 0 / 28px 28px,
+          linear-gradient(transparent 5px, #111 5px 9px, transparent 9px 18px, #111 18px 22px, transparent 22px) 4px 7px / 31px 31px,
+          radial-gradient(circle at center, #111 0 2px, transparent 2px) 0 0 / 13px 13px,
+          #ffffff;
+  border: 12px solid #ffffff;
+  box-shadow: 0 0 0 1px #d8d8d8;
+  overflow: hidden;
+}
+
+.fake-qr.refreshed {
+  background-position: 7px 5px, 11px 2px, 3px 6px;
+}
+
+.qr-marker {
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  background: #ffffff;
+  border: 8px solid #111111;
+  box-shadow: inset 0 0 0 7px #ffffff, inset 0 0 0 15px #111111;
+}
+
+.qr-marker.top-left {
+  top: 0;
+  left: 0;
+}
+
+.qr-marker.top-right {
+  top: 0;
+  right: 0;
+}
+
+.qr-marker.bottom-left {
+  bottom: 0;
+  left: 0;
+}
+
+.qr-card p {
+  margin: 0 0 10px;
+  font-size: 14px;
+}
+
+.timer-bar {
+  height: 7px;
+  border-radius: 999px;
+  background: #dce9e2;
+  overflow: hidden;
+}
+
+.timer-bar span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #004230;
+  border-radius: inherit;
+  transition: width 0.25s ease;
+}
+
+.login-primary-btn,
+.login-secondary-btn {
+  padding: 16px 20px;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 14px;
+  display: block;
+}
+
+.login-primary-btn {
+  background: #004230;
+  color: white;
+  border: none;
+}
+
+.login-primary-btn:disabled {
+  background: #9eb8ad;
+  cursor: not-allowed;
+}
+
+.login-secondary-btn {
+  background: white;
+  color: #004230;
+  border: 2px solid #004230;
 }
 
 /* Responsive dashboard */

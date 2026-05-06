@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log ind med MitID</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-body">
+
+<div class="page">
+
+    <header class="topbar">
+        <div class="topbar-left">
+            <a href="index.html" class="logo-link">
+                <img src="Billeder/Pensam_logo.png" alt="PenSam logo" class="logo-img" />
+            </a>
+
+            <nav class="nav">
+                <a href="#">Hovedmenu</a>
+                <a href="#">Sikker upload</a>
+                <a href="#">Om PenSam</a>
+                <a href="#">English</a>
+                <a href="#">Nyhedsbrev</a>
+            </nav>
+        </div>
+
+        <div class="topbar-right">
+            <button class="search-btn" aria-label="Søg">🔍</button>
+            <a href="login.html" class="login-btn">Log på</a>
+        </div>
+    </header>
+
+    <main class="mitid-login-page">
+        <section class="mitid-login-panel">
+            <a href="index.html" class="login-back-link">← Tilbage</a>
+
+            <h1>Log ind med MitID</h1>
+
+            <div id="mitid-start">
+                <p>Fortsæt for at logge ind og få adgang til dine pensionsoplysninger.</p>
+
+                <button id="openMitidBtn" class="login-primary-btn">
+                    Åbn MitID
+                </button>
+            </div>
+
+            <div id="mitid-qr" style="display: none;">
+                <div class="mitid-session-header">
+                    <span id="mitidStatusPill" class="mitid-status-pill">Opretter login-session</span>
+                    <span id="mitidSessionId" class="mitid-session-id">Session: MID-000000</span>
+                </div>
+
+                <div class="mitid-auth-layout">
+                    <ol id="mitidSteps" class="mitid-steps">
+                        <li class="active">Opretter sikker login-session</li>
+                        <li>QR-kode klar</li>
+                        <li>Venter på MitID-app</li>
+                        <li>QR-kode scannet</li>
+                        <li>Identitet bekræftet</li>
+                    </ol>
+
+                    <div class="qr-card">
+                        <div id="fakeQr" class="fake-qr">
+                            <span class="qr-marker top-left"></span>
+                            <span class="qr-marker top-right"></span>
+                            <span class="qr-marker bottom-left"></span>
+                        </div>
+                        <p><span id="qrCountdown">49</span> sekunder tilbage</p>
+                        <div class="timer-bar">
+                            <span id="timerProgress"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="loginButton" class="login-primary-btn" disabled>
+                    Godkend login
+                </button>
+            </div>
+
+            <button id="cancelButton" class="login-secondary-btn">
+                Annuller
+            </button>
+        </section>
+
+        <section class="mitid-login-image">
+            <img src="Billeder/Forside_nyhedspost.png" alt="PenSam billede">
+        </section>
+</main>
+
+</div>
+
+<button id="chat-toggle" class="chat-toggle" aria-label="Åbn chat">
+    <img src="Billeder/rådgiver_ikon.png" alt="AI rådgiver ikon" />
+</button>
+
+<div id="chat-widget" class="chat-widget">
+    <div class="chat-header">
+        <span>Pensionsrådgiver AI-assistent</span>
+        <button id="chat-close" class="chat-close" aria-label="Luk chat">×</button>
+    </div>
+
+    <div id="chat-box" class="chat-box">
+        <div class="message bot chat-welcome">
+            <p>Hej! Du kan stille generelle spørgsmål om pension direkte her i chatten.</p>
+            <p>Du er på vej til at logge ind, så jeg kan også hjælpe med personlige spørgsmål bagefter.</p>
+        </div>
+        <div class="chat-suggestions" aria-label="Forslag til generelle spørgsmål">
+            <button type="button">Hvad er ratepension?</button>
+            <button type="button">Hvornår kan pension udbetales?</button>
+            <button type="button">Hvad betyder livrente?</button>
+        </div>
+    </div>
+
+    <div class="chat-input-area">
+        <input type="text" id="user-input" placeholder="Stil et generelt spørgsmål om pension" />
+        <button type="button" onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+<script src="login.js"></script>
+</body>
+</html>
