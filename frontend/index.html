@@ -27,7 +27,7 @@
 
       <div class="topbar-right">
         <button class="search-btn" aria-label="Søg">🔍</button>
-        <a href="logged-in.html?customer_id=1" class="login-btn">Log på</a>
+        <a href="login.html" class="login-btn">Log på</a>
       </div>
     </header>
 
@@ -80,8 +80,15 @@
     </div>
 
     <div id="chat-box" class="chat-box">
-      <div class="message bot">
-        Hej! Jeg kan hjælpe med generelle spørgsmål om pension, men ikke personlig rådgivning.
+      <div class="message bot chat-welcome">
+        <p>Hej! Du kan stille generelle spørgsmål om pension direkte her i chatten.</p>
+        <p>Hvis du logger ind, kan jeg også svare på spørgsmål om din egen pension.</p>
+        <button id="loginBtn" class="chat-login-btn" type="button">Log ind for personlige svar</button>
+      </div>
+      <div id="chatSuggestions" class="chat-suggestions" aria-label="Forslag til generelle spørgsmål">
+        <button type="button">Hvad er ratepension?</button>
+        <button type="button">Hvornår kan pension udbetales?</button>
+        <button type="button">Hvad betyder livrente?</button>
       </div>
     </div>
 
