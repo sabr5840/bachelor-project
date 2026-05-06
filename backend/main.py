@@ -1,13 +1,12 @@
-import os
-from typing import List
+from typing import List, Optional
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from google import genai
 from pydantic import BaseModel, Field
 
 from rag_pipeline import retrieve_top_chunks, build_context
+from llm_provider import generate_llm_response
 
 load_dotenv()
 
@@ -15,19 +14,11 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # kun til lokal udvikling
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-api_key = os.getenv("GEMINI_API_KEY")
-if not api_key:
-    raise RuntimeError("GEMINI_API_KEY mangler i .env")
-
-client = genai.Client(api_key=api_key)
-
-MODEL_NAME = "gemini-2.5-flash"
 
 
 class ChatMessage(BaseModel):
@@ -37,7 +28,11 @@ class ChatMessage(BaseModel):
 
 class Message(BaseModel):
     message: str
+    customer_id: Optional[int] = None
     history: List[ChatMessage] = Field(default_factory=list)
+
+    # Kun til test af fallback. Frontend behøver ikke sende den.
+    force_llm_fail: bool = False
 
 
 def classify_question(user_text: str) -> str:
@@ -48,7 +43,6 @@ def classify_question(user_text: str) -> str:
         "skal jeg",
         "hvad er bedst",
         "kan jeg få",
-
         "hvad passer bedst",
         "for mig",
         "min situation",
@@ -79,60 +73,24 @@ def classify_question(user_text: str) -> str:
     return "simple"
 
 
-def get_fallback_reply() -> str:
-    return (
-        "Det spørgsmål kræver en vurdering af din konkrete situation. "
-        "Jeg kan ikke give personlig rådgivning, men jeg kan godt forklare de generelle regler."
-    )
-
-def is_pension_related(user_text: str) -> bool:
+def needs_customer_data(user_text: str) -> bool:
     text = user_text.lower()
 
-    pension_keywords = [
-        "pension",
-        "ratepension",
-        "livrente",
-        "aldersopsparing",
-        "folkepension",
-        "atp",
-        "seniorpension",
-        "førtidspension",
-        "tidlig pension",
+    personal_keywords = [
+        "min pension",
+        "mit afkast",
+        "mine forsikringer",
+        "hvor meget har jeg",
+        "hvad har jeg stående",
+        "min opsparing",
+        "min risikoprofil",
+        "mine omkostninger",
         "pal-skat",
-        "pensionsafkastskat",
-        "skat ved pension",
-        "beskatning af pension",
-        "skattemæssige",
-        "indbetaling",
-        "udbetaling",
-        "begunstiget",
-        "begunstigelse",
-        "kritisk sygdom",
-        "forsikring",
-        "arbejdsevne",
-        "opsparing",
-        "modregning",
-        "skifte job",
-        "nyt job",
-        "sygdom",
-        "syg",
-        "blevet syg",
-        "jeg er blevet syg",
-        "hvad gør jeg",
-        "hvad skal jeg gøre",
-        "dødsfald",
+        "skattekode",
     ]
-    return any(keyword in text for keyword in pension_keywords)
 
-def clean_reply(reply: str) -> str:
-    return (
-        reply
-        .replace("*   ", "")
-        .replace("* ", "")
-        .replace("**", "")
-        .replace("#", "")
-        .strip()
-    )
+    return any(keyword in text for keyword in personal_keywords)
+
 
 SYSTEM_PROMPT = """
 Du er en AI-assistent i et bachelorprojekt om pensionsrådgivning.
@@ -146,23 +104,20 @@ Svar kort, tydeligt og på dansk.
 
 Du håndterer kun first-level spørgsmål, dvs. generelle og standardiserede spørgsmål om pension.
 Du må ikke give personlig økonomisk, juridisk eller skattemæssig rådgivning.
-Hvis et spørgsmål kræver personlig vurdering, skal du tage forbehold og anbefale kontakt til en rådgiver.
 
-Ved generelle definitionsspørgsmål, fx "hvad er ratepension?", skal du svare neutralt og ikke skrive "hos PenSam" eller "hos os".
+Hvis et spørgsmål kræver personlig vurdering:
+- giv et kort generelt svar
+- skriv tydeligt at det afhænger af brugerens situation
+- anbefal kontakt til rådgiver
 
-Hvis spørgsmålet handler om en konkret handling, service eller vejledning hos PenSam, fx at samle pension, ændre begunstigelse, finde overblik eller kontakte rådgiver, må du formulere svaret i en PenSam-kontekst.
-I den situation må du skrive som PenSam, fx "hos PenSam", "hos os", "vi kan hjælpe" og "kontakt os", men kun hvis det er i overensstemmelse med den givne kontekst.
+Ved definitionsspørgsmål:
+- svar neutralt
+- undgå "hos os" eller "PenSam"
 
-Hvis et spørgsmål kan forstås bredt, skal du starte med en generel forklaring og derefter præcisere relevante særlige tilfælde fra konteksten.
+Ved handlinger, fx sygdom, samle pension eller kontakt:
+- du må skrive "hos PenSam" og "kontakt os"
 
-Ved hvorfor-spørgsmål skal du starte med en direkte årsagsforklaring i første sætning, før du uddyber med regler eller eksempler.
-
-Hvis spørgsmålet er generelt, fx "kan jeg få pension udbetalt som engangsbeløb", skal du tydeligt afgrænse svaret og forklare, at det afhænger af typen af pension.
-Undgå at starte med "Ja", hvis svaret ikke gælder alle tilfælde.
-Brug ikke markdown-formattering. Skriv i almindelig tekst.
-Hvis konteksten indeholder centrale tal som satser, perioder eller grænser, må du gerne nævne dem kort i svaret.
-
-Du må aldrig bruge markdown. Brug ikke stjerner, punktopstillinger, fed skrift eller nummererede lister, medmindre brugeren specifikt beder om en liste.
+Skriv i almindelig tekst. Ingen markdown.
 """
 
 
@@ -178,12 +133,6 @@ def chat(msg: Message):
     if not user_text:
         raise HTTPException(status_code=400, detail="Beskeden er tom.")
 
-    if not is_pension_related(user_text):
-        return {
-            "reply": "Det spørgsmål ligger uden for mit område. Jeg kan kun hjælpe med generelle spørgsmål om pension.",
-            "sources": []
-    }
-
     try:
         print("User text:", user_text)
 
@@ -194,6 +143,22 @@ def chat(msg: Message):
         question_type = classify_question(user_text)
         print("Question type:", question_type)
 
+        if needs_customer_data(user_text):
+            if msg.customer_id is None:
+                return {
+                    "reply": "Du skal være logget ind for at få svar på spørgsmål om din egen pension.",
+                    "sources": [],
+                    "provider": None,
+                    "fallback_used": False,
+                }
+
+            return {
+                "reply": "Denne funktion er ikke implementeret endnu, men her vil dine personlige data blive brugt.",
+                "sources": [],
+                "provider": None,
+                "fallback_used": False,
+            }
+
         retrieval_query = f"""
 Tidligere samtale:
 {conversation_history}
@@ -202,56 +167,47 @@ Nyeste spørgsmål:
 {user_text}
 """
 
-        # Use fewer chunks for simple questions and more chunks for broader questions.
-        if question_type == "simple":
-            top_k = 3
-        elif question_type == "semi":
-            top_k = 3
-        else:
+        if question_type == "complex":
             top_k = 5
+        else:
+            top_k = 3
 
         top_chunks = retrieve_top_chunks(retrieval_query, top_k=top_k)
 
         if not top_chunks:
             return {
                 "reply": "Det fremgår ikke af mit datagrundlag.",
-                "sources": []
+                "sources": [],
+                "provider": None,
+                "fallback_used": False,
             }
 
         context = build_context(top_chunks)
 
-        print("----- RETRIEVED CONTEXT -----")
+        print("----- CONTEXT -----")
         print(context)
-        print("-----------------------------")
+        print("-------------------")
 
         if question_type == "complex":
             extra_instruction = """
-Spørgsmålet kræver en personlig vurdering.
-Du skal:
-- først give et kort generelt svar baseret på konteksten
-- derefter tydeligt skrive, at det afhænger af brugerens situation
-- anbefale kontakt til en rådgiver
-- undgå at give konkret personlig rådgivning
+Spørgsmålet kræver personlig vurdering.
+Giv:
+- kort generelt svar
+- sig at det afhænger af situation
+- anbefal rådgiver
 """
         elif question_type == "semi":
             extra_instruction = """
-Spørgsmålet handler om en handling eller situation.
-Du skal:
-- give et kort svar på hvad situationen betyder
-- hvis konteksten indeholder trin-for-trin handlinger, gengiv dem kort og konkret
-- inkludere ét kort forbehold
-- anbefale kontakt til en rådgiver, hvis spørgsmålet kræver personlig vurdering
-- undgå lange forklaringer
-- skriv i almindelig tekst uden markdown
+Spørgsmålet handler om en situation.
+Giv:
+- kort forklaring
+- evt. trin hvis i kontekst
+- ét forbehold
 """
         else:
             extra_instruction = """
-Spørgsmålet er et first-level spørgsmål.
-Du skal give et kort, klart og direkte svar.
-Brug ikke markdown, punktlister, stjerner eller overskrifter.
-Skriv i almindelig tekst.
-Hvis konteksten indeholder centrale tal som satser, perioder eller grænser, må du gerne nævne dem kort i svaret.
-- hvis konteksten indeholder trin-for-trin handlinger, skal du gengive dem kort og konkret
+Spørgsmålet er simpelt.
+Giv kort og direkte svar.
 """
 
         prompt = f"""
@@ -263,20 +219,17 @@ Ekstra instruktion:
 Kontekst:
 {context}
 
-
 Tidligere samtale:
 {conversation_history}
 
-Brugerens nyeste spørgsmål:
+Spørgsmål:
 {user_text}
 """
 
-        response = client.models.generate_content(
-            model=MODEL_NAME,
-            contents=prompt,
+        llm_result = generate_llm_response(
+            prompt,
+            force_fail=msg.force_llm_fail,
         )
-
-        reply = clean_reply(response.text) if response.text else "Jeg kunne ikke generere et svar."
 
         sources = [
             {
@@ -288,10 +241,12 @@ Brugerens nyeste spørgsmål:
         ]
 
         return {
-            "reply": reply,
+            "reply": llm_result["reply"],
             "sources": sources,
+            "provider": llm_result["provider"],
+            "fallback_used": llm_result["fallback_used"],
         }
 
     except Exception as e:
-        print("Fejl i RAG-flow:", repr(e))
-        raise HTTPException(status_code=500, detail=f"Fejl i RAG-flow: {str(e)}")
+        print("Fejl:", repr(e))
+        raise HTTPException(status_code=500, detail=str(e))
