@@ -3,7 +3,7 @@ const chatWidget = document.getElementById("chat-widget");
 const chatClose = document.getElementById("chat-close");
 const userInput = document.getElementById("user-input");
 const chatBox = document.getElementById("chat-box");
-const suggestionButtons = document.querySelectorAll(".chat-suggestions button");
+let chatSuggestions = document.getElementById("chatSuggestions") || document.querySelector(".chat-suggestions");
 let chatHistory = [];
 const customerId = localStorage.getItem("customer_id");
 const customerName = localStorage.getItem("customer_name");
@@ -47,6 +47,60 @@ function restoreChatMessages() {
   }));
 
   return true;
+}
+
+function getChatSuggestionsContainer() {
+  if (!chatBox) {
+    return null;
+  }
+
+  if (!chatSuggestions || !chatSuggestions.isConnected) {
+    chatSuggestions = document.createElement("div");
+    chatSuggestions.id = "chatSuggestions";
+    chatSuggestions.classList.add("chat-suggestions");
+    chatSuggestions.setAttribute("aria-label", "Forslag til spørgsmål");
+    chatBox.appendChild(chatSuggestions);
+  }
+
+  return chatSuggestions;
+}
+
+function setChatSuggestions(isLoggedIn) {
+  const suggestionsContainer = getChatSuggestionsContainer();
+
+  if (!suggestionsContainer) {
+    return;
+  }
+
+  const suggestions = isLoggedIn
+    ? [
+        "Hvor meget har jeg sparet op til pension?",
+        "Hvad får jeg udbetalt om måneden som pensionist?",
+        "Hvilke pensionsordninger har jeg?",
+        "Hvad er ratepension?",
+        "Hvad betyder livrente?"
+      ]
+    : [
+        "Hvad er ratepension?",
+        "Hvornår kan pension udbetales?",
+        "Hvad betyder livrente?"
+      ];
+
+  suggestionsContainer.innerHTML = "";
+
+  suggestions.forEach((suggestion) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = suggestion;
+    button.addEventListener("click", () => {
+      if (!userInput) return;
+
+      userInput.value = suggestion;
+      sendMessage();
+    });
+
+    suggestionsContainer.appendChild(button);
+  });
 }
 
 if (customerId && customerName && topbarRight) {
@@ -96,12 +150,26 @@ if (
 }
 
 if (customerId && customerName && shouldShowLoginCompletedMessage && chatBox && !isLoginPage) {
+  chatBox.innerHTML = "";
   appendMessage(
     `Du er nu logget ind, ${customerName}! Jeg kan stadig svare på generelle spørgsmål, og du kan også spørge om dine egne pensionsoplysninger.`,
     "bot"
   );
   sessionStorage.removeItem("chat_login_completed");
 }
+
+if (customerId && customerName && chatBox) {
+  const welcomeMessage = chatBox.querySelector(".chat-welcome");
+  if (welcomeMessage) {
+    welcomeMessage.remove();
+  }
+
+  if (userInput) {
+    userInput.placeholder = "Spørg om din pension";
+  }
+}
+
+setChatSuggestions(Boolean(customerId && customerName));
 
 if (chatToggle && chatWidget) {
   chatToggle.addEventListener("click", () => {
@@ -136,15 +204,6 @@ if (loginBtn) {
     window.location.href = `login.html?returnTo=${encodeURIComponent(returnUrl)}`;
   });
 }
-
-suggestionButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    if (!userInput) return;
-
-    userInput.value = button.textContent;
-    sendMessage();
-  });
-});
 
 async function sendMessage() {
   const input = document.getElementById("user-input");

@@ -15,6 +15,7 @@ const input = document.getElementById("user-input");
 const chatBox = document.getElementById("chat-box");
 const logoutBtn = document.querySelector(".login-btn");
 const shouldKeepChatOpen = sessionStorage.getItem("chat_widget_open") === "true";
+const suggestionButtons = document.querySelectorAll(".chat-suggestions button");
 
 if (logoutBtn) {
   logoutBtn.addEventListener("click", () => {
@@ -46,6 +47,13 @@ input.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     sendMessage();
   }
+});
+
+suggestionButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    input.value = button.textContent;
+    sendMessage();
+  });
 });
 
 async function sendMessage() {
