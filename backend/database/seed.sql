@@ -35,7 +35,7 @@ VALUES
 -- ============================================================
 -- PENSION ACCOUNTS
 -- Typisk pensionsbidrag: ca. 12% af løn
--- 8% arbejdsgiver / 4% medarbejder
+-- 8% virksomhed / 4% kunde
 -- ============================================================
 
 INSERT INTO pension_accounts (
@@ -45,8 +45,8 @@ INSERT INTO pension_accounts (
     policy_number,
     current_balance,
     monthly_contribution,
-    employer_contribution,
-    employee_contribution,
+    monthly_company_contribution,
+    monthly_customer_contribution,
     start_date,
     active
 )
@@ -55,10 +55,10 @@ VALUES
 (1, 'PenSam', 'Livrente', 'POL-10002', 210000, 1600, 1000, 600, '2018-04-01', 1),
 
 (2, 'PenSam', 'Ratepension', 'POL-10003', 290000, 3500, 2333, 1167, '2017-01-01', 1),
-(2, 'PenSam', 'Aldersopsparing', 'POL-10004', 65000, 700, 0, 700, '2021-01-01', 1),
+(2, 'PFA Pension', 'Aldersopsparing', 'POL-10004', 65000, 700, 0, 700, '2021-01-01', 1),
 
 (3, 'PenSam', 'Livrente', 'POL-10005', 880000, 6200, 4133, 2067, '2010-01-01', 1),
-(3, 'PenSam', 'Ratepension', 'POL-10006', 430000, 0, 0, 0, '2012-03-01', 1),
+(3, 'Danica Pension', 'Ratepension', 'POL-10006', 430000, 0, 0, 0, '2012-03-01', 1),
 
 (4, 'PenSam', 'Aldersopsparing', 'POL-10007', 45000, 1800, 1200, 600, '2022-01-01', 1),
 
@@ -66,24 +66,24 @@ VALUES
 (5, 'PenSam', 'Livrente', 'POL-10009', 260000, 900, 600, 300, '2016-06-01', 1),
 
 (6, 'PenSam', 'Livrente', 'POL-10010', 1400000, 7000, 4667, 2333, '2001-01-01', 1),
-(6, 'PenSam', 'Ratepension', 'POL-10011', 620000, 0, 0, 0, '2006-01-01', 1),
+(6, 'Velliv', 'Ratepension', 'POL-10011', 620000, 0, 0, 0, '2006-01-01', 1),
 
 (7, 'PenSam', 'Ratepension', 'POL-10012', 310000, 3800, 2533, 1267, '2019-01-01', 1),
 
 (8, 'PenSam', 'Livrente', 'POL-10013', 1800000, 7800, 5200, 2600, '1998-01-01', 1),
-(8, 'PenSam', 'Ratepension', 'POL-10014', 850000, 0, 0, 0, '2003-01-01', 1),
+(8, 'PensionDanmark', 'Ratepension', 'POL-10014', 850000, 0, 0, 0, '2003-01-01', 1),
 
 (9, 'PenSam', 'Ratepension', 'POL-10015', 140000, 3200, 2133, 1067, '2020-01-01', 1),
 (9, 'PenSam', 'Aldersopsparing', 'POL-10016', 35000, 500, 0, 500, '2022-01-01', 1),
 
 (10, 'PenSam', 'Livrente', 'POL-10017', 970000, 6500, 4333, 2167, '2008-01-01', 1),
-(10, 'PenSam', 'Ratepension', 'POL-10018', 510000, 0, 0, 0, '2011-01-01', 1),
+(10, 'Nordea Pension', 'Ratepension', 'POL-10018', 510000, 0, 0, 0, '2011-01-01', 1),
 
 (11, 'PenSam', 'Ratepension', 'POL-10019', 560000, 4250, 2833, 1417, '2015-01-01', 1),
 (11, 'PenSam', 'Livrente', 'POL-10020', 240000, 850, 567, 283, '2017-01-01', 1),
 
 (12, 'PenSam', 'Livrente', 'POL-10021', 2100000, 8200, 5467, 2733, '1996-01-01', 1),
-(12, 'PenSam', 'Ratepension', 'POL-10022', 900000, 0, 0, 0, '2001-01-01', 1),
+(12, 'AP Pension', 'Ratepension', 'POL-10022', 900000, 0, 0, 0, '2001-01-01', 1),
 
 (13, 'PenSam', 'Aldersopsparing', 'POL-10023', 28000, 1700, 1133, 567, '2023-01-01', 1),
 
@@ -91,7 +91,7 @@ VALUES
 (14, 'PenSam', 'Livrente', 'POL-10025', 300000, 1000, 667, 333, '2015-01-01', 1),
 
 (15, 'PenSam', 'Ratepension', 'POL-10026', 360000, 3900, 2600, 1300, '2018-01-01', 1),
-(15, 'PenSam', 'Aldersopsparing', 'POL-10027', 75000, 700, 0, 700, '2021-01-01', 1);
+(15, 'PFA Pension', 'Aldersopsparing', 'POL-10027', 75000, 700, 0, 700, '2021-01-01', 1);
 
 
 -- ============================================================
@@ -416,8 +416,8 @@ VALUES
 INSERT INTO contribution_history (
     pension_account_id,
     contribution_date,
-    employer_amount,
-    employee_amount,
+    company_amount,
+    customer_amount,
     total_amount
 )
 VALUES
@@ -480,4 +480,3 @@ VALUES
 (13, 'Nærmeste pårørende', 'Standard', 100, 1),
 (14, 'Sara Lund', 'Ægtefælle', 100, 1),
 (15, 'Nærmeste pårørende', 'Standard', 100, 1);
-

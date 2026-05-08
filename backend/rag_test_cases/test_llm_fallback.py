@@ -131,10 +131,41 @@ def test_customer_question_with_customer_id() -> None:
     print(data)
 
     assert status == 200
-    assert "reply" in data
-    assert "ikke implementeret" in data["reply"].lower() or "personlige data" in data["reply"].lower()
+    assert_ok_response(data)
+    assert "ikke implementeret" not in data["reply"].lower()
 
     print("TEST 6 bestået")
+
+
+def test_complex_question_without_login() -> None:
+    print("\nTEST 6B: Kompleks/personlig vurdering uden login")
+
+    status, data = call_chat("Kan jeg gå tidligere på pension?")
+
+    print(data)
+
+    assert status == 200
+    assert "reply" in data
+    assert "logget ind" in data["reply"].lower()
+    assert data["provider"] is None
+
+    print("TEST 6B bestået")
+
+
+def test_personal_investment_question_with_customer_id() -> None:
+    print("\nTEST 6C: Personligt investeringsspørgsmål med customer_id")
+
+    status, data = call_chat(
+        question="Hvordan er min pension investeret?",
+        customer_id=1,
+    )
+
+    print(data)
+
+    assert status == 200
+    assert_ok_response(data)
+
+    print("TEST 6C bestået")
 
 
 def test_with_history() -> None:
@@ -218,6 +249,8 @@ def main() -> None:
     test_out_of_scope_question()
     test_customer_question_without_login()
     test_customer_question_with_customer_id()
+    test_complex_question_without_login()
+    test_personal_investment_question_with_customer_id()
     test_with_history()
     test_long_question()
     test_multiple_requests()

@@ -5,6 +5,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
+from customer_repository import get_customer_context
 from rag_pipeline import retrieve_top_chunks, build_context
 from llm_provider import generate_llm_response
 
@@ -42,8 +43,9 @@ def classify_question(user_text: str) -> str:
         "bør jeg",
         "skal jeg",
         "hvad er bedst",
-        "kan jeg få",
         "hvad passer bedst",
+        "gå tidligere på pension",
+        "tidligere på pension",
         "for mig",
         "min situation",
         "min opsparing er",
@@ -67,6 +69,8 @@ def classify_question(user_text: str) -> str:
         "jeg har fået",
         "jeg mister",
         "jeg er syg",
+        "skifter job",
+        "nyt job",
     ]):
         return "semi"
 
@@ -77,16 +81,21 @@ def needs_customer_data(user_text: str) -> bool:
     text = user_text.lower()
 
     personal_keywords = [
-        "min pension",
         "mit afkast",
         "mine forsikringer",
         "hvor meget har jeg",
         "hvad har jeg stående",
+        "min pensionsopsparing",
         "min opsparing",
         "min risikoprofil",
+        "min pension investeret",
+        "min pension er investeret",
+        "hvordan er min pension investeret",
+        "mine pensionsordninger",
         "mine omkostninger",
-        "pal-skat",
-        "skattekode",
+        "min pal-skat",
+        "min skattekode",
+        "hvad er min skattekode",
     ]
 
     return any(keyword in text for keyword in personal_keywords)
@@ -104,6 +113,9 @@ Svar kort, tydeligt og på dansk.
 
 Du håndterer kun first-level spørgsmål, dvs. generelle og standardiserede spørgsmål om pension.
 Du må ikke give personlig økonomisk, juridisk eller skattemæssig rådgivning.
+
+Hvis der er kundedata i prompten, må du bruge dem til at forklare kundens overblik og konkrete tal.
+Du må ikke opfinde kundedata, der ikke står i KUNDEDATA.
 
 Hvis et spørgsmål kræver personlig vurdering:
 - giv et kort generelt svar
@@ -143,21 +155,19 @@ def chat(msg: Message):
         question_type = classify_question(user_text)
         print("Question type:", question_type)
 
-        if needs_customer_data(user_text):
-            if msg.customer_id is None:
-                return {
-                    "reply": "Du skal være logget ind for at få svar på spørgsmål om din egen pension.",
-                    "sources": [],
-                    "provider": None,
-                    "fallback_used": False,
-                }
+        requires_customer_context = question_type == "complex" or needs_customer_data(user_text)
 
+        if requires_customer_context and msg.customer_id is None:
             return {
-                "reply": "Denne funktion er ikke implementeret endnu, men her vil dine personlige data blive brugt.",
+                "reply": "Du skal være logget ind for at få svar på personlige spørgsmål om din pension.",
                 "sources": [],
                 "provider": None,
                 "fallback_used": False,
             }
+
+        customer_context = ""
+        if requires_customer_context and msg.customer_id is not None:
+            customer_context = get_customer_context(msg.customer_id)
 
         retrieval_query = f"""
 Tidligere samtale:
@@ -167,22 +177,34 @@ Nyeste spørgsmål:
 {user_text}
 """
 
-        if question_type == "complex":
-            top_k = 5
-        else:
+        if question_type == "simple":
             top_k = 3
+        else:
+            top_k = 5
 
         top_chunks = retrieve_top_chunks(retrieval_query, top_k=top_k)
 
         if not top_chunks:
-            return {
-                "reply": "Det fremgår ikke af mit datagrundlag.",
-                "sources": [],
-                "provider": None,
-                "fallback_used": False,
-            }
-
-        context = build_context(top_chunks)
+            if requires_customer_context and customer_context:
+                context = "Ingen relevant generel pensionsviden fundet i RAG-konteksten."
+                sources = []
+            else:
+                return {
+                    "reply": "Det fremgår ikke af mit datagrundlag.",
+                    "sources": [],
+                    "provider": None,
+                    "fallback_used": False,
+                }
+        else:
+            context = build_context(top_chunks)
+            sources = [
+                {
+                    "document_title": chunk["document_title"],
+                    "filename": chunk["filename"],
+                    "chunk_id": chunk["chunk_id"],
+                }
+                for chunk in top_chunks
+            ]
 
         print("----- CONTEXT -----")
         print(context)
@@ -190,11 +212,11 @@ Nyeste spørgsmål:
 
         if question_type == "complex":
             extra_instruction = """
-Spørgsmålet kræver personlig vurdering.
-Giv:
-- kort generelt svar
-- sig at det afhænger af situation
-- anbefal rådgiver
+Spørgsmålet kræver en personlig eller kompleks vurdering.
+Brug kundedata forsigtigt, hvis de er tilgængelige.
+Giv kun et vejledende svar.
+Giv ikke endelig økonomisk, juridisk eller skattemæssig rådgivning.
+Anbefal kontakt til en rådgiver ved vigtige valg eller tvivl.
 """
         elif question_type == "semi":
             extra_instruction = """
@@ -216,13 +238,16 @@ Giv kort og direkte svar.
 Ekstra instruktion:
 {extra_instruction}
 
-Kontekst:
+GENEREL PENSIONSVIDEN:
 {context}
 
-Tidligere samtale:
+KUNDEDATA:
+{customer_context if customer_context else "Ingen kundedata tilgængelige."}
+
+SAMTALEHISTORIK:
 {conversation_history}
 
-Spørgsmål:
+BRUGERENS SPØRGSMÅL:
 {user_text}
 """
 
@@ -230,15 +255,6 @@ Spørgsmål:
             prompt,
             force_fail=msg.force_llm_fail,
         )
-
-        sources = [
-            {
-                "document_title": chunk["document_title"],
-                "filename": chunk["filename"],
-                "chunk_id": chunk["chunk_id"],
-            }
-            for chunk in top_chunks
-        ]
 
         return {
             "reply": llm_result["reply"],
