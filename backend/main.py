@@ -1,3 +1,5 @@
+import secrets
+from datetime import datetime, timedelta, timezone
 from typing import List, Optional
 
 from dotenv import load_dotenv
@@ -5,7 +7,12 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from customer_repository import get_customer_context
+from customer_repository import (
+    get_customer_by_mitid_user_id,
+    get_customer_context,
+    get_customer_dashboard,
+    validate_mitid_user_id,
+)
 from rag_pipeline import retrieve_top_chunks, build_context
 from llm_provider import generate_llm_response
 
@@ -29,11 +36,70 @@ class ChatMessage(BaseModel):
 
 class Message(BaseModel):
     message: str
-    customer_id: Optional[int] = None
+    session_id: Optional[str] = None
     history: List[ChatMessage] = Field(default_factory=list)
 
     # Kun til test af fallback. Frontend behøver ikke sende den.
     force_llm_fail: bool = False
+
+
+class MitidLoginRequest(BaseModel):
+    user_id: str
+
+
+class LogoutRequest(BaseModel):
+    session_id: str
+
+
+SESSION_TTL_SECONDS = 75 * 60
+SESSION_STORE: dict[str, dict[str, object]] = {}
+
+
+def get_session_expiry() -> datetime:
+    return datetime.now(timezone.utc) + timedelta(seconds=SESSION_TTL_SECONDS)
+
+
+def create_demo_session(customer_id: int) -> str:
+    session_id = secrets.token_urlsafe(32)
+    SESSION_STORE[session_id] = {
+        "customer_id": customer_id,
+        "expires_at": get_session_expiry(),
+    }
+    return session_id
+
+
+def get_session_payload(session_id: str | None) -> dict[str, object] | None:
+    if not session_id:
+        return None
+
+    session = SESSION_STORE.get(session_id)
+    if not session:
+        return None
+
+    expires_at = session["expires_at"]
+    if not isinstance(expires_at, datetime) or expires_at <= datetime.now(timezone.utc):
+        SESSION_STORE.pop(session_id, None)
+        return None
+
+    return session
+
+
+def get_customer_id_from_session(session_id: str | None) -> int | None:
+    session = get_session_payload(session_id)
+    if not session:
+        return None
+
+    return int(session["customer_id"])
+
+
+def refresh_session(session_id: str | None) -> datetime | None:
+    session = get_session_payload(session_id)
+    if not session:
+        return None
+
+    expires_at = get_session_expiry()
+    session["expires_at"] = expires_at
+    return expires_at
 
 
 def classify_question(user_text: str) -> str:
@@ -85,13 +151,28 @@ def needs_customer_data(user_text: str) -> bool:
         "mine forsikringer",
         "hvor meget har jeg",
         "hvad har jeg stående",
+        "hvad er min månedlige indbetaling",
+        "min månedlige indbetaling",
+        "mine månedlige indbetalinger",
+        "hvad indbetaler jeg",
+        "hvor meget indbetaler jeg",
+        "hvor meget betaler jeg",
+        "min indbetaling",
+        "mine indbetalinger",
         "min pensionsopsparing",
         "min opsparing",
         "min risikoprofil",
         "min pension investeret",
         "min pension er investeret",
         "hvordan er min pension investeret",
+        "hvilke pensioner har jeg",
+        "hvilke pensionsordninger har jeg",
         "mine pensionsordninger",
+        "mine pensioner",
+        "hvad får jeg udbetalt",
+        "hvor meget får jeg udbetalt",
+        "min udbetaling",
+        "min forventede udbetaling",
         "mine omkostninger",
         "min pal-skat",
         "min skattekode",
@@ -138,6 +219,86 @@ def root():
     return {"status": "Backend kører"}
 
 
+@app.post("/mitid/resolve-user")
+def resolve_mitid_user(request: MitidLoginRequest):
+    try:
+        customer = get_customer_by_mitid_user_id(request.user_id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        print("Fejl ved MitID-opslag:", repr(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
+    if customer is None:
+        raise HTTPException(status_code=404, detail="Bruger-ID blev ikke fundet i demo-databasen.")
+
+    return {"customer": customer}
+
+
+@app.post("/mitid/complete-login")
+def complete_mitid_login(request: MitidLoginRequest):
+    try:
+        customer = get_customer_by_mitid_user_id(request.user_id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        print("Fejl ved MitID-login:", repr(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
+    if customer is None:
+        raise HTTPException(status_code=404, detail="Bruger-ID blev ikke fundet i demo-databasen.")
+
+    session_id = create_demo_session(customer["customer_id"])
+    expires_at = get_session_payload(session_id)["expires_at"]
+    return {
+        "session_id": session_id,
+        "expires_at": expires_at.isoformat(),
+        "ttl_seconds": SESSION_TTL_SECONDS,
+        "customer": customer,
+    }
+
+
+@app.post("/logout")
+def logout(request: LogoutRequest):
+    SESSION_STORE.pop(request.session_id, None)
+    return {"logged_out": True}
+
+
+@app.post("/session/refresh")
+def refresh_login_session(request: LogoutRequest):
+    expires_at = refresh_session(request.session_id)
+    if expires_at is None:
+        raise HTTPException(status_code=401, detail="Sessionen er ikke gyldig. Log ind igen.")
+
+    return {
+        "expires_at": expires_at.isoformat(),
+        "ttl_seconds": SESSION_TTL_SECONDS,
+    }
+
+
+@app.post("/mitid/validate-user-id")
+def validate_mitid_user(request: MitidLoginRequest):
+    try:
+        validate_mitid_user_id(request.user_id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    return {"valid": True}
+
+
+@app.get("/session/dashboard")
+def session_dashboard(session_id: str):
+    customer_id = get_customer_id_from_session(session_id)
+    if customer_id is None:
+        raise HTTPException(status_code=401, detail="Sessionen er ikke gyldig. Log ind igen.")
+
+    try:
+        return get_customer_dashboard(customer_id)
+    except Exception as e:
+        print("Fejl ved hentning af session-dashboard:", repr(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/chat")
 def chat(msg: Message):
     user_text = msg.message.strip()
@@ -156,8 +317,9 @@ def chat(msg: Message):
         print("Question type:", question_type)
 
         requires_customer_context = question_type == "complex" or needs_customer_data(user_text)
+        customer_id = get_customer_id_from_session(msg.session_id)
 
-        if requires_customer_context and msg.customer_id is None:
+        if requires_customer_context and customer_id is None:
             return {
                 "reply": "Du skal være logget ind for at få svar på personlige spørgsmål om din pension.",
                 "sources": [],
@@ -166,8 +328,8 @@ def chat(msg: Message):
             }
 
         customer_context = ""
-        if requires_customer_context and msg.customer_id is not None:
-            customer_context = get_customer_context(msg.customer_id)
+        if requires_customer_context and customer_id is not None:
+            customer_context = get_customer_context(customer_id)
 
         retrieval_query = f"""
 Tidligere samtale:

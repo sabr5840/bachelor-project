@@ -23,6 +23,7 @@ CREATE TABLE customers (
     customer_id INT IDENTITY(1,1) PRIMARY KEY,
     full_name VARCHAR(100) NOT NULL,
     cpr_number VARCHAR(20) NOT NULL UNIQUE,
+    mitid_user_id VARCHAR(48) NOT NULL UNIQUE,
     birth_date DATE NOT NULL,
     address VARCHAR(255),
     email VARCHAR(100),

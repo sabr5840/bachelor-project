@@ -5,9 +5,9 @@ const userInput = document.getElementById("user-input");
 const chatBox = document.getElementById("chat-box");
 let chatSuggestions = document.getElementById("chatSuggestions") || document.querySelector(".chat-suggestions");
 let chatHistory = [];
-const customerId = localStorage.getItem("customer_id");
-const customerName = localStorage.getItem("customer_name");
-const customerFullName = localStorage.getItem("customer_full_name") || customerName;
+const sessionId = window.PenSamSession ? window.PenSamSession.getSessionId() : sessionStorage.getItem("session_id");
+const customerName = sessionStorage.getItem("customer_name");
+const customerFullName = sessionStorage.getItem("customer_full_name") || customerName;
 const shouldOpenChat = sessionStorage.getItem("open_chat_after_login") === "true";
 const shouldKeepChatOpen = sessionStorage.getItem("chat_widget_open") === "true";
 const shouldShowLoginCompletedMessage = sessionStorage.getItem("chat_login_completed") === "true";
@@ -103,7 +103,7 @@ function setChatSuggestions(isLoggedIn) {
   });
 }
 
-if (customerId && customerName && topbarRight) {
+if (sessionId && customerName && topbarRight) {
   const loginLink = topbarRight.querySelector(".login-btn");
   const loggedUser = document.createElement("span");
 
@@ -114,14 +114,9 @@ if (customerId && customerName && topbarRight) {
     loginLink.textContent = "Log ud";
     loginLink.href = "index.html";
     loginLink.addEventListener("click", () => {
-      localStorage.removeItem("customer_id");
-      localStorage.removeItem("customer_name");
-      localStorage.removeItem("customer_full_name");
-      sessionStorage.removeItem("open_chat_after_login");
-      sessionStorage.removeItem("chat_return_url");
-      sessionStorage.removeItem("chat_widget_open");
-      sessionStorage.removeItem("chat_messages");
-      sessionStorage.removeItem("chat_login_completed");
+      if (window.PenSamSession) {
+        window.PenSamSession.logout(true);
+      }
     });
 
     topbarRight.insertBefore(loggedUser, loginLink);
@@ -131,7 +126,7 @@ if (customerId && customerName && topbarRight) {
 const restoredChat = restoreChatMessages();
 
 if (
-  customerId &&
+  sessionId &&
   customerName &&
   chatBox &&
   !restoredChat &&
@@ -149,7 +144,7 @@ if (
   }
 }
 
-if (customerId && customerName && shouldShowLoginCompletedMessage && chatBox && !isLoginPage) {
+if (sessionId && customerName && shouldShowLoginCompletedMessage && chatBox && !isLoginPage) {
   chatBox.innerHTML = "";
   appendMessage(
     `Du er nu logget ind, ${customerName}! Jeg kan stadig svare på generelle spørgsmål, og du kan også spørge om dine egne pensionsoplysninger.`,
@@ -158,7 +153,7 @@ if (customerId && customerName && shouldShowLoginCompletedMessage && chatBox && 
   sessionStorage.removeItem("chat_login_completed");
 }
 
-if (customerId && customerName && chatBox) {
+if (sessionId && customerName && chatBox) {
   const welcomeMessage = chatBox.querySelector(".chat-welcome");
   if (welcomeMessage) {
     welcomeMessage.remove();
@@ -169,7 +164,7 @@ if (customerId && customerName && chatBox) {
   }
 }
 
-setChatSuggestions(Boolean(customerId && customerName));
+setChatSuggestions(Boolean(sessionId && customerName));
 
 if (chatToggle && chatWidget) {
   chatToggle.addEventListener("click", () => {
@@ -229,7 +224,7 @@ async function sendMessage() {
       },
       body: JSON.stringify({
         message: message,
-        customer_id: customerId,
+        session_id: sessionId,
         history: chatHistory.slice(-6)
       })
     });
