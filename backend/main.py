@@ -145,12 +145,18 @@ def classify_question(user_text: str) -> str:
 
     if any(x in text for x in [
         "bør jeg",
-        "skal jeg",
+        "skal jeg vælge",
+        "skal jeg flytte",
+        "skal jeg starte",
         "hvad er bedst",
         "hvad passer bedst",
         "gå tidligere på pension",
         "tidligere på pension",
         "for mig",
+        "hvilke forsikringer har jeg",
+        "hvad er jeg dækket af",
+        "hvilke dækninger har jeg",
+        "mine dækninger",
         "min situation",
         "min opsparing er",
         "mit afkast",
@@ -200,6 +206,11 @@ def needs_customer_data(user_text: str) -> bool:
         "min pensionsopsparing",
         "min opsparing",
         "min risikoprofil",
+        "hvilke forsikringer har jeg",
+        "mine forsikringer",
+        "hvad er jeg dækket af",
+        "hvilke dækninger har jeg",
+        "mine dækninger",
         "min pension investeret",
         "min pension er investeret",
         "hvordan er min pension investeret",
@@ -221,24 +232,110 @@ def needs_customer_data(user_text: str) -> bool:
 
 
 def is_closing_message(user_text: str) -> bool:
-    text = " ".join(user_text.lower().strip().split())
-    text = text.strip(".,!?:;")
+    """
+    Detects short polite closing/thank-you messages
+    that should not trigger retrieval or LLM generation.
+    """
+
+    normalized = user_text.lower().strip()
 
     closing_messages = {
         "tak",
-        "tak for hjælpen",
+        "tak!",
         "mange tak",
-        "super tak",
         "tusind tak",
+        "fedt tak",
+        "perfekt tak",
+        "super tak",
+        "okay tak",
+        "tak for hjælpen",
+        "tak for det",
         "det var alt",
-        "det var det",
-        "nej tak",
         "ellers tak",
-        "ikke mere",
-        "ikke lige nu",
+        "nej tak",
+        "fint tak",
+        "cool tak",
+        "super",
+        "perfekt",
+        "fedt",
+        "nice",
+        "ok",
+        "okay",
     }
 
-    return text in closing_messages
+    return normalized in closing_messages
+
+
+def is_in_scope_question(user_text: str) -> bool:
+    text = user_text.lower()
+
+    pension_domain_keywords = [
+        "pension",
+        "ratepension",
+        "livrente",
+        "livsvarig",
+        "aldersopsparing",
+        "folkepension",
+        "atp",
+        "seniorpension",
+        "førtidspension",
+        "foertidspension",
+        "tidlig pension",
+        "arne-pension",
+        "pensionsalder",
+        "pensionsopsparing",
+        "opsparing",
+        "udbetaling",
+        "indbetaling",
+        "fradrag",
+        "skat",
+        "pal",
+        "pensionsafkastskat",
+        "afkast",
+        "investering",
+        "risiko",
+        "risikoprofil",
+        "modregning",
+        "begunstiget",
+        "begunstigelse",
+        "dødsfald",
+        "doedsfald",
+        "dør",
+        "pårørende",
+        "paaroerende",
+        "arv",
+        "testamente",
+        "samlever",
+        "ægtefælle",
+        "forsikring",
+        "forsikringer",
+        "dækning",
+        "dækninger",
+        "kritisk sygdom",
+        "sygdom",
+        "syg",
+        "sygemeldt",
+        "fleksjob",
+        "arbejdsløs",
+        "arbejdslos",
+        "nyt job",
+        "skifter job",
+        "skilt",
+        "skilsmisse",
+        "børn",
+        "boern",
+        "måned",
+        "om måneden",
+        "pensam",
+        "rådgiver",
+        "kontakt",
+    ]
+
+    return any(keyword in text for keyword in pension_domain_keywords)
+
+
+def is_obviously_out_of_scope(user_text: str) -> bool:
+    return not is_in_scope_question(user_text)
 
 
 SYSTEM_PROMPT = """
@@ -392,6 +489,14 @@ def chat(msg: Message):
 
             return {
                 "reply": reply,
+                "sources": [],
+                "provider": None,
+                "fallback_used": False,
+            }
+
+        if is_obviously_out_of_scope(user_text):
+            return {
+                "reply": "Det fremgår ikke af mit datagrundlag.",
                 "sources": [],
                 "provider": None,
                 "fallback_used": False,

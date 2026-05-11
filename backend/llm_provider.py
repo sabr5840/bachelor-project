@@ -2,7 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from google import genai
-from mistralai.client import Mistral
+from mistralai import Mistral
 
 load_dotenv()
 

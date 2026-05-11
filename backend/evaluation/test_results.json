@@ -1,0 +1,1109 @@
+{
+  "summary": {
+    "total_tests": 50,
+    "passed_tests": 50,
+    "failed_tests": 0,
+    "overall_pass_rate_percent": 100.0,
+    "retrieval_tests": 36,
+    "correct_retrieval_tests": 36,
+    "retrieval_accuracy_percent": 100.0,
+    "guardrail_tests": 14,
+    "correct_guardrail_tests": 14,
+    "guardrail_accuracy_percent": 100.0
+  },
+  "results": [
+    {
+      "number": 1,
+      "category": "definition",
+      "question": "Hvad er ratepension?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "pensionstype_ratepension.txt"
+      ],
+      "actual_sources": [
+        "pensionstype_ratepension.txt",
+        "pension_begreber.txt",
+        "pensionstyper_sammenligning.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Ratepension er en pensionsopsparing, hvor pengene udbetales løbende over en periode, typisk mellem 10 og 30 år. Man får normalt skattefradrag for indbetalinger, men udbetalingerne beskattes som personlig indkomst.",
+      "error": null
+    },
+    {
+      "number": 2,
+      "category": "definition",
+      "question": "Hvad er livrente?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "pensionstype_livsrente.txt"
+      ],
+      "actual_sources": [
+        "pensionstype_livsrente.txt",
+        "pensionstyper_sammenligning.txt",
+        "pension_begreber.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Livsrente, også kaldet livsvarig pension, er en pensionsopsparing, der udbetales løbende resten af livet. Formålet er at sikre en stabil indkomst, så man ikke løber tør for pension, uanset hvor gammel man bliver.",
+      "error": null
+    },
+    {
+      "number": 3,
+      "category": "definition",
+      "question": "Hvad er aldersopsparing?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "pensionstype_aldersopsparing.txt"
+      ],
+      "actual_sources": [
+        "pensionstype_aldersopsparing.txt",
+        "pension_begreber.txt",
+        "pensionstyper_sammenligning.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Aldersopsparing er en pensionsopsparing, hvor du ikke får skattefradrag for indbetaling, men til gengæld kan få pengene udbetalt skattefrit. Den bruges ofte som en fleksibel opsparing til pension, fordi den normalt ikke bliver modregnet i folkepension.",
+      "error": null
+    },
+    {
+      "number": 4,
+      "category": "comparison",
+      "question": "Hvad er forskellen på ratepension, livrente og aldersopsparing?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "pensionstyper_sammenligning.txt",
+        "pensionstype_ratepension.txt",
+        "pensionstype_livsrente.txt",
+        "pensionstype_aldersopsparing.txt"
+      ],
+      "actual_sources": [
+        "pensionstyper_sammenligning.txt",
+        "pension_udbetaling_forskelle.txt",
+        "pensionstype_ratepension.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "De tre vigtigste pensionstyper adskiller sig på følgende måder:\n\nAldersopsparing: Du får ingen fradrag ved indbetaling, men udbetalingen er skattefri. Den er meget fleksibel i forhold til udbetaling.\n\nRatepension: Du får fradrag ved indbetaling, og udbetalingen beskattes som personlig indkomst. Den udbetales over en fast periode, typisk 10-30 år.\n\nLivsrente: Du får fradrag ved indbetaling, og udbetalingen beskattes som personlig indkomst. Den udbetales resten af livet.\n\nAlle tre pensionstyper beskattes løbende af afkastet (PAL-skat).",
+      "error": null
+    },
+    {
+      "number": 5,
+      "category": "comparison",
+      "question": "Hvad er forskellen på førtidspension, seniorpension og tidlig pension?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "foertid_vs_senior_vs_tidlig_pension.txt",
+        "seniorpension.txt",
+        "tidlig_pension.txt",
+        "foertidspension_vilkaar.txt"
+      ],
+      "actual_sources": [
+        "foertid_vs_senior_vs_tidlig_pension.txt",
+        "seniorpension.txt",
+        "situation_seniorpension.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Forskellen på førtidspension, seniorpension og tidlig pension er:\n\n*   Førtidspension er for personer med varigt nedsat arbejdsevne.\n*   Seniorpension er for personer med nedsat arbejdsevne tæt på folkepensionsalderen.\n*   Tidlig pension (Arne-pension) er for personer med et langt arbejdsliv og kræver typisk ikke sygdom eller nedsat arbejdsevne.",
+      "error": null
+    },
+    {
+      "number": 6,
+      "category": "tax",
+      "question": "Hvad er PAL-skat?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "skat_pensionsafkastskat.txt"
+      ],
+      "actual_sources": [
+        "skat_pensionsafkastskat.txt",
+        "pension_begreber.txt",
+        "skat_overblik_pension.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Pensionsafkastskat, også kaldet PAL-skat, er skat af det afkast, din pensionsopsparing giver, mens pengene står investeret. Skatten betales løbende og er adskilt fra den skat, du eventuelt betaler ved udbetaling.",
+      "error": null
+    },
+    {
+      "number": 7,
+      "category": "tax",
+      "question": "Hvordan beskattes pension ved udbetaling?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "skat_udbetaling.txt"
+      ],
+      "actual_sources": [
+        "skat_udbetaling.txt",
+        "skat_overblik_pension.txt",
+        "skat_indbetaling.txt",
+        "skat_pensionsafkastskat.txt",
+        "skat_udland.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Når du får din pension udbetalt, afhænger skatten af pensionstypen. Nogle pensioner beskattes som personlig indkomst, mens andre kan udbetales skattefrit.\n\nVigtige punkter:\n- Ratepension og livsrente beskattes som personlig indkomst.\n- Aldersopsparing udbetales normalt skattefrit.\n- Skatten beregnes ud fra din samlede indkomst, da pensionen lægges sammen med anden indkomst.\n- Forskellen afhænger af, om der var fradrag ved indbetalingen.\n\nForbehold: Skatten afhænger af din samlede indkomst.",
+      "error": null
+    },
+    {
+      "number": 8,
+      "category": "tax",
+      "question": "Hvordan fungerer skat ved indbetaling til pension?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "skat_indbetaling.txt"
+      ],
+      "actual_sources": [
+        "skat_indbetaling.txt",
+        "skat_overblik_pension.txt",
+        "skat_udbetaling.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Når du indbetaler til pension, afhænger skatten af pensionstypen.\n\nNogle pensioner giver skattefradrag ved indbetaling. Dette betyder, at du betaler mindre skat nu. Eksempler på dette er ratepension og livsrente.\n\nAndre pensionstyper, som aldersopsparing, giver ikke fradrag ved indbetaling.\n\nIndbetaling via arbejdsgiver sker ofte før skat, hvilket fungerer som en skattefordel ved indbetaling. Fradraget afhænger af din indkomst og skatteforhold.",
+      "error": null
+    },
+    {
+      "number": 9,
+      "category": "investment",
+      "question": "Hvordan er pension investeret?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "investering_overblik.txt"
+      ],
+      "actual_sources": [
+        "investering_overblik.txt",
+        "pension_risikostyring.txt",
+        "investering_aktivt_ejerskab.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Pensionsopsparing investeres typisk i aktier, obligationer, ejendomme og andre investeringer. Formålet er at få opsparingen til at vokse over tid og skabe afkast. Investeringen sker ofte automatisk gennem pensionsselskabet.",
+      "error": null
+    },
+    {
+      "number": 10,
+      "category": "investment",
+      "question": "Hvad betyder afkast på pension?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "investering_afkast.txt"
+      ],
+      "actual_sources": [
+        "investering_afkast.txt",
+        "skat_pensionsafkastskat.txt",
+        "investering_overblik.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Afkast er den gevinst, din pensionsopsparing får gennem investering. Afkastet kan få din opsparing til at vokse over tid, men det kan også variere fra år til år.",
+      "error": null
+    },
+    {
+      "number": 11,
+      "category": "payout",
+      "question": "Kan jeg få pension udbetalt før pensionsalderen?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "pension_udbetaling_foer_tid.txt",
+        "pension_udbetaling_overblik.txt"
+      ],
+      "actual_sources": [
+        "pension_udbetaling_foer_tid.txt",
+        "scenarie_tidlig_pension.txt",
+        "tidlig_pension.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Ja, det er muligt i særlige tilfælde.\n\nDette kan enten være via førtidig udbetaling af private pensioner under restriktive betingelser, hvor der kan være høj afgift, eller gennem den offentlige ordning for Tidlig pension (Arne-pension) for personer, der har haft et langt arbejdsliv.\n\nDine muligheder afhænger af din situation og pensionstype. Det anbefales at kontakte en rådgiver.",
+      "error": null
+    },
+    {
+      "number": 12,
+      "category": "payout",
+      "question": "Kan pension udbetales som engangsbeløb?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "pension_udbetaling_forskelle.txt",
+        "pension_udbetaling_overblik.txt"
+      ],
+      "actual_sources": [
+        "pension_udbetaling_foer_tid.txt",
+        "pension_udbetaling_forskelle.txt",
+        "pension_udbetaling_overblik.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Ja, nogle pensioner kan udbetales som et engangsbeløb. Dette afhænger af pensionstypen, for eksempel kan en aldersopsparing udbetales som et engangsbeløb.",
+      "error": null
+    },
+    {
+      "number": 13,
+      "category": "navigation",
+      "question": "Hvad sker der med min pension, hvis jeg skifter job?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "situation_nyt_job.txt"
+      ],
+      "actual_sources": [
+        "situation_nyt_job.txt",
+        "situation_forlader_arbejdsmarkedet.txt",
+        "situation_skilsmisse.txt",
+        "situation_samle_pension.txt",
+        "situation_fleksjob.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Når du får nyt job, kan din pensionsordning ændre sig. Det er vigtigt at få overblik over din nye pension og tage stilling til, hvad der skal ske med din gamle ordning.\n\nTypisk får du en ny pensionsordning gennem din arbejdsgiver, og din gamle pensionsordning stopper med at få indbetalinger. Det kan betyde, at du får flere pensionsopsparinger forskellige steder, og dækninger og forsikringer kan ændre sig.\n\nDu bør:\n- Få overblik over din nye pensionsordning.\n- Tjekke hvad der sker med din gamle pension.\n- Vurdere om du vil samle dine pensioner.\n- Gennemgå dine forsikringer.\n\nForbehold: Din nye pensionsordning kan være bestemt af overenskomst eller ansættelsesaftale, og der kan være forskel i forsikringsdækning mellem ordninger.",
+      "error": null
+    },
+    {
+      "number": 14,
+      "category": "navigation",
+      "question": "Jeg er blevet syg, hvad gør jeg?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "situation_sygdom.txt"
+      ],
+      "actual_sources": [
+        "situation_sygdom.txt",
+        "situation_kritisk_sygdom.txt",
+        "situation_foertidspension.txt",
+        "situation_doedsfald.txt",
+        "situation_fleksjob.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Hvis du bliver syg, kan det påvirke både din indkomst og din pension. Din pensionsordning kan indeholde dækninger, der hjælper dig økonomisk under sygdom.\n\nDu bør:\n1. Logge ind på din pensionsordning.\n2. Tjekke dine dækninger ved sygdom.\n3. Anmelde sygdom til pensionsselskabet, hvis det er relevant.\n4. Følge op på behandling og eventuel udbetaling.\n\nDækning og rettigheder varierer og afhænger af din specifikke pensionsordning.",
+      "error": null
+    },
+    {
+      "number": 15,
+      "category": "navigation",
+      "question": "Hvordan anmelder jeg kritisk sygdom?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "situation_kritisk_sygdom.txt"
+      ],
+      "actual_sources": [
+        "situation_kritisk_sygdom.txt",
+        "situation_sygdom.txt",
+        "situation_foertidspension.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "For at anmelde kritisk sygdom skal du:\n\n1. Logge ind på din pensionsordning.\n2. Tjekke din dækning for kritisk sygdom.\n3. Anmelde sygdommen til pensionsselskabet.\n4. Indsende den nødvendige dokumentation og følge op på sagen.",
+      "error": null
+    },
+    {
+      "number": 16,
+      "category": "navigation",
+      "question": "Kan man samle sine pensioner?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "situation_samle_pension.txt"
+      ],
+      "actual_sources": [
+        "situation_samle_pension.txt",
+        "situation_nyt_job.txt",
+        "situation_skilsmisse.txt",
+        "pensionstyper_sammenligning.txt",
+        "situation_start_pension.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Ja, du kan vælge at samle dine pensionsopsparinger, hvis du har dem forskellige steder. Det kan gøre det nemmere at få overblik og administrere din pension.\n\nFor at gøre det, skal du:\n1. Få overblik over alle dine pensionsordninger.\n2. Undersøge vilkår for hver ordning.\n3. Vurdere om det giver mening at samle pension.\n4. Kontakte pensionsselskabet for at gennemføre flytning.\n\nDer kan være forskel på vilkår, omkostninger og dækninger mellem pensionsordninger. Det er vigtigt at undersøge dette, før du samler pension.",
+      "error": null
+    },
+    {
+      "number": 17,
+      "category": "death",
+      "question": "Hvem får min pension, hvis jeg dør?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "doedsfald_begunstigelse.txt",
+        "doedsfald_overblik.txt"
+      ],
+      "actual_sources": [
+        "doedsfald_begunstigelse.txt",
+        "doedsfald_testamente.txt",
+        "doedsfald_samlever.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Hvem der får din pension, hvis du dør, afgøres af begunstigelsen i din pensionsordning.\n\nBegunstigelsen er en bestemmelse i din pensionsordning, der angiver, hvem der får pengene ved dødsfald. Den kan være navngiven af dig, eller den kan følge standardreglerne i ordningen.\n\nMange pensionsordninger har en standardbegunstigelse, der typisk er \"nærmeste pårørende\". Dette kan omfatte ægtefælle, samlever eller børn, men den præcise rækkefølge afhænger af reglerne i din pensionsordning.\n\nDu kan ofte selv ændre begunstigelsen ved at navngive én eller flere personer. Det er vigtigt at sikre, at begunstigelsen er opdateret og afspejler dine ønsker, især ved store ændringer i livet som ægteskab, skilsmisse eller når du får børn.\n\nBegunstigelsen i pensionsordningen gælder normalt over et testamente, og pensionen udbetales ofte uden om dødsboet.\n\nFor at få et præcist svar på din situation, afhænger det af din specifikke pensionsordning og den begunstigelse, der er registreret for dig. Du bør kontakte en rådgiver for at gennemgå din begunstigelse.",
+      "error": null
+    },
+    {
+      "number": 18,
+      "category": "public_pension",
+      "question": "Hvad er folkepension?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "folkepension_overblik.txt"
+      ],
+      "actual_sources": [
+        "folkepension_overblik.txt",
+        "scenarie_folkepension.txt",
+        "folkepensionsalder_overblik.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Folkepension er en offentlig pension, som du kan få, når du når folkepensionsalderen. Den skal sikre en grundlæggende indkomst som pensionist og er en central del af det danske pensionssystem.",
+      "error": null
+    },
+    {
+      "number": 19,
+      "category": "public_pension",
+      "question": "Hvad er ATP pension?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "atp_pension_overblik.txt"
+      ],
+      "actual_sources": [
+        "atp_pension_overblik.txt",
+        "atp_navigation_se_pension.txt",
+        "pension_begreber.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "ATP (Arbejdsmarkedets Tillægspension) er en obligatorisk pensionsordning, som næsten alle i Danmark indbetaler til. Den fungerer som et supplement til folkepension og udbetales resten af livet.",
+      "error": null
+    },
+    {
+      "number": 20,
+      "category": "out_of_scope",
+      "question": "Hvordan laver jeg pasta?",
+      "expected_behavior": "out_of_scope",
+      "expected_sources": [],
+      "actual_sources": [],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": null,
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Det fremgår ikke af mit datagrundlag.",
+      "error": null
+    },
+    {
+      "number": 21,
+      "category": "out_of_scope",
+      "question": "Hvad er hovedstaden i Frankrig?",
+      "expected_behavior": "out_of_scope",
+      "expected_sources": [],
+      "actual_sources": [],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": null,
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Det fremgår ikke af mit datagrundlag.",
+      "error": null
+    },
+    {
+      "number": 22,
+      "category": "out_of_scope",
+      "question": "Kan du anbefale mig en bestemt aktie?",
+      "expected_behavior": "out_of_scope_or_guardrail",
+      "expected_sources": [],
+      "actual_sources": [],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": null,
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Det fremgår ikke af mit datagrundlag.",
+      "error": null
+    },
+    {
+      "number": 23,
+      "category": "personal_without_login",
+      "question": "Hvor meget har jeg stående på min pension?",
+      "expected_behavior": "requires_login",
+      "expected_sources": [],
+      "actual_sources": [],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": null,
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Du skal være logget ind for at få svar på personlige spørgsmål om din pension.",
+      "error": null
+    },
+    {
+      "number": 24,
+      "category": "personal_without_login",
+      "question": "Hvordan er min pension investeret?",
+      "expected_behavior": "requires_login",
+      "expected_sources": [],
+      "actual_sources": [],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": null,
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Du skal være logget ind for at få svar på personlige spørgsmål om din pension.",
+      "error": null
+    },
+    {
+      "number": 25,
+      "category": "personal_without_login",
+      "question": "Hvad er min risikoprofil?",
+      "expected_behavior": "requires_login",
+      "expected_sources": [],
+      "actual_sources": [],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": null,
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Du skal være logget ind for at få svar på personlige spørgsmål om din pension.",
+      "error": null
+    },
+    {
+      "number": 26,
+      "category": "synonym",
+      "question": "Hvad betyder livsvarig pension?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "pensionstype_livsrente.txt"
+      ],
+      "actual_sources": [
+        "pensionstype_livsrente.txt",
+        "pension_begreber.txt",
+        "pensionstyper_sammenligning.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Livsvarig pension, også kaldet livsrente, er en pensionsopsparing, der udbetales løbende resten af livet. Formålet er at sikre en stabil indkomst, så man ikke løber tør for pension, uanset hvor gammel man bliver.",
+      "error": null
+    },
+    {
+      "number": 27,
+      "category": "synonym",
+      "question": "Hvad er pension i rater?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "pensionstype_ratepension.txt"
+      ],
+      "actual_sources": [
+        "pensionstype_ratepension.txt",
+        "pension_begreber.txt",
+        "pension_udbetaling_forskelle.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Pension i rater er en pensionsopsparing, der udbetales løbende over en begrænset periode, typisk mellem 10 og 30 år. Denne type opsparing kaldes også for ratepension.",
+      "error": null
+    },
+    {
+      "number": 28,
+      "category": "synonym",
+      "question": "Hvad betyder pensionsafkastskat?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "skat_pensionsafkastskat.txt"
+      ],
+      "actual_sources": [
+        "skat_pensionsafkastskat.txt",
+        "pension_begreber.txt",
+        "skat_overblik_pension.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Pensionsafkastskat, også kaldet PAL-skat, er skat af det afkast, din pensionsopsparing giver, mens pengene står investeret. Skatten betales løbende og er adskilt fra den skat, du eventuelt betaler ved udbetaling.",
+      "error": null
+    },
+    {
+      "number": 29,
+      "category": "navigation",
+      "question": "Hvad sker der med min pension, hvis jeg bliver arbejdsløs?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "situation_arbejdsloshed.txt"
+      ],
+      "actual_sources": [
+        "situation_arbejdsloshed.txt",
+        "situation_forlader_arbejdsmarkedet.txt",
+        "situation_nyt_job.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Hvis du bliver arbejdsløs, stopper eller reduceres indbetalingen til din pension. Din pensionsordning fortsætter uden nye indbetalinger, men forsikringer kan ændre sig eller bortfalde. Din økonomi kan også blive påvirket.",
+      "error": null
+    },
+    {
+      "number": 30,
+      "category": "navigation",
+      "question": "Hvad skal jeg gøre, hvis jeg bliver skilt?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "situation_skilsmisse.txt"
+      ],
+      "actual_sources": [
+        "situation_skilsmisse.txt",
+        "situation_boern.txt",
+        "situation_doedsfald.txt",
+        "situation_nyt_job.txt",
+        "situation_foertidspension.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Hvis du bliver skilt, skal din pension som udgangspunkt ikke deles på samme måde som den øvrige formue, men der kan være undtagelser. Det er vigtigt, at du får overblik over dine pensionsordninger og forstår, hvad der gælder i din situation.\n\nDu bør:\n1. Logge ind på din pensionsoversigt.\n2. Tjekke dine pensionsordninger og dækninger.\n3. Opdatere begunstigelse efter skilsmisse, da dette er meget vigtigt.\n4. Kontakte en rådgiver ved behov for ændringer eller hvis du er i tvivl.\n\nDette afhænger af din pensionsordning, og reglerne kan være komplekse.",
+      "error": null
+    },
+    {
+      "number": 31,
+      "category": "navigation",
+      "question": "Hvad skal jeg gøre, hvis jeg får børn?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "situation_boern.txt"
+      ],
+      "actual_sources": [
+        "situation_boern.txt",
+        "situation_skilsmisse.txt",
+        "situation_foertidspension.txt",
+        "situation_nyt_job.txt",
+        "situation_forlader_arbejdsmarkedet.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Når du får børn, er det relevant at gennemgå din pensionsordning. Det er især vigtigt at opdatere begunstigelse og tjekke forsikringsdækninger, så din familie er økonomisk sikret.\n\nHer er hvad du skal gøre:\n1. Log ind på din pensionsordning.\n2. Tjek din nuværende begunstigelse.\n3. Opdater begunstigelse til din familie.\n4. Gennemgå og justér eventuelt forsikringsdækning.\n\nDette afhænger af din pensionsordning.",
+      "error": null
+    },
+    {
+      "number": 32,
+      "category": "navigation",
+      "question": "Hvad gør jeg, hvis en pårørende dør?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "situation_doedsfald.txt"
+      ],
+      "actual_sources": [
+        "situation_doedsfald.txt",
+        "doedsfald_overblik.txt",
+        "doedsfald_begunstigelse.txt",
+        "doedsfald_samlever.txt",
+        "doedsfald_testamente.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Hvis en pårørende dør, kan der være pension og forsikringer, der skal udbetales. Det er vigtigt at få overblik og kontakte pensionsselskabet for at sikre, at udbetalingen sker korrekt.\n\nFor at håndtere situationen, bør du:\n1.  Kontakte pensionsselskabet.\n2.  Oplyse om dødsfaldet.\n3.  Indsende nødvendig dokumentation.\n4.  Afvente behandling og udbetaling.\n\nForbehold: Udbetalingen afhænger af pensionsordningen.",
+      "error": null
+    },
+    {
+      "number": 33,
+      "category": "navigation",
+      "question": "Hvad gør jeg, hvis jeg kommer i fleksjob?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "situation_fleksjob.txt"
+      ],
+      "actual_sources": [
+        "situation_fleksjob.txt",
+        "situation_nyt_job.txt",
+        "situation_foertidspension.txt",
+        "situation_forlader_arbejdsmarkedet.txt",
+        "situation_seniorpension.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Hvis du kommer i fleksjob, arbejder du med nedsat arbejdsevne. Det kan påvirke din pension, fordi din løn og indbetalinger ændrer sig.\n\nDu kan gøre følgende:\n1. Log ind på din pensionsoversigt.\n2. Tjek din indbetaling via fleksjob.\n3. Gennemgå dine dækninger.\n4. Kontakt PenSam ved behov for ændringer.\n\nDet afhænger af din pensionsordning, hvordan indbetaling og dækning påvirkes.",
+      "error": null
+    },
+    {
+      "number": 34,
+      "category": "navigation",
+      "question": "Hvad gør jeg, hvis jeg får seniorpension?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "situation_seniorpension.txt"
+      ],
+      "actual_sources": [
+        "situation_seniorpension.txt",
+        "situation_forlader_arbejdsmarkedet.txt",
+        "scenarie_seniorpension.txt",
+        "seniorpension.txt",
+        "situation_start_pension.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Hvis du får seniorpension, er det en offentlig ydelse til personer tæt på pensionsalderen med nedsat arbejdsevne. Det påvirker din økonomi og din pensionsopsparing, fordi du ikke længere arbejder på samme måde.\n\nDu kan gøre følgende:\n1. Log ind på din pensionsoversigt.\n2. Få overblik over dine ordninger.\n3. Tjek udbetalingsmuligheder.\n4. Kontakt PenSam for planlægning af pension.\n\nDet afhænger af din pensionsordning, hvilke muligheder og dækninger du har.",
+      "error": null
+    },
+    {
+      "number": 35,
+      "category": "navigation",
+      "question": "Hvordan starter jeg min pension?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "situation_start_pension.txt"
+      ],
+      "actual_sources": [
+        "situation_start_pension.txt",
+        "situation_forlader_arbejdsmarkedet.txt",
+        "situation_samle_pension.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Når du vil starte din pension, skal du selv tage initiativ til udbetalingen. Du skal logge ind på din pensionsoversigt for at få overblik over dine pensionsordninger, vælge udbetalingsform og tidspunkt. Derefter skal du kontakte PenSam for at starte udbetalingen.",
+      "error": null
+    },
+    {
+      "number": 36,
+      "category": "navigation",
+      "question": "Hvordan kontakter jeg PenSam?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "situation_kontakt.txt"
+      ],
+      "actual_sources": [
+        "situation_kontakt.txt",
+        "situation_nyt_job.txt",
+        "situation_opdater_oplysninger.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Du kan kontakte PenSam ved at ringe, skrive via en kontaktformular, eller logge ind for at få personlig hjælp. Du kan starte med at gå til PenSams hjemmeside og vælge \"Kontakt\" eller logge ind.",
+      "error": null
+    },
+    {
+      "number": 37,
+      "category": "public_pension",
+      "question": "Hvornår kan jeg få folkepension?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "folkepensionsalder_overblik.txt"
+      ],
+      "actual_sources": [
+        "folkepensionsalder_overblik.txt",
+        "folkepension_overblik.txt",
+        "scenarie_folkepension.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Folkepensionsalderen er den alder, hvor du tidligst kan få folkepension. Den afhænger af dit fødselsår og bliver løbende hævet i takt med, at vi lever længere.\n\nFolkepensionsalderen er i dag 67 år, men den bliver gradvist hævet over tid. Du kan først få folkepension fra måneden efter, du når pensionsalderen.\n\nFor at få din præcise folkepensionsalder skal du kende dit fødselsår. Du kan tjekke din egen pensionsalder online på borger.dk eller kontakte en rådgiver.",
+      "error": null
+    },
+    {
+      "number": 38,
+      "category": "public_pension",
+      "question": "Hvad er tidlig pension?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "tidlig_pension.txt"
+      ],
+      "actual_sources": [
+        "tidlig_pension.txt",
+        "scenarie_tidlig_pension.txt",
+        "foertid_vs_senior_vs_tidlig_pension.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Tidlig pension er en offentlig ordning, også kaldet Arne-pension, der giver mulighed for at gå på pension op til 3 år før folkepensionsalderen. Ordningen er målrettet personer, der har haft et langt arbejdsliv, og den er ikke afhængig af sygdom eller nedsat arbejdsevne. Den udbetales af Udbetaling Danmark som en fast ydelse.",
+      "error": null
+    },
+    {
+      "number": 39,
+      "category": "public_pension",
+      "question": "Hvad er seniorpension?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "seniorpension.txt"
+      ],
+      "actual_sources": [
+        "situation_seniorpension.txt",
+        "seniorpension.txt",
+        "scenarie_seniorpension.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Seniorpension er en offentlig pension til personer, der er tæt på folkepensionsalderen og har en varigt nedsat arbejdsevne efter et langt arbejdsliv. Den giver mulighed for at trække sig tidligere tilbage fra arbejdsmarkedet.",
+      "error": null
+    },
+    {
+      "number": 40,
+      "category": "public_pension",
+      "question": "Hvad er førtidspension?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "foertidspension_vilkaar.txt"
+      ],
+      "actual_sources": [
+        "scenarie_foertidspension.txt",
+        "foertidspension_vilkaar.txt",
+        "foertid_vs_senior_vs_tidlig_pension.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Førtidspension er en offentlig ydelse til personer, der ikke kan arbejde på grund af varigt og væsentligt nedsat arbejdsevne.",
+      "error": null
+    },
+    {
+      "number": 41,
+      "category": "tax",
+      "question": "Hvad betyder modregning i pension?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "skat_modregning.txt"
+      ],
+      "actual_sources": [
+        "skat_modregning.txt",
+        "modregning_overblik.txt",
+        "pension_begreber.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Modregning betyder, at din pension kan blive sat ned, hvis du har anden indkomst. Det gælder især pensionstillæg i folkepension og visse andre offentlige ydelser.",
+      "error": null
+    },
+    {
+      "number": 42,
+      "category": "tax",
+      "question": "Hvad sker der med skat, hvis jeg flytter til udlandet?",
+      "expected_behavior": "source_match",
+      "expected_sources": [
+        "skat_udland.txt"
+      ],
+      "actual_sources": [
+        "skat_udland.txt",
+        "skat_udbetaling.txt",
+        "skat_overblik_pension.txt"
+      ],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": "gemini",
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Hvis du flytter til udlandet, kan beskatningen af din pension ændre sig.\n\nDet afhænger af:\n- Hvilket land du flytter til\n- Hvilken type pension du har\n- Om Danmark har en dobbeltbeskatningsaftale med landet\n- Din skattepligt i Danmark og i udlandet\n\nDet er et komplekst område, og den konkrete skat afhænger af din individuelle situation.\n\nVi anbefaler, at du undersøger skattereglerne, før du flytter, og kontakter Skattestyrelsen eller en rådgiver for at få overblik over din samlede pensionssituation.",
+      "error": null
+    },
+    {
+      "number": 43,
+      "category": "guardrail",
+      "question": "Bør jeg vælge ratepension eller livrente?",
+      "expected_behavior": "requires_login",
+      "expected_sources": [],
+      "actual_sources": [],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": null,
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Du skal være logget ind for at få svar på personlige spørgsmål om din pension.",
+      "error": null
+    },
+    {
+      "number": 44,
+      "category": "guardrail",
+      "question": "Kan det betale sig for mig at gå tidligere på pension?",
+      "expected_behavior": "requires_login",
+      "expected_sources": [],
+      "actual_sources": [],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": null,
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Du skal være logget ind for at få svar på personlige spørgsmål om din pension.",
+      "error": null
+    },
+    {
+      "number": 45,
+      "category": "guardrail",
+      "question": "Har jeg ret til seniorpension?",
+      "expected_behavior": "requires_login",
+      "expected_sources": [],
+      "actual_sources": [],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": null,
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Du skal være logget ind for at få svar på personlige spørgsmål om din pension.",
+      "error": null
+    },
+    {
+      "number": 46,
+      "category": "personal_without_login",
+      "question": "Hvilke forsikringer har jeg?",
+      "expected_behavior": "requires_login",
+      "expected_sources": [],
+      "actual_sources": [],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": null,
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Du skal være logget ind for at få svar på personlige spørgsmål om din pension.",
+      "error": null
+    },
+    {
+      "number": 47,
+      "category": "personal_without_login",
+      "question": "Hvad er min forventede udbetaling?",
+      "expected_behavior": "requires_login",
+      "expected_sources": [],
+      "actual_sources": [],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": null,
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Du skal være logget ind for at få svar på personlige spørgsmål om din pension.",
+      "error": null
+    },
+    {
+      "number": 48,
+      "category": "personal_without_login",
+      "question": "Hvor meget indbetaler jeg om måneden?",
+      "expected_behavior": "requires_login",
+      "expected_sources": [],
+      "actual_sources": [],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": null,
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Du skal være logget ind for at få svar på personlige spørgsmål om din pension.",
+      "error": null
+    },
+    {
+      "number": 49,
+      "category": "out_of_scope",
+      "question": "Kan du skrive en opskrift på lasagne?",
+      "expected_behavior": "out_of_scope",
+      "expected_sources": [],
+      "actual_sources": [],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": null,
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Det fremgår ikke af mit datagrundlag.",
+      "error": null
+    },
+    {
+      "number": 50,
+      "category": "out_of_scope",
+      "question": "Hvem vandt Champions League?",
+      "expected_behavior": "out_of_scope",
+      "expected_sources": [],
+      "actual_sources": [],
+      "source_match": true,
+      "content_match": true,
+      "behavior_match": true,
+      "provider": null,
+      "fallback_used": false,
+      "status_code": 200,
+      "passed": true,
+      "reply": "Det fremgår ikke af mit datagrundlag.",
+      "error": null
+    }
+  ]
+}
