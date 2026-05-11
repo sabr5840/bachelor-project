@@ -5,12 +5,13 @@ const userInput = document.getElementById("user-input");
 const chatBox = document.getElementById("chat-box");
 let chatSuggestions = document.getElementById("chatSuggestions") || document.querySelector(".chat-suggestions");
 let chatHistory = [];
-const customerId = localStorage.getItem("customer_id");
-const customerName = localStorage.getItem("customer_name");
-const customerFullName = localStorage.getItem("customer_full_name") || customerName;
+const sessionId = window.PenSamSession ? window.PenSamSession.getSessionId() : sessionStorage.getItem("session_id");
+const customerName = sessionStorage.getItem("customer_name");
+const customerFullName = sessionStorage.getItem("customer_full_name") || customerName;
 const shouldOpenChat = sessionStorage.getItem("open_chat_after_login") === "true";
 const shouldKeepChatOpen = sessionStorage.getItem("chat_widget_open") === "true";
 const shouldShowLoginCompletedMessage = sessionStorage.getItem("chat_login_completed") === "true";
+const shouldShowLoggedOutNotice = sessionStorage.getItem("chat_logged_out_notice") === "true";
 const topbarRight = document.querySelector(".topbar-right");
 const isLoginPage = document.body.classList.contains("login-body");
 
@@ -47,6 +48,48 @@ function restoreChatMessages() {
   }));
 
   return true;
+}
+
+async function restoreAuthenticatedChatHistory() {
+  if (!sessionId || !chatBox) {
+    return false;
+  }
+
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/session/chat-history?session_id=${encodeURIComponent(sessionId)}`);
+    if (!response.ok) {
+      return false;
+    }
+
+    const data = await response.json();
+    const messages = data.messages || [];
+    if (!messages.length) {
+      return false;
+    }
+
+    chatBox.innerHTML = "";
+    if (shouldShowLoginCompletedMessage) {
+      appendMessage(
+        `Du er logget ind igen, ${customerName}. Din seneste samtale er gendannet, så du kan fortsætte herfra.`,
+        "bot",
+        false
+      );
+    }
+
+    messages.forEach((message) => {
+      appendMessage(message.content, message.role === "user" ? "user" : "bot", false);
+    });
+
+    chatHistory = messages.map((message) => ({
+      role: message.role === "user" ? "user" : "assistant",
+      content: message.content
+    }));
+
+    return true;
+  } catch (error) {
+    console.error("Kunne ikke hente gemt chathistorik:", error);
+    return false;
+  }
 }
 
 function getChatSuggestionsContainer() {
@@ -103,25 +146,22 @@ function setChatSuggestions(isLoggedIn) {
   });
 }
 
-if (customerId && customerName && topbarRight) {
+if (sessionId && customerName && topbarRight) {
   const loginLink = topbarRight.querySelector(".login-btn");
-  const loggedUser = document.createElement("span");
+  const loggedUser = document.createElement("a");
 
   loggedUser.classList.add("logged-user");
   loggedUser.textContent = customerFullName;
+  loggedUser.href = "logged-in.html";
+  loggedUser.setAttribute("aria-label", "Gå til din profilside");
 
   if (loginLink) {
     loginLink.textContent = "Log ud";
     loginLink.href = "index.html";
     loginLink.addEventListener("click", () => {
-      localStorage.removeItem("customer_id");
-      localStorage.removeItem("customer_name");
-      localStorage.removeItem("customer_full_name");
-      sessionStorage.removeItem("open_chat_after_login");
-      sessionStorage.removeItem("chat_return_url");
-      sessionStorage.removeItem("chat_widget_open");
-      sessionStorage.removeItem("chat_messages");
-      sessionStorage.removeItem("chat_login_completed");
+      if (window.PenSamSession) {
+        window.PenSamSession.logout(true);
+      }
     });
 
     topbarRight.insertBefore(loggedUser, loginLink);
@@ -130,8 +170,18 @@ if (customerId && customerName && topbarRight) {
 
 const restoredChat = restoreChatMessages();
 
+if (!sessionId && shouldShowLoggedOutNotice && chatBox) {
+  chatBox.innerHTML = "";
+  appendMessage(
+    "Du er nu logget ud. Af hensyn til dine pensionsoplysninger er samtalen skjult. Hvis du logger ind igen inden for kort tid, kan du fortsætte samtalen.",
+    "bot",
+    false
+  );
+  sessionStorage.removeItem("chat_logged_out_notice");
+}
+
 if (
-  customerId &&
+  sessionId &&
   customerName &&
   chatBox &&
   !restoredChat &&
@@ -149,7 +199,7 @@ if (
   }
 }
 
-if (customerId && customerName && shouldShowLoginCompletedMessage && chatBox && !isLoginPage) {
+if (sessionId && customerName && shouldShowLoginCompletedMessage && chatBox && !isLoginPage) {
   chatBox.innerHTML = "";
   appendMessage(
     `Du er nu logget ind, ${customerName}! Jeg kan stadig svare på generelle spørgsmål, og du kan også spørge om dine egne pensionsoplysninger.`,
@@ -158,7 +208,7 @@ if (customerId && customerName && shouldShowLoginCompletedMessage && chatBox && 
   sessionStorage.removeItem("chat_login_completed");
 }
 
-if (customerId && customerName && chatBox) {
+if (sessionId && customerName && chatBox) {
   const welcomeMessage = chatBox.querySelector(".chat-welcome");
   if (welcomeMessage) {
     welcomeMessage.remove();
@@ -169,7 +219,11 @@ if (customerId && customerName && chatBox) {
   }
 }
 
-setChatSuggestions(Boolean(customerId && customerName));
+setChatSuggestions(Boolean(sessionId && customerName));
+
+if (sessionId) {
+  restoreAuthenticatedChatHistory();
+}
 
 if (chatToggle && chatWidget) {
   chatToggle.addEventListener("click", () => {
@@ -179,12 +233,10 @@ if (chatToggle && chatWidget) {
   });
 }
 
-if ((shouldOpenChat || (shouldKeepChatOpen && !isLoginPage)) && chatWidget) {
+if ((shouldOpenChat || shouldKeepChatOpen) && chatWidget) {
   chatWidget.classList.add("open");
   sessionStorage.setItem("chat_widget_open", "true");
   sessionStorage.removeItem("open_chat_after_login");
-} else if (isLoginPage) {
-  sessionStorage.setItem("chat_widget_open", "false");
 }
 
 if (chatClose && chatWidget) {
@@ -199,7 +251,6 @@ const loginBtn = document.getElementById("loginBtn");
 if (loginBtn) {
   loginBtn.addEventListener("click", () => {
     const returnUrl = sessionStorage.getItem("chat_return_url") || window.location.href;
-    sessionStorage.setItem("chat_widget_open", "false");
     sessionStorage.setItem("chat_return_url", returnUrl);
     window.location.href = `login.html?returnTo=${encodeURIComponent(returnUrl)}`;
   });
@@ -229,7 +280,7 @@ async function sendMessage() {
       },
       body: JSON.stringify({
         message: message,
-        customer_id: customerId,
+        session_id: sessionId,
         history: chatHistory.slice(-6)
       })
     });

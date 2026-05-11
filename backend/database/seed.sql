@@ -6,6 +6,7 @@
 INSERT INTO customers (
     full_name,
     cpr_number,
+    mitid_user_id,
     birth_date,
     address,
     email,
@@ -15,27 +16,27 @@ INSERT INTO customers (
     risk_profile
 )
 VALUES
-('Mette Larsen', '120389-1234', '1989-03-12', 'Aarhus', 'mette@test.dk', '12345678', 'Fuldtidsansat', 504000, 'Middel'),
-('Anne Jensen', '230591-2234', '1991-05-23', 'Odense', 'anne@test.dk', '22334455', 'Fuldtidsansat', 420000, 'Middel'),
-('Lars Nielsen', '150782-5432', '1982-07-15', 'København', 'lars@test.dk', '33445566', 'Fuldtidsansat', 620000, 'Høj'),
-('Sofie Hansen', '110299-8888', '1999-02-11', 'Aalborg', 'sofie@test.dk', '99887766', 'Deltidsansat', 280000, 'Lav'),
-('Camilla Pedersen', '010184-2222', '1984-01-01', 'Esbjerg', 'camilla@test.dk', '66554433', 'Fuldtidsansat', 540000, 'Middel'),
-('Jonas Madsen', '170676-9999', '1976-06-17', 'Randers', 'jonas@test.dk', '11223344', 'Fuldtidsansat', 700000, 'Høj'),
-('Maria Kristensen', '030393-7777', '1993-03-03', 'Horsens', 'maria@test.dk', '44556677', 'Fuldtidsansat', 460000, 'Middel'),
-('Peter Andersen', '090970-1111', '1970-09-09', 'Kolding', 'peter@test.dk', '55667788', 'Fuldtidsansat', 780000, 'Lav'),
-('Louise Holm', '120695-4545', '1995-06-12', 'Silkeborg', 'louise@test.dk', '66778899', 'Fuldtidsansat', 390000, 'Middel'),
-('Rasmus Thomsen', '220881-7878', '1981-08-22', 'Roskilde', 'rasmus@test.dk', '77889900', 'Fuldtidsansat', 650000, 'Høj'),
-('Line Sørensen', '040287-1919', '1987-02-04', 'Herning', 'line@test.dk', '19191919', 'Fuldtidsansat', 510000, 'Middel'),
-('Henrik Poulsen', '020468-1212', '1968-04-02', 'Vejle', 'henrik@test.dk', '12121212', 'Fuldtidsansat', 820000, 'Lav'),
-('Julie Dahl', '070998-6767', '1998-09-07', 'Næstved', 'julie@test.dk', '67676767', 'Deltidsansat', 250000, 'Lav'),
-('Thomas Lund', '150785-8989', '1985-07-15', 'Køge', 'thomas@test.dk', '89898989', 'Fuldtidsansat', 590000, 'Middel'),
-('Emma Frederiksen', '011190-9090', '1990-11-01', 'Fredericia', 'emma@test.dk', '90909090', 'Fuldtidsansat', 470000, 'Middel');
+('Mette Larsen', '120389-1234', 'mette-demo', '1989-03-12', 'Aarhus', 'mette@test.dk', '12345678', 'Fuldtidsansat', 504000, 'Middel'),
+('Anne Jensen', '230591-2234', 'anne-demo', '1991-05-23', 'Odense', 'anne@test.dk', '22334455', 'Fuldtidsansat', 420000, 'Middel'),
+('Lars Nielsen', '150782-5432', 'lars-demo', '1982-07-15', 'København', 'lars@test.dk', '33445566', 'Fuldtidsansat', 620000, 'Høj'),
+('Sofie Hansen', '110299-8888', 'sofie-demo', '1999-02-11', 'Aalborg', 'sofie@test.dk', '99887766', 'Deltidsansat', 280000, 'Lav'),
+('Camilla Pedersen', '010184-2222', 'camilla-demo', '1984-01-01', 'Esbjerg', 'camilla@test.dk', '66554433', 'Fuldtidsansat', 540000, 'Middel'),
+('Jonas Madsen', '170676-9999', 'jonas-demo', '1976-06-17', 'Randers', 'jonas@test.dk', '11223344', 'Fuldtidsansat', 700000, 'Høj'),
+('Maria Kristensen', '030393-7777', 'maria-demo', '1993-03-03', 'Horsens', 'maria@test.dk', '44556677', 'Fuldtidsansat', 460000, 'Middel'),
+('Peter Andersen', '090970-1111', 'peter-demo', '1970-09-09', 'Kolding', 'peter@test.dk', '55667788', 'Fuldtidsansat', 780000, 'Lav'),
+('Louise Holm', '120695-4545', 'louise-demo', '1995-06-12', 'Silkeborg', 'louise@test.dk', '66778899', 'Fuldtidsansat', 390000, 'Middel'),
+('Rasmus Thomsen', '220881-7878', 'rasmus-demo', '1981-08-22', 'Roskilde', 'rasmus@test.dk', '77889900', 'Fuldtidsansat', 650000, 'Høj'),
+('Line Sørensen', '040287-1919', 'line-demo', '1987-02-04', 'Herning', 'line@test.dk', '19191919', 'Fuldtidsansat', 510000, 'Middel'),
+('Henrik Poulsen', '020468-1212', 'henrik-demo', '1968-04-02', 'Vejle', 'henrik@test.dk', '12121212', 'Fuldtidsansat', 820000, 'Lav'),
+('Julie Dahl', '070998-6767', 'julie-demo', '1998-09-07', 'Næstved', 'julie@test.dk', '67676767', 'Deltidsansat', 250000, 'Lav'),
+('Thomas Lund', '150785-8989', 'thomas-demo', '1985-07-15', 'Køge', 'thomas@test.dk', '89898989', 'Fuldtidsansat', 590000, 'Middel'),
+('Emma Frederiksen', '011190-9090', 'emma-demo', '1990-11-01', 'Fredericia', 'emma@test.dk', '90909090', 'Fuldtidsansat', 470000, 'Middel');
 
 
 -- ============================================================
 -- PENSION ACCOUNTS
 -- Typisk pensionsbidrag: ca. 12% af løn
--- 8% arbejdsgiver / 4% medarbejder
+-- 8% virksomhed / 4% kunde
 -- ============================================================
 
 INSERT INTO pension_accounts (
@@ -45,8 +46,8 @@ INSERT INTO pension_accounts (
     policy_number,
     current_balance,
     monthly_contribution,
-    employer_contribution,
-    employee_contribution,
+    monthly_company_contribution,
+    monthly_customer_contribution,
     start_date,
     active
 )
@@ -55,10 +56,10 @@ VALUES
 (1, 'PenSam', 'Livrente', 'POL-10002', 210000, 1600, 1000, 600, '2018-04-01', 1),
 
 (2, 'PenSam', 'Ratepension', 'POL-10003', 290000, 3500, 2333, 1167, '2017-01-01', 1),
-(2, 'PenSam', 'Aldersopsparing', 'POL-10004', 65000, 700, 0, 700, '2021-01-01', 1),
+(2, 'PFA Pension', 'Aldersopsparing', 'POL-10004', 65000, 700, 0, 700, '2021-01-01', 1),
 
 (3, 'PenSam', 'Livrente', 'POL-10005', 880000, 6200, 4133, 2067, '2010-01-01', 1),
-(3, 'PenSam', 'Ratepension', 'POL-10006', 430000, 0, 0, 0, '2012-03-01', 1),
+(3, 'Danica Pension', 'Ratepension', 'POL-10006', 430000, 0, 0, 0, '2012-03-01', 1),
 
 (4, 'PenSam', 'Aldersopsparing', 'POL-10007', 45000, 1800, 1200, 600, '2022-01-01', 1),
 
@@ -66,24 +67,24 @@ VALUES
 (5, 'PenSam', 'Livrente', 'POL-10009', 260000, 900, 600, 300, '2016-06-01', 1),
 
 (6, 'PenSam', 'Livrente', 'POL-10010', 1400000, 7000, 4667, 2333, '2001-01-01', 1),
-(6, 'PenSam', 'Ratepension', 'POL-10011', 620000, 0, 0, 0, '2006-01-01', 1),
+(6, 'Velliv', 'Ratepension', 'POL-10011', 620000, 0, 0, 0, '2006-01-01', 1),
 
 (7, 'PenSam', 'Ratepension', 'POL-10012', 310000, 3800, 2533, 1267, '2019-01-01', 1),
 
 (8, 'PenSam', 'Livrente', 'POL-10013', 1800000, 7800, 5200, 2600, '1998-01-01', 1),
-(8, 'PenSam', 'Ratepension', 'POL-10014', 850000, 0, 0, 0, '2003-01-01', 1),
+(8, 'PensionDanmark', 'Ratepension', 'POL-10014', 850000, 0, 0, 0, '2003-01-01', 1),
 
 (9, 'PenSam', 'Ratepension', 'POL-10015', 140000, 3200, 2133, 1067, '2020-01-01', 1),
 (9, 'PenSam', 'Aldersopsparing', 'POL-10016', 35000, 500, 0, 500, '2022-01-01', 1),
 
 (10, 'PenSam', 'Livrente', 'POL-10017', 970000, 6500, 4333, 2167, '2008-01-01', 1),
-(10, 'PenSam', 'Ratepension', 'POL-10018', 510000, 0, 0, 0, '2011-01-01', 1),
+(10, 'Nordea Pension', 'Ratepension', 'POL-10018', 510000, 0, 0, 0, '2011-01-01', 1),
 
 (11, 'PenSam', 'Ratepension', 'POL-10019', 560000, 4250, 2833, 1417, '2015-01-01', 1),
 (11, 'PenSam', 'Livrente', 'POL-10020', 240000, 850, 567, 283, '2017-01-01', 1),
 
 (12, 'PenSam', 'Livrente', 'POL-10021', 2100000, 8200, 5467, 2733, '1996-01-01', 1),
-(12, 'PenSam', 'Ratepension', 'POL-10022', 900000, 0, 0, 0, '2001-01-01', 1),
+(12, 'AP Pension', 'Ratepension', 'POL-10022', 900000, 0, 0, 0, '2001-01-01', 1),
 
 (13, 'PenSam', 'Aldersopsparing', 'POL-10023', 28000, 1700, 1133, 567, '2023-01-01', 1),
 
@@ -91,7 +92,7 @@ VALUES
 (14, 'PenSam', 'Livrente', 'POL-10025', 300000, 1000, 667, 333, '2015-01-01', 1),
 
 (15, 'PenSam', 'Ratepension', 'POL-10026', 360000, 3900, 2600, 1300, '2018-01-01', 1),
-(15, 'PenSam', 'Aldersopsparing', 'POL-10027', 75000, 700, 0, 700, '2021-01-01', 1);
+(15, 'PFA Pension', 'Aldersopsparing', 'POL-10027', 75000, 700, 0, 700, '2021-01-01', 1);
 
 
 -- ============================================================
@@ -416,8 +417,8 @@ VALUES
 INSERT INTO contribution_history (
     pension_account_id,
     contribution_date,
-    employer_amount,
-    employee_amount,
+    company_amount,
+    customer_amount,
     total_amount
 )
 VALUES
@@ -480,4 +481,3 @@ VALUES
 (13, 'Nærmeste pårørende', 'Standard', 100, 1),
 (14, 'Sara Lund', 'Ægtefælle', 100, 1),
 (15, 'Nærmeste pårørende', 'Standard', 100, 1);
-

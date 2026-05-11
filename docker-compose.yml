@@ -1,0 +1,17 @@
+name: pension-ai
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    container_name: pension-ai-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "StrongPassword123"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    volumes:
+      - pension_ai_sqlserver_data:/var/opt/mssql
+
+volumes:
+  pension_ai_sqlserver_data:

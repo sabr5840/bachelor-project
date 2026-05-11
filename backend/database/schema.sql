@@ -23,6 +23,7 @@ CREATE TABLE customers (
     customer_id INT IDENTITY(1,1) PRIMARY KEY,
     full_name VARCHAR(100) NOT NULL,
     cpr_number VARCHAR(20) NOT NULL UNIQUE,
+    mitid_user_id VARCHAR(48) NOT NULL UNIQUE,
     birth_date DATE NOT NULL,
     address VARCHAR(255),
     email VARCHAR(100),
@@ -42,8 +43,8 @@ CREATE TABLE pension_accounts (
     policy_number VARCHAR(50) UNIQUE,
     current_balance DECIMAL(14,2),
     monthly_contribution DECIMAL(12,2),
-    employer_contribution DECIMAL(12,2),
-    employee_contribution DECIMAL(12,2),
+    monthly_company_contribution DECIMAL(12,2),
+    monthly_customer_contribution DECIMAL(12,2),
     start_date DATE,
     active BIT DEFAULT 1,
 
@@ -131,8 +132,8 @@ CREATE TABLE contribution_history (
     contribution_id INT IDENTITY(1,1) PRIMARY KEY,
     pension_account_id INT NOT NULL,
     contribution_date DATE NOT NULL,
-    employer_amount DECIMAL(12,2),
-    employee_amount DECIMAL(12,2),
+    company_amount DECIMAL(12,2),
+    customer_amount DECIMAL(12,2),
     total_amount DECIMAL(12,2),
 
     FOREIGN KEY (pension_account_id) REFERENCES pension_accounts(pension_account_id)
@@ -166,8 +167,8 @@ SELECT
     p.policy_number,
     p.current_balance,
     p.monthly_contribution,
-    p.employer_contribution,
-    p.employee_contribution,
+    p.monthly_company_contribution,
+    p.monthly_customer_contribution,
     p.start_date,
     p.active AS pension_active,
 
@@ -271,8 +272,8 @@ SELECT
     p.pension_type,
     p.policy_number,
     ch.contribution_date,
-    ch.employer_amount,
-    ch.employee_amount,
+    ch.company_amount,
+    ch.customer_amount,
     ch.total_amount
 FROM customers c
 LEFT JOIN pension_accounts p

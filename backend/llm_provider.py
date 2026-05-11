@@ -2,7 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from google import genai
-from mistralai import Mistral
+from mistralai.client import Mistral
 
 load_dotenv()
 
@@ -101,4 +101,3 @@ def generate_llm_response(prompt: str, force_fail: bool = False) -> dict:
                 "provider": None,
                 "fallback_used": True,
             }
-

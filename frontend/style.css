@@ -245,8 +245,17 @@ body {
 .chat-close {
   border: none;
   background: transparent;
-  font-size: 28px;
+  color: #111111;
+  font-size: 30px;
+  line-height: 1;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
   cursor: pointer;
+}
+
+.chat-close:hover {
+  background: #e5f2e9;
 }
 
 .chat-box {
@@ -373,6 +382,12 @@ body {
   font-size: 15px;
   font-weight: 600;
   color: #004230;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.logged-user:hover {
+  text-decoration: underline;
 }
 
 /* Pension dashboard */
@@ -534,6 +549,51 @@ body {
 
 .login-back-link:hover {
   background: #e5f2e9;
+}
+
+.mitid-user-id-panel {
+  width: 520px;
+  border: 1px solid #cbded4;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 4px 0 10px;
+  background: #f7fbf8;
+}
+
+.mitid-user-id-panel label {
+  display: block;
+  color: #004230;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.mitid-user-id-panel input {
+  width: 100%;
+  border: 1px solid #b8cfc4;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #222222;
+  font-size: 15px;
+  padding: 11px 12px;
+}
+
+.mitid-user-id-panel input.invalid {
+  border-color: #b42318;
+  background: #fff7f7;
+}
+
+.mitid-user-id-panel p {
+  margin: 10px 0 0;
+  color: #55625d;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.mitid-user-id-panel .mitid-user-error {
+  min-height: 18px;
+  color: #b42318;
+  font-weight: 700;
 }
 
 .mitid-session-header {
@@ -756,6 +816,75 @@ body {
   background: white;
   color: #004230;
   border: 2px solid #004230;
+}
+
+.session-timeout-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.46);
+}
+
+.session-timeout-overlay.open {
+  display: flex;
+}
+
+.session-timeout-dialog {
+  width: min(460px, 100%);
+  background: #ffffff;
+  color: #1f2a25;
+  border-radius: 8px;
+  padding: 28px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+}
+
+.session-timeout-dialog h2 {
+  margin: 0 0 12px;
+  color: #004230;
+  font-size: 24px;
+}
+
+.session-timeout-dialog p {
+  margin: 0 0 14px;
+  line-height: 1.45;
+}
+
+.session-timeout-countdown {
+  padding: 12px;
+  border-radius: 8px;
+  background: #e5f2e9;
+  color: #004230;
+}
+
+.session-timeout-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.session-primary-btn,
+.session-secondary-btn {
+  flex: 1;
+  border-radius: 999px;
+  padding: 13px 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.session-primary-btn {
+  border: none;
+  background: #004230;
+  color: #ffffff;
+}
+
+.session-secondary-btn {
+  border: 2px solid #004230;
+  background: #ffffff;
+  color: #004230;
 }
 
 /* Responsive dashboard */
