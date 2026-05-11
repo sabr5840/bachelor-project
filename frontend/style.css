@@ -245,8 +245,17 @@ body {
 .chat-close {
   border: none;
   background: transparent;
-  font-size: 28px;
+  color: #111111;
+  font-size: 30px;
+  line-height: 1;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
   cursor: pointer;
+}
+
+.chat-close:hover {
+  background: #e5f2e9;
 }
 
 .chat-box {
@@ -373,6 +382,12 @@ body {
   font-size: 15px;
   font-weight: 600;
   color: #004230;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.logged-user:hover {
+  text-decoration: underline;
 }
 
 /* Pension dashboard */

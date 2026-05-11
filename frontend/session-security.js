@@ -15,9 +15,9 @@
     sessionStorage.removeItem("customer_full_name");
     sessionStorage.removeItem("open_chat_after_login");
     sessionStorage.removeItem("chat_return_url");
-    sessionStorage.removeItem("chat_widget_open");
     sessionStorage.removeItem("chat_messages");
     sessionStorage.removeItem("chat_login_completed");
+    sessionStorage.removeItem("chat_logged_out_notice");
 
     localStorage.removeItem("customer_id");
     localStorage.removeItem("session_id");
@@ -48,6 +48,7 @@
     }
 
     clearSession();
+    sessionStorage.setItem("chat_logged_out_notice", "true");
     redirectAfterLogout();
   }
 

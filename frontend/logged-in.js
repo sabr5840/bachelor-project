@@ -46,6 +46,37 @@ if (shouldKeepChatOpen) {
   chatWidget.classList.add("open");
 }
 
+async function restoreAuthenticatedChatHistory() {
+  if (!sessionId) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/session/chat-history?session_id=${encodeURIComponent(sessionId)}`);
+    if (!response.ok) {
+      return;
+    }
+
+    const data = await response.json();
+    const messages = data.messages || [];
+    if (!messages.length) {
+      return;
+    }
+
+    chatBox.innerHTML = "";
+    messages.forEach((message) => {
+      addMessageToChat(message.role === "user" ? "user" : "bot", message.content);
+    });
+
+    chatHistory = messages.map((message) => ({
+      role: message.role === "user" ? "user" : "assistant",
+      content: message.content
+    }));
+  } catch (error) {
+    console.error("Kunne ikke hente gemt chathistorik:", error);
+  }
+}
+
 input.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     sendMessage();
@@ -205,4 +236,5 @@ function addMessageToChat(sender, text) {
 
 if (sessionId) {
   loadDashboard();
+  restoreAuthenticatedChatHistory();
 }

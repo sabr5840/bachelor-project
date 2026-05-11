@@ -11,6 +11,7 @@ const customerFullName = sessionStorage.getItem("customer_full_name") || custome
 const shouldOpenChat = sessionStorage.getItem("open_chat_after_login") === "true";
 const shouldKeepChatOpen = sessionStorage.getItem("chat_widget_open") === "true";
 const shouldShowLoginCompletedMessage = sessionStorage.getItem("chat_login_completed") === "true";
+const shouldShowLoggedOutNotice = sessionStorage.getItem("chat_logged_out_notice") === "true";
 const topbarRight = document.querySelector(".topbar-right");
 const isLoginPage = document.body.classList.contains("login-body");
 
@@ -47,6 +48,48 @@ function restoreChatMessages() {
   }));
 
   return true;
+}
+
+async function restoreAuthenticatedChatHistory() {
+  if (!sessionId || !chatBox) {
+    return false;
+  }
+
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/session/chat-history?session_id=${encodeURIComponent(sessionId)}`);
+    if (!response.ok) {
+      return false;
+    }
+
+    const data = await response.json();
+    const messages = data.messages || [];
+    if (!messages.length) {
+      return false;
+    }
+
+    chatBox.innerHTML = "";
+    if (shouldShowLoginCompletedMessage) {
+      appendMessage(
+        `Du er logget ind igen, ${customerName}. Din seneste samtale er gendannet, så du kan fortsætte herfra.`,
+        "bot",
+        false
+      );
+    }
+
+    messages.forEach((message) => {
+      appendMessage(message.content, message.role === "user" ? "user" : "bot", false);
+    });
+
+    chatHistory = messages.map((message) => ({
+      role: message.role === "user" ? "user" : "assistant",
+      content: message.content
+    }));
+
+    return true;
+  } catch (error) {
+    console.error("Kunne ikke hente gemt chathistorik:", error);
+    return false;
+  }
 }
 
 function getChatSuggestionsContainer() {
@@ -105,10 +148,12 @@ function setChatSuggestions(isLoggedIn) {
 
 if (sessionId && customerName && topbarRight) {
   const loginLink = topbarRight.querySelector(".login-btn");
-  const loggedUser = document.createElement("span");
+  const loggedUser = document.createElement("a");
 
   loggedUser.classList.add("logged-user");
   loggedUser.textContent = customerFullName;
+  loggedUser.href = "logged-in.html";
+  loggedUser.setAttribute("aria-label", "Gå til din profilside");
 
   if (loginLink) {
     loginLink.textContent = "Log ud";
@@ -124,6 +169,16 @@ if (sessionId && customerName && topbarRight) {
 }
 
 const restoredChat = restoreChatMessages();
+
+if (!sessionId && shouldShowLoggedOutNotice && chatBox) {
+  chatBox.innerHTML = "";
+  appendMessage(
+    "Du er nu logget ud. Af hensyn til dine pensionsoplysninger er samtalen skjult. Hvis du logger ind igen inden for kort tid, kan du fortsætte samtalen.",
+    "bot",
+    false
+  );
+  sessionStorage.removeItem("chat_logged_out_notice");
+}
 
 if (
   sessionId &&
@@ -166,6 +221,10 @@ if (sessionId && customerName && chatBox) {
 
 setChatSuggestions(Boolean(sessionId && customerName));
 
+if (sessionId) {
+  restoreAuthenticatedChatHistory();
+}
+
 if (chatToggle && chatWidget) {
   chatToggle.addEventListener("click", () => {
     chatWidget.classList.toggle("open");
@@ -174,12 +233,10 @@ if (chatToggle && chatWidget) {
   });
 }
 
-if ((shouldOpenChat || (shouldKeepChatOpen && !isLoginPage)) && chatWidget) {
+if ((shouldOpenChat || shouldKeepChatOpen) && chatWidget) {
   chatWidget.classList.add("open");
   sessionStorage.setItem("chat_widget_open", "true");
   sessionStorage.removeItem("open_chat_after_login");
-} else if (isLoginPage) {
-  sessionStorage.setItem("chat_widget_open", "false");
 }
 
 if (chatClose && chatWidget) {
@@ -194,7 +251,6 @@ const loginBtn = document.getElementById("loginBtn");
 if (loginBtn) {
   loginBtn.addEventListener("click", () => {
     const returnUrl = sessionStorage.getItem("chat_return_url") || window.location.href;
-    sessionStorage.setItem("chat_widget_open", "false");
     sessionStorage.setItem("chat_return_url", returnUrl);
     window.location.href = `login.html?returnTo=${encodeURIComponent(returnUrl)}`;
   });

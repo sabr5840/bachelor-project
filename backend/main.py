@@ -52,7 +52,9 @@ class LogoutRequest(BaseModel):
 
 
 SESSION_TTL_SECONDS = 75 * 60
+CHAT_HISTORY_TTL_SECONDS = 30 * 60
 SESSION_STORE: dict[str, dict[str, object]] = {}
+CHAT_HISTORY_STORE: dict[int, dict[str, object]] = {}
 
 
 def get_session_expiry() -> datetime:
@@ -100,6 +102,42 @@ def refresh_session(session_id: str | None) -> datetime | None:
     expires_at = get_session_expiry()
     session["expires_at"] = expires_at
     return expires_at
+
+
+def cleanup_chat_history() -> None:
+    now = datetime.now(timezone.utc)
+    expired_customer_ids = [
+        customer_id
+        for customer_id, history in CHAT_HISTORY_STORE.items()
+        if history.get("expires_at") <= now
+    ]
+
+    for customer_id in expired_customer_ids:
+        CHAT_HISTORY_STORE.pop(customer_id, None)
+
+
+def get_saved_chat_history(customer_id: int) -> list[dict[str, str]]:
+    cleanup_chat_history()
+    history = CHAT_HISTORY_STORE.get(customer_id)
+    if not history:
+        return []
+
+    return list(history["messages"])
+
+
+def append_saved_chat_message(customer_id: int, role: str, content: str) -> None:
+    cleanup_chat_history()
+    history = CHAT_HISTORY_STORE.setdefault(
+        customer_id,
+        {
+            "messages": [],
+            "expires_at": datetime.now(timezone.utc) + timedelta(seconds=CHAT_HISTORY_TTL_SECONDS),
+        },
+    )
+    messages = history["messages"]
+    messages.append({"role": role, "content": content})
+    history["messages"] = messages[-24:]
+    history["expires_at"] = datetime.now(timezone.utc) + timedelta(seconds=CHAT_HISTORY_TTL_SECONDS)
 
 
 def classify_question(user_text: str) -> str:
@@ -180,6 +218,27 @@ def needs_customer_data(user_text: str) -> bool:
     ]
 
     return any(keyword in text for keyword in personal_keywords)
+
+
+def is_closing_message(user_text: str) -> bool:
+    text = " ".join(user_text.lower().strip().split())
+    text = text.strip(".,!?:;")
+
+    closing_messages = {
+        "tak",
+        "tak for hjælpen",
+        "mange tak",
+        "super tak",
+        "tusind tak",
+        "det var alt",
+        "det var det",
+        "nej tak",
+        "ellers tak",
+        "ikke mere",
+        "ikke lige nu",
+    }
+
+    return text in closing_messages
 
 
 SYSTEM_PROMPT = """
@@ -299,6 +358,15 @@ def session_dashboard(session_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.get("/session/chat-history")
+def session_chat_history(session_id: str):
+    customer_id = get_customer_id_from_session(session_id)
+    if customer_id is None:
+        raise HTTPException(status_code=401, detail="Sessionen er ikke gyldig. Log ind igen.")
+
+    return {"messages": get_saved_chat_history(customer_id)}
+
+
 @app.post("/chat")
 def chat(msg: Message):
     user_text = msg.message.strip()
@@ -313,11 +381,26 @@ def chat(msg: Message):
             f"{m.role}: {m.content}" for m in msg.history[-6:]
         )
 
+        customer_id = get_customer_id_from_session(msg.session_id)
+
+        if is_closing_message(user_text):
+            reply = "Selv tak. Er der andet, jeg kan hjælpe med?"
+
+            if customer_id is not None:
+                append_saved_chat_message(customer_id, "user", user_text)
+                append_saved_chat_message(customer_id, "assistant", reply)
+
+            return {
+                "reply": reply,
+                "sources": [],
+                "provider": None,
+                "fallback_used": False,
+            }
+
         question_type = classify_question(user_text)
         print("Question type:", question_type)
 
         requires_customer_context = question_type == "complex" or needs_customer_data(user_text)
-        customer_id = get_customer_id_from_session(msg.session_id)
 
         if requires_customer_context and customer_id is None:
             return {
@@ -418,8 +501,14 @@ BRUGERENS SPØRGSMÅL:
             force_fail=msg.force_llm_fail,
         )
 
+        reply = llm_result["reply"]
+
+        if customer_id is not None:
+            append_saved_chat_message(customer_id, "user", user_text)
+            append_saved_chat_message(customer_id, "assistant", reply)
+
         return {
-            "reply": llm_result["reply"],
+            "reply": reply,
             "sources": sources,
             "provider": llm_result["provider"],
             "fallback_used": llm_result["fallback_used"],
@@ -428,3 +517,19 @@ BRUGERENS SPØRGSMÅL:
     except Exception as e:
         print("Fejl:", repr(e))
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/debug/chat-history")
+def debug_chat_history():
+    cleanup_chat_history()
+
+    return {
+        "note": "Kun til lokal debugging. Chathistorik ligger kun i backend-memory og forsvinder ved restart/reload.",
+        "count": len(CHAT_HISTORY_STORE),
+        "history": {
+            str(customer_id): {
+                "expires_at": history["expires_at"].isoformat(),
+                "messages": history["messages"],
+            }
+            for customer_id, history in CHAT_HISTORY_STORE.items()
+        },
+    }
