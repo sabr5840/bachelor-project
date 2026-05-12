@@ -5,7 +5,7 @@ import requests
 
 
 URL = "http://127.0.0.1:8000/chat"
-OUTPUT_FILE = Path(__file__).parent / "test_results.json"
+OUTPUT_FILE = Path(__file__).resolve().parents[2] / "results" / "test_results.json"
 
 
 test_cases = [
