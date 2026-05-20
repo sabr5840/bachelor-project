@@ -123,7 +123,6 @@ def build_report(data: dict) -> str:
     summary = data["summary"]
     results = data["results"]
 
-    category_counts = count_by_category(results)
     category_pass_rates = count_passed_by_category(results)
 
     provider_counts = Counter(
