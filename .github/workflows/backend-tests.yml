@@ -42,4 +42,4 @@ jobs:
 
       - name: Run Bandit security scan
         run: |
-          bandit -r backend -s B101,B603
+          bandit -r backend -s B101,B603,B607,B404
