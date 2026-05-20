@@ -47,6 +47,7 @@ print("\nKører guardrail-tests...\n")
 for index, test in enumerate(TEST_CASES, start=1):
     response = requests.post(
         BASE_URL,
+        timeout=10,
         json={
             "message": test["question"]
         }
