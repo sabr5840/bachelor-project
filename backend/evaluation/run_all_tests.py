@@ -1,3 +1,4 @@
+import sys
 import os
 import subprocess
 from pathlib import Path
@@ -27,7 +28,7 @@ def run_test_file(filename: str) -> dict:
     env["DISABLE_RATE_LIMIT"] = "true"
 
     result = subprocess.run(
-        ["python3", str(path)],
+        [sys.executable, str(path)],
         capture_output=True,
         text=True,
         env=env,
