@@ -10,6 +10,7 @@ rate_limited = False
 for i in range(11):
     response = requests.post(
         f"{BASE_URL}/chat",
+        timeout=10,
         json={
             "message": f"Test besked {i}",
             "history": []
