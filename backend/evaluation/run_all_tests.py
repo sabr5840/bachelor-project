@@ -1,3 +1,4 @@
+import os
 import subprocess
 from pathlib import Path
 
@@ -22,10 +23,14 @@ def run_test_file(filename: str) -> dict:
     print(f"Kører: {filename}")
     print("=" * 90)
 
+    env = os.environ.copy()
+    env["DISABLE_RATE_LIMIT"] = "true"
+
     result = subprocess.run(
         ["python3", str(path)],
         capture_output=True,
         text=True,
+        env=env,
     )
 
     print(result.stdout)
@@ -44,6 +49,7 @@ def run_test_file(filename: str) -> dict:
 def main() -> None:
     print("\nKører samlet evaluering af bachelorprojektet")
     print("Backend skal køre på http://127.0.0.1:8000\n")
+    print("Rate limiting er deaktiveret under samlet evaluering.\n")
 
     results = []
 

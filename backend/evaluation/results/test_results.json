@@ -55,7 +55,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Livsrente, også kaldet livsvarig pension, er en pensionsopsparing, der udbetales løbende resten af livet. Formålet er at sikre en stabil indkomst, så man ikke løber tør for pension.",
+      "reply": "Livsrente, også kaldet livsvarig pension, er en pensionsopsparing, der udbetales løbende resten af livet. Formålet er at sikre en stabil indkomst, så man ikke løber tør for pension, uanset hvor gammel man bliver.",
       "error": null
     },
     {
@@ -78,7 +78,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Aldersopsparing er en pensionsopsparing, hvor du ikke får skattefradrag for indbetalinger, men til gengæld kan få pengene udbetalt skattefrit. Den giver fleksibilitet i udbetalingen og bliver normalt ikke modregnet i folkepension.",
+      "reply": "Aldersopsparing er en pensionsopsparing, hvor du ikke får skattefradrag for indbetalinger. Til gengæld er udbetalingen normalt skatte- og afgiftsfri. Den bruges ofte som en fleksibel opsparing til pension og bliver normalt ikke modregnet i folkepensionens tillæg.",
       "error": null
     },
     {
@@ -104,7 +104,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "De tre vigtigste pensionstyper er aldersopsparing, ratepension og livsrente. De adskiller sig især i forhold til skat, udbetaling og fleksibilitet.\n\nHer er de primære forskelle:\n\nAldersopsparing:\n- Ingen fradrag ved indbetaling, men udbetalingen er skattefri.\n- Udbetales fleksibelt som et engangsbeløb eller flere udbetalinger, uden fast varighed.\n- Påvirker normalt ikke folkepensionens tillæg.\n- Er den mest fleksible pensionsopsparing.\n\nRatepension:\n- Giver skattefradrag ved indbetaling, men udbetalingen beskattes som personlig indkomst.\n- Udbetales over en fast periode, typisk 10-30 år.\n- Har en begrænset fleksibilitet i forhold til udbetalingsperioden.\n- Kan påvirke offentlige ydelser.\n\nLivsrente:\n- Giver skattefradrag ved indbetaling, men udbetalingen beskattes som personlig indkomst.\n- Udbetales resten af livet (livsvarig).\n- Er den mindst fleksible, men giver størst økonomisk tryghed med livslang indkomst.\n- Kan påvirke offentlige ydelser.",
+      "reply": "De tre vigtigste pensionstyper – aldersopsparing, ratepension og livsrente – adskiller sig især i forhold til skat, udbetaling og fleksibilitet:\n\nAldersopsparing:\n- Skat: Ingen fradrag ved indbetaling, men udbetalingen er skattefri.\n- Udbetaling: Meget fleksibel, kan udbetales som et engangsbeløb eller flere gange.\n- Påvirkning af offentlige ydelser: Påvirker normalt ikke folkepensionens tillæg.\n\nRatepension:\n- Skat: Du får fradrag for indbetalinger, men udbetalingen beskattes som personlig indkomst.\n- Udbetaling: Udbetales over en fast periode, typisk mellem 10 og 30 år.\n- Påvirkning af offentlige ydelser: Kan påvirke offentlige ydelser (modregning).\n\nLivsrente:\n- Skat: Du får fradrag for indbetalinger, men udbetalingen beskattes som personlig indkomst.\n- Udbetaling: Udbetales resten af livet.\n- Påvirkning af offentlige ydelser: Kan påvirke offentlige ydelser (modregning).\n\nAlle tre typer beskattes løbende af afkastet (PAL-skat). Valget af pensionstype afhænger af ens behov for fradrag nu, skattefri udbetaling senere, eller en livslang indkomst.",
       "error": null
     },
     {
@@ -130,7 +130,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Forskellen på førtidspension, seniorpension og tidlig pension er:\n\n*   **Førtidspension:** Gives til personer med varigt og væsentligt nedsat arbejdsevne.\n*   **Seniorpension:** Til personer tæt på folkepensionsalderen med nedsat arbejdsevne i forhold til seneste job og lang tilknytning til arbejdsmarkedet.\n*   **Tidlig pension (Arne-pension):** Til personer med mange år på arbejdsmarkedet, uden krav om nedsat arbejdsevne.",
+      "reply": "Forskellen er primært grundlaget for at modtage pensionen:\n\nFørtidspension er for personer med varigt og væsentligt nedsat arbejdsevne.\nSeniorpension er for personer tæt på folkepensionsalderen med nedsat arbejdsevne i forhold til deres seneste job og lang tilknytning til arbejdsmarkedet.\nTidlig pension (Arne-pension) bygger på mange år på arbejdsmarkedet og kræver ikke nødvendigvis sygdom eller nedsat arbejdsevne.",
       "error": null
     },
     {
@@ -178,7 +178,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Når din pension bliver udbetalt, afhænger skatten af pensionstypen.\n\nKort forklaring:\nSkatten afhænger af pensionstypen. Udbetalingen indgår i din samlede indkomst, og skatten beregnes ud fra gældende skatteregler.\n\nTrin:\n1. Ratepension og livsrente beskattes som personlig indkomst ved udbetaling.\n2. Aldersopsparing udbetales normalt skattefrit.\n3. Den samlede indkomst, som pensionen bidrager til, afgør din skatteprocent.\n4. Skatten afhænger også af, om der var fradrag ved indbetalingen; pension med fradrag beskattes typisk ved udbetaling, mens pension uden fradrag kan udbetales skattefrit.\n\nForbehold:\nSkatten afhænger af din samlede indkomst.",
+      "reply": "Når du får din pension udbetalt, afhænger skatten af pensionstypen. Nogle pensioner beskattes som personlig indkomst, mens andre kan udbetales skattefrit.\n\nFor eksempel:\n- Ratepension og livsrente beskattes som personlig indkomst.\n- Aldersopsparing udbetales normalt skattefrit.\n\nForskellen afhænger ofte af, om der var fradrag ved indbetaling til pensionen. Udbetalingen indgår i din samlede indkomst, hvilket afgør din skatteprocent.\n\nForbehold: Skatten afhænger af din samlede indkomst, og regler og satser kan ændre sig. Individuelle forhold har stor betydning, og du bør kontakte en rådgiver for personlig vejledning.",
       "error": null
     },
     {
@@ -201,7 +201,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Når du indbetaler til pension, afhænger skatten af pensionstypen. Nogle pensioner giver skattefradrag ved indbetaling, hvilket betyder, at du betaler mindre skat nu. Dette gælder typisk for ratepension og livsrente. Aldersopsparing giver derimod ikke fradrag ved indbetaling.\n\nFradraget afhænger af din indkomst og skatteforhold. Indbetalinger via arbejdsgiver sker ofte før skat, hvilket fungerer som en skattefordel ved indbetaling.",
+      "reply": "Når du indbetaler til pension, afhænger skatten af pensionstypen.\n\nNogle pensioner giver skattefradrag ved indbetaling, hvilket betyder, at du betaler mindre skat nu. Dette gælder normalt for ratepension og livsrente.\n\nAndre pensionstyper, som for eksempel aldersopsparing, giver ikke fradrag ved indbetaling.\n\nIndbetalinger via arbejdsgiver sker ofte automatisk med fradrag. Fradraget afhænger af din indkomst og skatteforhold. Forskellen påvirker, hvornår du betaler skat, da fradrag ved indbetaling ofte betyder skat ved udbetaling, mens manglende fradrag kan betyde skattefri udbetaling.",
       "error": null
     },
     {
@@ -224,7 +224,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Din pensionsopsparing bliver typisk investeret automatisk af dit pensionsselskab.\n\nPengene investeres i forskellige aktiver som:\n- Aktier\n- Obligationer\n- Ejendomme\n- Andre investeringer\n\nFormålet er at skabe afkast over tid, så din samlede opsparing vokser. Sammensætningen af investeringer varierer mellem de forskellige pensionsordninger.",
+      "reply": "Pensionsopsparing investeres typisk i forskellige aktiver som aktier, obligationer, ejendomme og andre investeringer. Sammensætningen af disse investeringer varierer mellem pensionsordningerne.",
       "error": null
     },
     {
@@ -247,7 +247,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Afkast på pension er den gevinst, din pensionsopsparing får gennem investering. Afkastet kan få din opsparing til at vokse over tid.",
+      "reply": "Afkast er den gevinst, din pensionsopsparing får gennem investering. Det er den værdi, din opsparing stiger med.",
       "error": null
     },
     {
@@ -271,7 +271,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Ja, pension kan i nogle tilfælde udbetales før pensionsalderen.\n\nDet kræver særlige betingelser, og det er ikke alle pensionstyper, der kan udbetales før tid. Reglerne er restriktive for at sikre opsparing til pension. Der kan være høj afgift ved førtidig udbetaling, som i nogle tilfælde kan være op til ca. 60 %. Du kan også miste din pensionsopsparing og tilknyttede forsikringer.\n\nFor at få et overblik over, hvad der gælder for din specifikke situation, anbefales det at kontakte dit pensionsselskab.",
+      "reply": "Ja, pension kan i nogle tilfælde udbetales før pensionsalderen, men det kræver særlige betingelser. Det er ikke alle pensionstyper, der kan udbetales før tid.\n\nFor at få et overblik over dine muligheder, bør du kontakte dit pensionsselskab.",
       "error": null
     },
     {
@@ -295,7 +295,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Ja, nogle pensionstyper kan udbetales som et engangsbeløb. Dette gælder for eksempel for Aldersopsparing.\n\nUdbetalingens form afhænger dog af den konkrete pensionstype.",
+      "reply": "Ja, nogle pensionstyper kan udbetales som et engangsbeløb. Det afhænger af din pensionsordning og pensionstype. For eksempel kan en aldersopsparing udbetales som et engangsbeløb, og ved genkøb af pension får man også opsparingen udbetalt som et engangsbeløb.",
       "error": null
     },
     {
@@ -320,7 +320,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Når du skifter job, kan din pensionsordning ændre sig. Din gamle pensionsordning stopper med at få indbetalinger, og du får typisk en ny pensionsordning gennem din nye arbejdsgiver. Dækninger og forsikringer kan også ændre sig.\n\nFor at få overblik, kan du:\n1. Logge ind på din pensionsoversigt.\n2. Tjekke din nye pensionsordning fra din arbejdsgiver.\n3. Finde oplysninger om din gamle pension.\n4. Tage stilling til, om du vil samle eller beholde dine ordninger.\n\nDet afhænger af din pensionsordning.",
+      "reply": "Når du skifter job, kan din pensionsordning ændre sig. Det er vigtigt at få overblik over din nye pension og tage stilling til, hvad der skal ske med din gamle ordning.\n\nTypisk får du en ny pensionsordning gennem din nye arbejdsgiver, og indbetalingerne til din gamle pensionsordning stopper. Du kan ende med at have flere pensionsopsparinger forskellige steder, og dine dækninger og forsikringer kan ændre sig.\n\nDu bør:\n1.  Få overblik over din nye pensionsordning.\n2.  Tjekke, hvad der sker med din gamle pension.\n3.  Vurdere, om du vil samle dine pensioner.\n4.  Gennemgå dine forsikringer.\n\nHvad der sker, afhænger af din pensionsordning.",
       "error": null
     },
     {
@@ -345,7 +345,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Hvis du bliver syg, kan det påvirke både din indkomst og din pension. Din pensionsordning kan indeholde dækninger, der hjælper økonomisk under sygdom.\n\nDu bør:\n1. Log ind på din pensionsordning.\n2. Tjek dine dækninger ved sygdom.\n3. Anmeld sygdom til pensionsselskabet, hvis relevant.\n4. Følg op på behandling og udbetaling.\n\nDækning ved sygdom afhænger af din pensionsordning og kan variere. Hvis du er i tvivl om dine dækninger eller forventer længerevarende sygdom, bør du kontakte PenSam for rådgivning.",
+      "reply": "Hvis du bliver syg, kan det påvirke både din indkomst og din pension. Din pensionsordning kan indeholde dækninger, der hjælper økonomisk under sygdom.\n\nDu bør:\n1. Logge ind på din pensionsordning.\n2. Tjekke dine dækninger ved sygdom.\n3. Anmelde sygdom til pensionsselskabet (hvis relevant).\n4. Følge op på behandling og udbetaling.\n\nDækning ved sygdom afhænger af din pensionsordning og kan variere.",
       "error": null
     },
     {
@@ -368,7 +368,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "For at anmelde kritisk sygdom skal du:\n\n1.  Logge ind på din pensionsordning.\n2.  Tjekke din dækning for kritisk sygdom.\n3.  Anmelde sygdom til pensionsselskabet hos PenSam.\n4.  Indsende dokumentation og følge op på sagen.",
+      "reply": "For at anmelde kritisk sygdom skal du:\n\n1.  Logge ind på din pensionsordning.\n2.  Tjekke din dækning for kritisk sygdom.\n3.  Anmelde sygdom til pensionsselskabet.\n4.  Indsende nødvendig dokumentation og følge op på sagen.\n\nDu kan kontakte os, så snart du har fået diagnosen, hvis du er i tvivl om din dækning, eller hvis du vil anmelde sygdom.",
       "error": null
     },
     {
@@ -393,7 +393,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Ja, du kan vælge at samle dine pensionsopsparinger, hvis du har flere forskellige steder. Det kan gøre det nemmere at få overblik og administrere din pension.\n\nDu skal typisk:\n- Få overblik over alle dine pensionsordninger.\n- Undersøge vilkår for hver ordning.\n- Vurdere om det giver mening at samle pension.\n- Kontakte pensionsselskabet for at gennemføre flytning.\n\nDet afhænger af din pensionsordning, og flytning kan have konsekvenser, da dækning og vilkår varierer.",
+      "reply": "Ja, du kan vælge at samle dine pensionsopsparinger, hvis du har flere pensionsordninger forskellige steder. Det kan gøre det nemmere at få overblik og administrere din pension.\n\nHvad du skal gøre:\n1.  Få overblik over alle dine pensionsordninger.\n2.  Undersøg vilkår for hver ordning.\n3.  Vurder om det giver mening at samle pension.\n4.  Kontakt PenSam for at gennemføre flytning.\n\nDer kan være forskel på vilkår, omkostninger og dækninger mellem pensionsordninger, så det er vigtigt at undersøge dette, før du samler pension.",
       "error": null
     },
     {
@@ -417,7 +417,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Hvem der får din pension, hvis du dør, afhænger af, hvem der er indsat som begunstiget i din pensionsordning.\n\nBegunstigelse er en bestemmelse i din pensionsordning, der angiver, hvem der skal modtage pengene ved dødsfald.\n\nDen kan være:\n- Navngiven: Du har selv valgt og registreret en specifik person eller flere personer.\n- Standardbegunstigelse: Hvis du ikke har valgt en specifik begunstiget, følger mange pensionsordninger en standardbegunstigelse, der typisk er \"nærmeste pårørende\". Dette kan omfatte ægtefælle, samlever eller børn i en bestemt rækkefølge, afhængigt af ordningens regler.\n\nBegunstigelsen i din pensionsordning har ofte forrang frem for et testamente, da pensionen ofte udbetales uden om dødsboet.\n\nDet er vigtigt at tjekke og opdatere din begunstigelse ved større ændringer i livet, fx ægteskab, skilsmisse eller når du får børn.",
+      "reply": "Hvem der får din pension, hvis du dør, afhænger af begunstigelsen i din pensionsordning. Begunstigelsen angiver, hvem der skal modtage pengene.\n\nDen kan enten være:\n- Navngiven: Du har selv udpeget en eller flere personer.\n- Standard: Din pensionsordning har en standardbegunstigelse, typisk \"nærmeste pårørende\". Dette kan omfatte ægtefælle, samlever eller børn, afhængigt af ordningens regler.\n\nDu kan ofte selv ændre begunstigelsen i din pensionsordning.",
       "error": null
     },
     {
@@ -463,7 +463,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "ATP Livslang Pension er en obligatorisk pensionsordning, som næsten alle i Danmark indbetaler til. Den fungerer som et supplement til folkepension og udbetales resten af livet fra folkepensionsalderen. Du indbetaler automatisk via dit arbejde eller offentlige ydelser.",
+      "reply": "ATP (Arbejdsmarkedets Tillægspension) er en obligatorisk pensionsordning, som næsten alle i Danmark indbetaler til. Den fungerer som et supplement til folkepension og udbetales resten af livet.",
       "error": null
     },
     {
@@ -611,7 +611,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Pension i rater, også kaldet ratepension, er en pensionsopsparing, hvor pengene udbetales løbende over en begrænset periode, typisk mellem 10 og 30 år. Udbetalingen beskattes som personlig indkomst.",
+      "reply": "Pension i rater er en pensionsopsparing, hvor pengene udbetales løbende over en begrænset periode, typisk mellem 10 og 30 år. Denne type pension kaldes også Ratepension.",
       "error": null
     },
     {
@@ -634,7 +634,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Pensionsafkastskat, også kaldet PAL-skat, er skat af det afkast, din pensionsopsparing giver, mens pengene står investeret. Skatten betales løbende.",
+      "reply": "Pensionsafkastskat, også kaldet PAL-skat, er skat af det afkast, din pensionsopsparing giver, mens pengene står investeret. Skatten betales løbende og er adskilt fra den skat, du eventuelt betaler ved udbetaling.",
       "error": null
     },
     {
@@ -657,7 +657,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Hvis du bliver arbejdsløs, stopper din arbejdsgivers indbetaling til pension. Din pensionsordning fortsætter uden nye indbetalinger, og forsikringer kan ændre sig eller bortfalde.",
+      "reply": "Hvis du bliver arbejdsløs, stopper din arbejdsgivers indbetaling til pension. Din pensionsordning fortsætter uden nye indbetalinger, men forsikringer kan ændre sig eller bortfalde.",
       "error": null
     },
     {
@@ -682,7 +682,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Ved skilsmisse skal pension som udgangspunkt ikke deles på samme måde som formue, men der kan være undtagelser. Det er vigtigt at få overblik over dine pensionsordninger og forstå, hvad der gælder i din situation.\n\nHvad du skal gøre:\n1.  Log ind på din pensionsoversigt.\n2.  Tjek dine pensionsordninger og dækninger.\n3.  Opdater begunstigelse efter skilsmisse.\n4.  Kontakt PenSam ved behov for ændringer.\n\nForbehold: Dette afhænger af din pensionsordning.",
+      "reply": "Ved skilsmisse skal pension som udgangspunkt ikke deles på samme måde som formue, men der kan være undtagelser. Det er vigtigt at få overblik over dine pensionsordninger og forstå, hvad der gælder i din situation.\n\nHvad du skal gøre:\n1. Få overblik over dine pensionsordninger.\n2. Undersøg hvordan dine ordninger behandles ved skilsmisse.\n3. Opdater begunstigelse, da dette er meget vigtigt.\n4. Overvej at søge rådgivning.\n\nDu kan også følge disse trin:\n1. Log ind på din pensionsoversigt.\n2. Tjek dine pensionsordninger og dækninger.\n3. Opdater begunstigelse efter skilsmisse.\n4. Kontakt PenSam ved behov for ændringer.\n\nDet afhænger af din pensionsordning.",
       "error": null
     },
     {
@@ -707,7 +707,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Når du får børn, er det en god idé at gennemgå din pensionsordning. Det er især vigtigt at opdatere begunstigelsen og tjekke dine forsikringsdækninger, så din familie er økonomisk sikret, hvis der sker dig noget.\n\nHer er de trin, du kan følge:\n1. Log ind på din pensionsordning.\n2. Tjek din nuværende begunstigelse.\n3. Opdater begunstigelse til din familie.\n4. Gennemgå og eventuelt justér forsikringsdækning.\n\nDet afhænger af din pensionsordning, hvilke dækninger og rettigheder du har.",
+      "reply": "Når du får børn, er det en god idé at gennemgå din pensionsordning. Især begunstigelse og forsikringsdækninger bør opdateres, så din familie er økonomisk sikret.\n\nFor at gøre dette, kan du:\n1. Logge ind på din pensionsordning.\n2. Tjekke din nuværende begunstigelse.\n3. Opdatere begunstigelse til din familie.\n4. Gennemgå og eventuelt justere dine forsikringsdækninger.\n\nForbehold: Dette afhænger af din pensionsordning, og dækning samt rettigheder varierer.",
       "error": null
     },
     {
@@ -732,7 +732,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Hvis en pårørende dør, kan der være pension og forsikringer, der skal udbetales. Det er vigtigt at få overblik og kontakte pensionsselskabet for at sikre, at udbetalingen sker korrekt.\n\nDu bør:\n1.  Kontakte pensionsselskabet.\n2.  Oplyse om dødsfaldet.\n3.  Indsende nødvendig dokumentation.\n4.  Afvente behandling og udbetaling.\n\nUdbetalingen afhænger af den afdødes pensionsordning.",
+      "reply": "Hvis en pårørende dør, kan der være pension og forsikringer, der skal udbetales til de efterladte. Det er vigtigt at få overblik og kontakte pensionsselskabet for at sikre, at udbetalingen sker korrekt.\n\nDe typiske trin er:\n1. Kontakt pensionsselskabet.\n2. Oplys om dødsfaldet.\n3. Indsend nødvendig dokumentation.\n4. Afvent behandling og udbetaling.\n\nUdbetalingen afhænger af begunstigelse og den specifikke pensionsordning.",
       "error": null
     },
     {
@@ -757,7 +757,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Hvis du kommer i fleksjob, arbejder du med nedsat arbejdsevne. Det kan påvirke din pension, fordi din løn og indbetalinger ændrer sig.\n\nDu skal gøre følgende:\n1. Log ind på din pensionsoversigt\n2. Tjek din indbetaling via fleksjob\n3. Gennemgå dine dækninger\n4. Kontakt PenSam ved behov for ændringer\n\nDet afhænger af din pensionsordning.",
+      "reply": "Hvis du kommer i fleksjob, arbejder du med nedsat arbejdsevne. Det kan påvirke din pension, fordi din løn og indbetalinger ændrer sig.\n\nDu kan gøre følgende:\n1.  Log ind på din pensionsoversigt.\n2.  Tjek din indbetaling via fleksjob.\n3.  Gennemgå dine dækninger.\n4.  Kontakt PenSam ved behov for ændringer.\n\nVær opmærksom på, at indbetaling og dækning varierer.",
       "error": null
     },
     {
@@ -782,7 +782,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Seniorpension er en offentlig ydelse til personer tæt på pensionsalderen med nedsat arbejdsevne. Det påvirker din økonomi og din pensionsopsparing, fordi du ikke længere arbejder på samme måde.\n\nHvis du får seniorpension, bør du:\n1.  Få overblik over dine pensionsordninger.\n2.  Tjekke hvornår dine pensioner kan udbetales.\n3.  Gennemgå din samlede økonomi.\n4.  Planlægge din overgang til pension.\n\nDu kan logge ind på din pensionsoversigt for at få et overblik og derefter kontakte os hos PenSam for planlægning af din pension.\n\nDine muligheder afhænger af din pensionsordning og de offentlige regler.",
+      "reply": "Hvis du får seniorpension, er det en offentlig ydelse til dig, der er tæt på pensionsalderen og har nedsat arbejdsevne. Dette påvirker din økonomi og pensionsopsparing, da du ikke længere arbejder på samme måde.\n\nDu bør gøre følgende:\n1.  Log ind på din pensionsoversigt.\n2.  Få et overblik over dine pensionsordninger.\n3.  Tjek hvornår dine pensioner kan udbetales.\n4.  Kontakt PenSam for planlægning af din pension.\n\nDet afhænger af din pensionsordning.",
       "error": null
     },
     {
@@ -805,7 +805,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Når du vil starte din pension, skal du selv tage initiativ til udbetalingen. Det er vigtigt at vælge, hvordan og hvornår din pension skal udbetales.\n\nDu skal:\n- Få overblik over dine pensionsordninger.\n- Vælge hvornår du vil starte udbetaling.\n- Vælge hvordan pensionen skal udbetales.\n- Planlægge din samlede økonomi.\n\nDu kan logge ind på din pensionsoversigt for at få overblik og vælge udbetalingsform og tidspunkt. Derefter skal du kontakte PenSam for at starte udbetalingen.",
+      "reply": "Når du vil starte din pension, skal du selv tage initiativ til udbetalingen. Du skal få overblik over dine pensionsordninger, vælge hvornår og hvordan din pension skal udbetales, og derefter kontakte PenSam for at starte udbetalingen.",
       "error": null
     },
     {
@@ -828,7 +828,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Du kan kontakte os hos PenSam ved at ringe, skrive via kontaktformular eller logge ind for at få personlig hjælp. Du kan starte med at gå til PenSams hjemmeside og vælge \"Kontakt\" eller logge ind.",
+      "reply": "Du kan kontakte PenSam, hvis du har spørgsmål til din pension eller har brug for hjælp. Du kan typisk ringe, skrive via kontaktformular eller logge ind for at få personlig hjælp.\n\nDu kan starte med at gå til PenSams hjemmeside og vælge \"Kontakt\" eller logge ind.",
       "error": null
     },
     {
@@ -851,7 +851,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Folkepensionsalderen er den alder, hvor du tidligst kan få folkepension. Den afhænger af dit fødselsår.\n\nI dag er folkepensionsalderen 67 år, men den bliver gradvist hævet over tid. For eksempel forventes den at stige til 68 år fra 2030.\n\nDu kan tjekke din egen præcise folkepensionsalder online.",
+      "reply": "Folkepensionsalderen er den alder, hvor du tidligst kan få folkepension. Den afhænger af dit fødselsår og bliver løbende hævet.\n\nI dag er folkepensionsalderen 67 år. Du kan først få folkepension fra måneden efter, du når folkepensionsalderen.\n\nDu kan tjekke din præcise folkepensionsalder på borger.dk.",
       "error": null
     },
     {
@@ -874,7 +874,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Tidlig pension er en offentlig ordning, der giver mulighed for at gå på pension op til 3 år før folkepensionsalderen. Ordningen er målrettet personer, der har haft et langt arbejdsliv, og den er ikke afhængig af sygdom eller nedsat arbejdsevne. Pensionen er en fast ydelse, der udbetales af Udbetaling Danmark frem til folkepensionsalderen.",
+      "reply": "Tidlig pension er en offentlig ordning, også kaldet Arne-pension, der giver mulighed for at gå på pension op til 3 år før folkepensionsalderen. Ordningen er målrettet personer, der har haft et langt arbejdsliv, og den er ikke afhængig af sygdom eller nedsat arbejdsevne. Den udbetales af Udbetaling Danmark som en fast ydelse frem til folkepensionsalderen.",
       "error": null
     },
     {
@@ -897,7 +897,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Seniorpension er en offentlig pension for personer, der er tæt på folkepensionsalderen og har en varigt nedsat arbejdsevne efter et langt arbejdsliv. Den giver mulighed for at trække sig tidligere tilbage fra arbejdsmarkedet.",
+      "reply": "Seniorpension er en offentlig pension til personer, der er tæt på folkepensionsalderen og har en varigt nedsat arbejdsevne efter et langt arbejdsliv. Den giver mulighed for at trække sig tidligere tilbage fra arbejdsmarkedet.",
       "error": null
     },
     {
@@ -920,7 +920,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Førtidspension er en offentlig ydelse til personer, der ikke kan arbejde på grund af varigt og væsentligt nedsat arbejdsevne. Det er kommunen, der vurderer og godkender, om man kan få førtidspension.",
+      "reply": "Førtidspension er en offentlig ydelse til personer, hvis arbejdsevne er varigt og væsentligt nedsat, og som derfor ikke kan arbejde.",
       "error": null
     },
     {
@@ -943,7 +943,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Modregning betyder, at din pension kan blive sat ned, hvis du har anden indkomst. Det gælder især pensionstillæg i folkepension og visse andre offentlige ydelser.",
+      "reply": "Modregning betyder, at din pension kan blive sat ned, hvis du har anden indkomst. Dette gælder især for folkepensionens pensionstillæg og visse andre offentlige ydelser.",
       "error": null
     },
     {
@@ -966,7 +966,7 @@
       "fallback_used": false,
       "status_code": 200,
       "passed": true,
-      "reply": "Hvis du flytter til udlandet, kan beskatning af din pension ændre sig.\n\nDet afhænger af:\n- Hvilket land du flytter til.\n- Hvilken type pension du får udbetalt.\n- Om Danmark har en dobbeltbeskatningsaftale med landet.\n- Din skattepligt i Danmark og i udlandet.\n\nSkat i udlandet er kompleks og afhænger af din individuelle situation. Det anbefales at undersøge skattereglerne, før du flytter, og kontakte Skattestyrelsen eller en rådgiver for specifik vejledning.",
+      "reply": "Hvis du flytter til udlandet, kan beskatning af din pension ændre sig. Det afhænger af det land, du bor i, hvilken type pension du får udbetalt, og om Danmark har en dobbeltbeskatningsaftale med landet. Din skattepligt til Danmark kan også ændre sig fra fuld til begrænset skattepligt.\n\nDanmark har aftaler med mange lande for at undgå dobbeltbeskatning, som bestemmer, hvilket land der må beskatte pensionen. I nogle tilfælde beskattes pension kun i ét land, i andre tilfælde kan beskatningen deles. Forskellige pensionstyper kan beskattes forskelligt i udlandet, og nogle kan stadig beskattes i Danmark.\n\nDet er en kompleks sag, der afhænger af din situation. Det anbefales at undersøge skattereglerne før flytning og kontakte Skattestyrelsen eller en rådgiver.",
       "error": null
     },
     {

@@ -1,9 +1,11 @@
+import os
+import logging
 import secrets
 from datetime import datetime, timedelta, timezone
 from typing import List, Optional
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -17,6 +19,13 @@ from rag_pipeline import retrieve_top_chunks, build_context
 from llm_provider import generate_llm_response
 
 load_dotenv()
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+)
+
+logger = logging.getLogger("pension-ai-backend")
 
 app = FastAPI()
 
@@ -55,6 +64,9 @@ SESSION_TTL_SECONDS = 75 * 60
 CHAT_HISTORY_TTL_SECONDS = 30 * 60
 SESSION_STORE: dict[str, dict[str, object]] = {}
 CHAT_HISTORY_STORE: dict[int, dict[str, object]] = {}
+RATE_LIMIT_WINDOW_SECONDS = 60
+RATE_LIMIT_MAX_REQUESTS = 10
+RATE_LIMIT_STORE: dict[str, list[datetime]] = {}
 
 
 def get_session_expiry() -> datetime:
@@ -139,6 +151,28 @@ def append_saved_chat_message(customer_id: int, role: str, content: str) -> None
     history["messages"] = messages[-24:]
     history["expires_at"] = datetime.now(timezone.utc) + timedelta(seconds=CHAT_HISTORY_TTL_SECONDS)
 
+def check_rate_limit(identifier: str) -> None:
+    if os.getenv("DISABLE_RATE_LIMIT") == "true":
+        return
+    
+    now = datetime.now(timezone.utc)
+    window_start = now - timedelta(seconds=RATE_LIMIT_WINDOW_SECONDS)
+
+    recent_requests = [
+        request_time
+        for request_time in RATE_LIMIT_STORE.get(identifier, [])
+        if request_time > window_start
+    ]
+
+    if len(recent_requests) >= RATE_LIMIT_MAX_REQUESTS:
+        logger.warning("Rate limit exceeded for identifier: %s", identifier)
+        raise HTTPException(
+            status_code=429,
+            detail="For mange beskeder på kort tid. Prøv igen om lidt.",
+        )
+
+    recent_requests.append(now)
+    RATE_LIMIT_STORE[identifier] = recent_requests
 
 def classify_question(user_text: str) -> str:
     text = user_text.lower()
@@ -382,7 +416,7 @@ def resolve_mitid_user(request: MitidLoginRequest):
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        print("Fejl ved MitID-opslag:", repr(e))
+        logger.exception("Fejl ved MitID-opslag")
         raise HTTPException(status_code=500, detail=str(e))
 
     if customer is None:
@@ -398,7 +432,7 @@ def complete_mitid_login(request: MitidLoginRequest):
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        print("Fejl ved MitID-login:", repr(e))
+        logger.exception("Fejl ved MitID-login")
         raise HTTPException(status_code=500, detail=str(e))
 
     if customer is None:
@@ -451,9 +485,18 @@ def session_dashboard(session_id: str):
     try:
         return get_customer_dashboard(customer_id)
     except Exception as e:
-        print("Fejl ved hentning af session-dashboard:", repr(e))
+        logger.exception("Fejl ved hentning af session-dashboard")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/health")
+def health_check():
+    return {
+        "status": "ok",
+        "service": "pension-ai-backend",
+        "sessions_active": len(SESSION_STORE),
+        "chat_histories_active": len(CHAT_HISTORY_STORE),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
 
 @app.get("/session/chat-history")
 def session_chat_history(session_id: str):
@@ -465,14 +508,19 @@ def session_chat_history(session_id: str):
 
 
 @app.post("/chat")
-def chat(msg: Message):
+def chat(msg: Message, request: Request):
     user_text = msg.message.strip()
 
     if not user_text:
         raise HTTPException(status_code=400, detail="Beskeden er tom.")
+    
+    rate_limit_identifier = msg.session_id or request.client.host
+    check_rate_limit(rate_limit_identifier)
+
+    request_id = secrets.token_hex(8)
 
     try:
-        print("User text:", user_text)
+        logger.info("[%s] Chat request received", request_id)
 
         conversation_history = "\n".join(
             f"{m.role}: {m.content}" for m in msg.history[-6:]
@@ -503,7 +551,11 @@ def chat(msg: Message):
             }
 
         question_type = classify_question(user_text)
-        print("Question type:", question_type)
+        logger.info(
+            "[%s] Question classified as %s",
+            request_id,
+            question_type
+        )
 
         requires_customer_context = question_type == "complex" or needs_customer_data(user_text)
 
@@ -556,9 +608,12 @@ Nyeste spørgsmål:
                 for chunk in top_chunks
             ]
 
-        print("----- CONTEXT -----")
-        print(context)
-        print("-------------------")
+        logger.info(
+            "[%s] Retrieved %s source chunks",
+            request_id,
+            len(sources)
+        )
+
 
         if question_type == "complex":
             extra_instruction = """
@@ -602,9 +657,18 @@ BRUGERENS SPØRGSMÅL:
 """
 
         llm_result = generate_llm_response(
+            
+            
             prompt,
             force_fail=msg.force_llm_fail,
         )
+
+        if llm_result["fallback_used"]:
+            logger.warning(
+                "[%s] Fallback LLM provider used. Active provider: %s",
+                request_id,
+                llm_result["provider"]
+            )
 
         reply = llm_result["reply"]
 
@@ -620,7 +684,10 @@ BRUGERENS SPØRGSMÅL:
         }
 
     except Exception as e:
-        print("Fejl:", repr(e))
+        logger.exception(
+            "[%s] Unexpected error in chat endpoint",
+            request_id
+        )
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/debug/chat-history")
