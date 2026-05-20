@@ -115,16 +115,29 @@ def get_customer_by_mitid_user_id(user_id: str) -> dict[str, Any] | None:
     conn, param_placeholder = _get_connection()
     try:
         cursor = conn.cursor()
-        query = """
-            SELECT
-                customer_id,
-                full_name,
-                employment_status,
-                risk_profile
-            FROM customers
-            WHERE LOWER(mitid_user_id) = LOWER(?)
-        """.replace("?", param_placeholder)
-        cursor.execute(query, validated_user_id)
+        if param_placeholder == "%s":
+            query = """
+                SELECT
+                    customer_id,
+                    full_name,
+                    employment_status,
+                    risk_profile
+                FROM customers
+                WHERE LOWER(mitid_user_id) = LOWER(%s)
+            """
+        else:
+            query = """
+                SELECT
+                    customer_id,
+                    full_name,
+                    employment_status,
+                    risk_profile
+                FROM customers
+                WHERE LOWER(mitid_user_id) = LOWER(?)
+            """
+
+        cursor.execute(query, (validated_user_id,))
+        
         row = cursor.fetchone()
         if not row:
             return None
