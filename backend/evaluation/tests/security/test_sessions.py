@@ -2,7 +2,7 @@ import requests
 
 
 BASE_URL = "http://127.0.0.1:8000"
-DEMO_USER_ID = "demo-user-1"
+DEMO_USER_ID = "mette-demo"
 
 
 def print_result(title: str, passed: bool, response=None):

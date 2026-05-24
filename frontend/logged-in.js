@@ -234,7 +234,8 @@ function addMessageToChat(sender, text) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-if (sessionId) {
+if (sessionId && !window.__loggedInDataLoaded) {
+  window.__loggedInDataLoaded = true;
   loadDashboard();
   restoreAuthenticatedChatHistory();
 }

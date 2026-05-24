@@ -6,7 +6,7 @@ LOGIN_URL = f"{BASE_URL}/mitid/complete-login"
 CHAT_URL = f"{BASE_URL}/chat"
 
 
-DEMO_USER_ID = "demo-user-1"
+DEMO_USER_ID = "mette-demo"
 
 
 test_cases = [

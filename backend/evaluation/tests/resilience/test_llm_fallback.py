@@ -1,14 +1,31 @@
-# for at køre test skriv følgende i terminalen: python3 backend/rag_test_cases/test_llm_fallback.py (husk at have backend kørende)
-
 import requests
 
-URL = "http://127.0.0.1:8000/chat"
+BASE_URL = "http://127.0.0.1:8000"
+CHAT_URL = f"{BASE_URL}/chat"
+LOGIN_URL = f"{BASE_URL}/mitid/complete-login"
+
+DEMO_USER_ID = "mette-demo"
+
+
+def login() -> str:
+    response = requests.post(
+        LOGIN_URL,
+        json={"user_id": DEMO_USER_ID},
+        timeout=30,
+    )
+
+    data = response.json()
+
+    assert response.status_code == 200
+    assert "session_id" in data
+
+    return data["session_id"]
 
 
 def call_chat(
     question: str,
     force_llm_fail: bool = False,
-    customer_id=None,
+    session_id: str | None = None,
     history=None,
 ) -> tuple[int, dict]:
     payload = {
@@ -17,11 +34,11 @@ def call_chat(
         "force_llm_fail": force_llm_fail,
     }
 
-    if customer_id is not None:
-        payload["customer_id"] = customer_id
+    if session_id is not None:
+        payload["session_id"] = session_id
 
     response = requests.post(
-        URL,
+        CHAT_URL,
         json=payload,
         timeout=120,
     )
@@ -120,19 +137,22 @@ def test_customer_question_without_login() -> None:
     print("TEST 5 bestået")
 
 
-def test_customer_question_with_customer_id() -> None:
-    print("\nTEST 6: Kundespecifikt spørgsmål med customer_id")
+def test_customer_question_with_session_id() -> None:
+    print("\nTEST 6: Kundespecifikt spørgsmål med session_id")
+
+    session_id = login()
 
     status, data = call_chat(
         question="Hvor meget har jeg stående på min pension?",
-        customer_id=1,
+        session_id=session_id,
     )
 
     print(data)
 
     assert status == 200
     assert_ok_response(data)
-    assert "ikke implementeret" not in data["reply"].lower()
+    assert "logget ind" not in data["reply"].lower()
+    assert "695.000" in data["reply"] or "pension" in data["reply"].lower()
 
     print("TEST 6 bestået")
 
@@ -152,18 +172,21 @@ def test_complex_question_without_login() -> None:
     print("TEST 6B bestået")
 
 
-def test_personal_investment_question_with_customer_id() -> None:
-    print("\nTEST 6C: Personligt investeringsspørgsmål med customer_id")
+def test_personal_investment_question_with_session_id() -> None:
+    print("\nTEST 6C: Personligt investeringsspørgsmål med session_id")
+
+    session_id = login()
 
     status, data = call_chat(
         question="Hvordan er min pension investeret?",
-        customer_id=1,
+        session_id=session_id,
     )
 
     print(data)
 
     assert status == 200
     assert_ok_response(data)
+    assert "logget ind" not in data["reply"].lower()
 
     print("TEST 6C bestået")
 
@@ -248,9 +271,9 @@ def main() -> None:
     test_empty_message()
     test_out_of_scope_question()
     test_customer_question_without_login()
-    test_customer_question_with_customer_id()
+    test_customer_question_with_session_id()
     test_complex_question_without_login()
-    test_personal_investment_question_with_customer_id()
+    test_personal_investment_question_with_session_id()
     test_with_history()
     test_long_question()
     test_multiple_requests()

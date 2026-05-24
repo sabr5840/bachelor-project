@@ -24,7 +24,7 @@ test_cases = [
         "question": "Hvad er livrente?",
         "expected_sources": ["pensionstype_livsrente.txt"],
         "expected_behavior": "source_match",
-        "must_contain_any": ["livrente", "livsvarig", "udbetaling"],
+        "must_contain_any": ["livrente", "livsvarig", "resten af livet"],
     },
     {
         "category": "definition",

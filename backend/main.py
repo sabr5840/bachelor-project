@@ -47,8 +47,6 @@ class Message(BaseModel):
     message: str
     session_id: Optional[str] = None
     history: List[ChatMessage] = Field(default_factory=list)
-
-    # Kun til test af fallback. Frontend behøver ikke sende den.
     force_llm_fail: bool = False
 
 
@@ -62,8 +60,10 @@ class LogoutRequest(BaseModel):
 
 SESSION_TTL_SECONDS = 75 * 60
 CHAT_HISTORY_TTL_SECONDS = 30 * 60
+
 SESSION_STORE: dict[str, dict[str, object]] = {}
 CHAT_HISTORY_STORE: dict[int, dict[str, object]] = {}
+
 RATE_LIMIT_WINDOW_SECONDS = 60
 RATE_LIMIT_MAX_REQUESTS = 10
 RATE_LIMIT_STORE: dict[str, list[datetime]] = {}
@@ -118,6 +118,7 @@ def refresh_session(session_id: str | None) -> datetime | None:
 
 def cleanup_chat_history() -> None:
     now = datetime.now(timezone.utc)
+
     expired_customer_ids = [
         customer_id
         for customer_id, history in CHAT_HISTORY_STORE.items()
@@ -130,6 +131,7 @@ def cleanup_chat_history() -> None:
 
 def get_saved_chat_history(customer_id: int) -> list[dict[str, str]]:
     cleanup_chat_history()
+
     history = CHAT_HISTORY_STORE.get(customer_id)
     if not history:
         return []
@@ -139,22 +141,29 @@ def get_saved_chat_history(customer_id: int) -> list[dict[str, str]]:
 
 def append_saved_chat_message(customer_id: int, role: str, content: str) -> None:
     cleanup_chat_history()
+
     history = CHAT_HISTORY_STORE.setdefault(
         customer_id,
         {
             "messages": [],
-            "expires_at": datetime.now(timezone.utc) + timedelta(seconds=CHAT_HISTORY_TTL_SECONDS),
+            "expires_at": datetime.now(timezone.utc)
+            + timedelta(seconds=CHAT_HISTORY_TTL_SECONDS),
         },
     )
+
     messages = history["messages"]
     messages.append({"role": role, "content": content})
+
     history["messages"] = messages[-24:]
-    history["expires_at"] = datetime.now(timezone.utc) + timedelta(seconds=CHAT_HISTORY_TTL_SECONDS)
+    history["expires_at"] = datetime.now(timezone.utc) + timedelta(
+        seconds=CHAT_HISTORY_TTL_SECONDS
+    )
+
 
 def check_rate_limit(identifier: str) -> None:
     if os.getenv("DISABLE_RATE_LIMIT") == "true":
         return
-    
+
     now = datetime.now(timezone.utc)
     window_start = now - timedelta(seconds=RATE_LIMIT_WINDOW_SECONDS)
 
@@ -174,10 +183,11 @@ def check_rate_limit(identifier: str) -> None:
     recent_requests.append(now)
     RATE_LIMIT_STORE[identifier] = recent_requests
 
+
 def classify_question(user_text: str) -> str:
     text = user_text.lower()
 
-    if any(x in text for x in [
+    complex_keywords = [
         "bør jeg",
         "skal jeg vælge",
         "skal jeg flytte",
@@ -187,10 +197,6 @@ def classify_question(user_text: str) -> str:
         "gå tidligere på pension",
         "tidligere på pension",
         "for mig",
-        "hvilke forsikringer har jeg",
-        "hvad er jeg dækket af",
-        "hvilke dækninger har jeg",
-        "mine dækninger",
         "min situation",
         "min opsparing er",
         "mit afkast",
@@ -200,13 +206,13 @@ def classify_question(user_text: str) -> str:
         "anbefaler du",
         "hvad vil du anbefale",
         "hvornår kan jeg gå på pension",
-    ]):
-        return "complex"
+    ]
 
-    if any(x in text for x in [
+    semi_keywords = [
         "samle",
         "udbetaling",
         "begunstiget",
+        "begunstigelse",
         "hvad gør jeg",
         "hvad skal jeg gøre",
         "jeg er blevet",
@@ -215,7 +221,32 @@ def classify_question(user_text: str) -> str:
         "jeg er syg",
         "skifter job",
         "nyt job",
-    ]):
+        "arbejdsløs",
+        "arbejdslos",
+        "fleksjob",
+        "skilt",
+        "skilsmisse",
+        "børn",
+        "boern",
+        "kræft",
+        "kraeft",
+        "diagnose",
+        "kritisk sygdom",
+        "alvorlig sygdom",
+        "død",
+        "doed",
+        "afdød",
+        "afdoed",
+        "min mand er død",
+        "min kone er død",
+        "min ægtefælle er død",
+        "min partner er død",
+    ]
+
+    if any(keyword in text for keyword in complex_keywords):
+        return "complex"
+
+    if any(keyword in text for keyword in semi_keywords):
         return "semi"
 
     return "simple"
@@ -226,9 +257,22 @@ def needs_customer_data(user_text: str) -> bool:
 
     personal_keywords = [
         "mit afkast",
+        "min begunstigelse",
+        "min begunstiget",
+        "min begunstigede",
+        "hvem er min begunstigede",
+        "hvem er begunstiget",
+        "hvem får min pension hvis jeg dør",
+        "hvem får min pension, hvis jeg dør",
         "mine forsikringer",
         "hvor meget har jeg",
         "hvad har jeg stående",
+        "hvor meget har jeg stående",
+        "har jeg stående",
+        "hvor meget står der",
+        "hvad står der på min pension",
+        "hvor meget har jeg sparet op",
+        "hvor meget har jeg sparet",
         "hvad er min månedlige indbetaling",
         "min månedlige indbetaling",
         "mine månedlige indbetalinger",
@@ -241,7 +285,6 @@ def needs_customer_data(user_text: str) -> bool:
         "min opsparing",
         "min risikoprofil",
         "hvilke forsikringer har jeg",
-        "mine forsikringer",
         "hvad er jeg dækket af",
         "hvilke dækninger har jeg",
         "mine dækninger",
@@ -265,12 +308,45 @@ def needs_customer_data(user_text: str) -> bool:
     return any(keyword in text for keyword in personal_keywords)
 
 
-def is_closing_message(user_text: str) -> bool:
-    """
-    Detects short polite closing/thank-you messages
-    that should not trigger retrieval or LLM generation.
-    """
+def is_general_death_or_beneficiary_question(user_text: str) -> bool:
+    text = user_text.lower()
 
+    general_patterns = [
+        "hvem får min pension, hvis jeg dør",
+        "hvem får min pension hvis jeg dør",
+        "hvem får pensionen hvis jeg dør",
+        "hvem får pengene hvis jeg dør",
+        "hvad sker der med min pension hvis jeg dør",
+        "hvad sker der med min pension, hvis jeg dør",
+    ]
+
+    return any(pattern in text for pattern in general_patterns)
+
+def requires_personal_assessment(user_text: str) -> bool:
+    text = user_text.lower()
+
+    assessment_keywords = [
+        "bør jeg",
+        "skal jeg vælge",
+        "skal jeg flytte",
+        "skal jeg starte",
+        "hvad er bedst",
+        "hvad passer bedst",
+        "for mig",
+        "min situation",
+        "kan det betale sig",
+        "gå tidligere på pension",
+        "tidligere på pension",
+        "anbefaler du",
+        "hvad vil du anbefale",
+        "har jeg ret til",
+        "hvornår kan jeg gå på pension",
+    ]
+
+    return any(keyword in text for keyword in assessment_keywords)
+
+
+def is_closing_message(user_text: str) -> bool:
     normalized = user_text.lower().strip()
 
     closing_messages = {
@@ -335,6 +411,10 @@ def is_in_scope_question(user_text: str) -> bool:
         "dødsfald",
         "doedsfald",
         "dør",
+        "død",
+        "doed",
+        "afdød",
+        "afdoed",
         "pårørende",
         "paaroerende",
         "arv",
@@ -346,6 +426,10 @@ def is_in_scope_question(user_text: str) -> bool:
         "dækning",
         "dækninger",
         "kritisk sygdom",
+        "kræft",
+        "kraeft",
+        "diagnose",
+        "alvorlig sygdom",
         "sygdom",
         "syg",
         "sygemeldt",
@@ -363,6 +447,8 @@ def is_in_scope_question(user_text: str) -> bool:
         "pensam",
         "rådgiver",
         "kontakt",
+        "stående",
+        "sparet op",
     ]
 
     return any(keyword in text for keyword in pension_domain_keywords)
@@ -373,7 +459,7 @@ def is_obviously_out_of_scope(user_text: str) -> bool:
 
 
 SYSTEM_PROMPT = """
-Du er en AI-assistent i et bachelorprojekt om pensionsrådgivning.
+Du er en AI-assistent der rådgiver om pension.
 
 Du må kun svare ud fra den kontekst, du får udleveret.
 Hvis svaret ikke fremgår af konteksten, skal du sige:
@@ -397,8 +483,8 @@ Ved definitionsspørgsmål:
 - svar neutralt
 - undgå "hos os" eller "PenSam"
 
-Ved handlinger, fx sygdom, samle pension eller kontakt:
-- du må skrive "hos PenSam" og "kontakt os"
+Ved handlinger, fx sygdom, dødsfald, samle pension eller kontakt:
+- du må skrive "hos PenSam" og "kontakt os", hvis det understøttes af konteksten
 
 Skriv i almindelig tekst. Ingen markdown.
 """
@@ -407,6 +493,17 @@ Skriv i almindelig tekst. Ingen markdown.
 @app.get("/")
 def root():
     return {"status": "Backend kører"}
+
+
+@app.get("/health")
+def health_check():
+    return {
+        "status": "ok",
+        "service": "pension-ai-backend",
+        "sessions_active": len(SESSION_STORE),
+        "chat_histories_active": len(CHAT_HISTORY_STORE),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
 
 
 @app.post("/mitid/resolve-user")
@@ -420,7 +517,10 @@ def resolve_mitid_user(request: MitidLoginRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
     if customer is None:
-        raise HTTPException(status_code=404, detail="Bruger-ID blev ikke fundet i demo-databasen.")
+        raise HTTPException(
+            status_code=404,
+            detail="Bruger-ID blev ikke fundet i demo-databasen.",
+        )
 
     return {"customer": customer}
 
@@ -436,33 +536,19 @@ def complete_mitid_login(request: MitidLoginRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
     if customer is None:
-        raise HTTPException(status_code=404, detail="Bruger-ID blev ikke fundet i demo-databasen.")
+        raise HTTPException(
+            status_code=404,
+            detail="Bruger-ID blev ikke fundet i demo-databasen.",
+        )
 
     session_id = create_demo_session(customer["customer_id"])
     expires_at = get_session_payload(session_id)["expires_at"]
+
     return {
         "session_id": session_id,
         "expires_at": expires_at.isoformat(),
         "ttl_seconds": SESSION_TTL_SECONDS,
         "customer": customer,
-    }
-
-
-@app.post("/logout")
-def logout(request: LogoutRequest):
-    SESSION_STORE.pop(request.session_id, None)
-    return {"logged_out": True}
-
-
-@app.post("/session/refresh")
-def refresh_login_session(request: LogoutRequest):
-    expires_at = refresh_session(request.session_id)
-    if expires_at is None:
-        raise HTTPException(status_code=401, detail="Sessionen er ikke gyldig. Log ind igen.")
-
-    return {
-        "expires_at": expires_at.isoformat(),
-        "ttl_seconds": SESSION_TTL_SECONDS,
     }
 
 
@@ -476,11 +562,37 @@ def validate_mitid_user(request: MitidLoginRequest):
     return {"valid": True}
 
 
+@app.post("/logout")
+def logout(request: LogoutRequest):
+    SESSION_STORE.pop(request.session_id, None)
+    return {"logged_out": True}
+
+
+@app.post("/session/refresh")
+def refresh_login_session(request: LogoutRequest):
+    expires_at = refresh_session(request.session_id)
+
+    if expires_at is None:
+        raise HTTPException(
+            status_code=401,
+            detail="Sessionen er ikke gyldig. Log ind igen.",
+        )
+
+    return {
+        "expires_at": expires_at.isoformat(),
+        "ttl_seconds": SESSION_TTL_SECONDS,
+    }
+
+
 @app.get("/session/dashboard")
 def session_dashboard(session_id: str):
     customer_id = get_customer_id_from_session(session_id)
+
     if customer_id is None:
-        raise HTTPException(status_code=401, detail="Sessionen er ikke gyldig. Log ind igen.")
+        raise HTTPException(
+            status_code=401,
+            detail="Sessionen er ikke gyldig. Log ind igen.",
+        )
 
     try:
         return get_customer_dashboard(customer_id)
@@ -488,21 +600,16 @@ def session_dashboard(session_id: str):
         logger.exception("Fejl ved hentning af session-dashboard")
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/health")
-def health_check():
-    return {
-        "status": "ok",
-        "service": "pension-ai-backend",
-        "sessions_active": len(SESSION_STORE),
-        "chat_histories_active": len(CHAT_HISTORY_STORE),
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-    }
 
 @app.get("/session/chat-history")
 def session_chat_history(session_id: str):
     customer_id = get_customer_id_from_session(session_id)
+
     if customer_id is None:
-        raise HTTPException(status_code=401, detail="Sessionen er ikke gyldig. Log ind igen.")
+        raise HTTPException(
+            status_code=401,
+            detail="Sessionen er ikke gyldig. Log ind igen.",
+        )
 
     return {"messages": get_saved_chat_history(customer_id)}
 
@@ -513,7 +620,7 @@ def chat(msg: Message, request: Request):
 
     if not user_text:
         raise HTTPException(status_code=400, detail="Beskeden er tom.")
-    
+
     rate_limit_identifier = msg.session_id or request.client.host
     check_rate_limit(rate_limit_identifier)
 
@@ -542,6 +649,22 @@ def chat(msg: Message, request: Request):
                 "fallback_used": False,
             }
 
+        requires_customer_context = (
+            not is_general_death_or_beneficiary_question(user_text)
+            and (
+                needs_customer_data(user_text)
+                or requires_personal_assessment(user_text)
+            )
+        )
+
+        if requires_customer_context and customer_id is None:
+            return {
+                "reply": "Du skal være logget ind for at få svar på personlige spørgsmål om din pension.",
+                "sources": [],
+                "provider": None,
+                "fallback_used": False,
+            }
+
         if is_obviously_out_of_scope(user_text):
             return {
                 "reply": "Det fremgår ikke af mit datagrundlag.",
@@ -551,21 +674,12 @@ def chat(msg: Message, request: Request):
             }
 
         question_type = classify_question(user_text)
+
         logger.info(
             "[%s] Question classified as %s",
             request_id,
-            question_type
+            question_type,
         )
-
-        requires_customer_context = question_type == "complex" or needs_customer_data(user_text)
-
-        if requires_customer_context and customer_id is None:
-            return {
-                "reply": "Du skal være logget ind for at få svar på personlige spørgsmål om din pension.",
-                "sources": [],
-                "provider": None,
-                "fallback_used": False,
-            }
 
         customer_context = ""
         if requires_customer_context and customer_id is not None:
@@ -579,10 +693,7 @@ Nyeste spørgsmål:
 {user_text}
 """
 
-        if question_type == "simple":
-            top_k = 3
-        else:
-            top_k = 5
+        top_k = 3 if question_type == "simple" else 5
 
         top_chunks = retrieve_top_chunks(retrieval_query, top_k=top_k)
 
@@ -611,9 +722,8 @@ Nyeste spørgsmål:
         logger.info(
             "[%s] Retrieved %s source chunks",
             request_id,
-            len(sources)
+            len(sources),
         )
-
 
         if question_type == "complex":
             extra_instruction = """
@@ -625,11 +735,11 @@ Anbefal kontakt til en rådgiver ved vigtige valg eller tvivl.
 """
         elif question_type == "semi":
             extra_instruction = """
-Spørgsmålet handler om en situation.
+Spørgsmålet handler om en situation eller livsbegivenhed.
 Giv:
 - kort forklaring
-- evt. trin hvis i kontekst
-- ét forbehold
+- relevante trin, hvis de fremgår af konteksten
+- ét tydeligt forbehold
 """
         else:
             extra_instruction = """
@@ -657,8 +767,6 @@ BRUGERENS SPØRGSMÅL:
 """
 
         llm_result = generate_llm_response(
-            
-            
             prompt,
             force_fail=msg.force_llm_fail,
         )
@@ -667,7 +775,7 @@ BRUGERENS SPØRGSMÅL:
             logger.warning(
                 "[%s] Fallback LLM provider used. Active provider: %s",
                 request_id,
-                llm_result["provider"]
+                llm_result["provider"],
             )
 
         reply = llm_result["reply"]
@@ -684,11 +792,9 @@ BRUGERENS SPØRGSMÅL:
         }
 
     except Exception as e:
-        logger.exception(
-            "[%s] Unexpected error in chat endpoint",
-            request_id
-        )
+        logger.exception("[%s] Unexpected error in chat endpoint", request_id)
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/debug/chat-history")
 def debug_chat_history():
