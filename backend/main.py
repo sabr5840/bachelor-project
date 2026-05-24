@@ -69,8 +69,14 @@ RATE_LIMIT_MAX_REQUESTS = 10
 RATE_LIMIT_STORE: dict[str, list[datetime]] = {}
 
 
+# ============================================================
+# SESSION / CHAT HISTORY
+# ============================================================
+
+
 def get_session_expiry() -> datetime:
     return datetime.now(timezone.utc) + timedelta(seconds=SESSION_TTL_SECONDS)
+
 
 
 def create_demo_session(customer_id: int) -> str:
@@ -80,6 +86,7 @@ def create_demo_session(customer_id: int) -> str:
         "expires_at": get_session_expiry(),
     }
     return session_id
+
 
 
 def get_session_payload(session_id: str | None) -> dict[str, object] | None:
@@ -98,12 +105,14 @@ def get_session_payload(session_id: str | None) -> dict[str, object] | None:
     return session
 
 
+
 def get_customer_id_from_session(session_id: str | None) -> int | None:
     session = get_session_payload(session_id)
     if not session:
         return None
 
     return int(session["customer_id"])
+
 
 
 def refresh_session(session_id: str | None) -> datetime | None:
@@ -114,6 +123,7 @@ def refresh_session(session_id: str | None) -> datetime | None:
     expires_at = get_session_expiry()
     session["expires_at"] = expires_at
     return expires_at
+
 
 
 def cleanup_chat_history() -> None:
@@ -129,6 +139,7 @@ def cleanup_chat_history() -> None:
         CHAT_HISTORY_STORE.pop(customer_id, None)
 
 
+
 def get_saved_chat_history(customer_id: int) -> list[dict[str, str]]:
     cleanup_chat_history()
 
@@ -137,6 +148,7 @@ def get_saved_chat_history(customer_id: int) -> list[dict[str, str]]:
         return []
 
     return list(history["messages"])
+
 
 
 def append_saved_chat_message(customer_id: int, role: str, content: str) -> None:
@@ -158,6 +170,11 @@ def append_saved_chat_message(customer_id: int, role: str, content: str) -> None
     history["expires_at"] = datetime.now(timezone.utc) + timedelta(
         seconds=CHAT_HISTORY_TTL_SECONDS
     )
+
+
+# ============================================================
+# RATE LIMIT
+# ============================================================
 
 
 def check_rate_limit(identifier: str) -> None:
@@ -184,6 +201,11 @@ def check_rate_limit(identifier: str) -> None:
     RATE_LIMIT_STORE[identifier] = recent_requests
 
 
+# ============================================================
+# QUESTION CLASSIFICATION
+# ============================================================
+
+
 def classify_question(user_text: str) -> str:
     text = user_text.lower()
 
@@ -193,19 +215,60 @@ def classify_question(user_text: str) -> str:
         "skal jeg flytte",
         "skal jeg starte",
         "hvad er bedst",
+        "har jeg nok pension",
+        "realistisk",
+        "levestandard",
+        "ville du anbefale",
+        "hvad ville du gøre",
+        "hvis du var min rådgiver",
+        "bekymret for",
+        "har jeg sparet nok",
+        "sparet nok op",
+        "de næste 5 år",
+        "næste 5 år",
+        "hvad ville du konkret anbefale",
+        "hvad ville du anbefale",
+        "realistisk gå på pension",
+        "beholde samme levestandard",
+        "samme levestandard",
+        "bør jeg ændre",
+        "skal jeg vente",
+        "tage tidlig pension",
+        "har jeg nok opsparing",
+        "hvor meget bør jeg indbetale",
+        "bør jeg spare mere op",
+        "skal jeg ændre risikoprofil",
+        "skal jeg ændre investering",
         "hvad passer bedst",
-        "gå tidligere på pension",
-        "tidligere på pension",
+        "kan det betale sig",
+        "anbefaler du",
+        "hvad vil du anbefale",
         "for mig",
         "min situation",
         "min opsparing er",
         "mit afkast",
         "har jeg ret til",
         "må jeg",
-        "kan det betale sig",
-        "anbefaler du",
-        "hvad vil du anbefale",
         "hvornår kan jeg gå på pension",
+        "gå tidligere på pension",
+        "tidligere på pension",
+        "kan jeg gå tidligere",
+        "hvad betyder det økonomisk",
+        "økonomisk hvis jeg går tidligere",
+        "betaler jeg nok",
+        "betaler jeg for lidt",
+        "indbetaler jeg nok",
+        "skal jeg indbetale mere",
+        "højere løn",
+        "jeg har fået højere løn",
+        "jeg har fået lønforhøjelse",
+        "fået højere løn",
+        "tjener mere",
+        "ændre noget i min pension",
+        "optimere min pension",
+        "optimere min pensionsopsparing",
+        "passer min risikoprofil",
+        "højere eller lavere risiko",
     ]
 
     semi_keywords = [
@@ -219,20 +282,31 @@ def classify_question(user_text: str) -> str:
         "jeg har fået",
         "jeg mister",
         "jeg er syg",
+        "jeg er blevet syg",
+        "alvorligt syg",
+        "alvorlig sygdom",
+        "sygdom",
+        "syg",
         "skifter job",
         "nyt job",
         "arbejdsløs",
         "arbejdslos",
+        "selvstændig",
+        "selvstaendig",
+        "går ned i tid",
+        "gaar ned i tid",
         "fleksjob",
         "skilt",
         "skilsmisse",
+        "separeret",
         "børn",
         "boern",
         "kræft",
         "kraeft",
         "diagnose",
         "kritisk sygdom",
-        "alvorlig sygdom",
+        "tab af erhvervsevne",
+        "erhvervsevne",
         "død",
         "doed",
         "afdød",
@@ -252,6 +326,7 @@ def classify_question(user_text: str) -> str:
     return "simple"
 
 
+
 def needs_customer_data(user_text: str) -> bool:
     text = user_text.lower()
 
@@ -269,6 +344,8 @@ def needs_customer_data(user_text: str) -> bool:
         "hvad har jeg stående",
         "hvor meget har jeg stående",
         "har jeg stående",
+        "jeg har fået højere løn",
+        "jeg har fået lønforhøjelse",
         "hvor meget står der",
         "hvad står der på min pension",
         "hvor meget har jeg sparet op",
@@ -281,6 +358,9 @@ def needs_customer_data(user_text: str) -> bool:
         "hvor meget betaler jeg",
         "min indbetaling",
         "mine indbetalinger",
+        "betaler jeg nok",
+        "indbetaler jeg nok",
+        "skal jeg indbetale mere",
         "min pensionsopsparing",
         "min opsparing",
         "min risikoprofil",
@@ -303,9 +383,22 @@ def needs_customer_data(user_text: str) -> bool:
         "min pal-skat",
         "min skattekode",
         "hvad er min skattekode",
+        "min løn",
+        "højere løn",
+        "fået højere løn",
+        "jeg tjener",
+        "tjener mere",
+        "kan jeg gå tidligere",
+        "gå tidligere på pension",
+        "hvad betyder det økonomisk",
+        "hvad vil det betyde økonomisk",
+        "min pension hvis jeg bliver syg",
+        "min pension hvis jeg bliver alvorligt syg",
+        "hvis jeg bliver alvorligt syg",
     ]
 
     return any(keyword in text for keyword in personal_keywords)
+
 
 
 def is_general_death_or_beneficiary_question(user_text: str) -> bool:
@@ -322,6 +415,8 @@ def is_general_death_or_beneficiary_question(user_text: str) -> bool:
 
     return any(pattern in text for pattern in general_patterns)
 
+
+
 def requires_personal_assessment(user_text: str) -> bool:
     text = user_text.lower()
 
@@ -333,17 +428,46 @@ def requires_personal_assessment(user_text: str) -> bool:
         "hvad er bedst",
         "hvad passer bedst",
         "for mig",
+        "har jeg nok pension",
+        "har jeg nok opsparing",
+        "realistisk",
+        "levestandard",
+        "hvad ville du gøre",
+        "hvis du var min rådgiver",
+        "bekymret for",
+        "ville du anbefale",
         "min situation",
         "kan det betale sig",
         "gå tidligere på pension",
         "tidligere på pension",
+        "kan jeg gå tidligere",
+        "har jeg sparet nok",
+        "sparet nok op",
+        "de næste 5 år",
+        "næste 5 år",
+        "hvad ville du konkret anbefale",
+        "hvad ville du anbefale",
+        "realistisk gå på pension",
+        "beholde samme levestandard",
+        "samme levestandard",
+        "hvad betyder det økonomisk",
         "anbefaler du",
         "hvad vil du anbefale",
         "har jeg ret til",
         "hvornår kan jeg gå på pension",
+        "betaler jeg nok",
+        "indbetaler jeg nok",
+        "skal jeg indbetale mere",
+        "højere løn",
+        "fået højere løn",
+        "tjener mere",
+        "ændre noget i min pension",
+        "optimere min pension",
+        "passer min risikoprofil",
     ]
 
     return any(keyword in text for keyword in assessment_keywords)
+
 
 
 def is_closing_message(user_text: str) -> bool:
@@ -376,6 +500,7 @@ def is_closing_message(user_text: str) -> bool:
     return normalized in closing_messages
 
 
+
 def is_in_scope_question(user_text: str) -> bool:
     text = user_text.lower()
 
@@ -387,6 +512,18 @@ def is_in_scope_question(user_text: str) -> bool:
         "aldersopsparing",
         "folkepension",
         "atp",
+        "anbefale",
+        "anbefaling",
+        "konkret anbefale",
+        "hvad ville du anbefale",
+        "hvad ville du konkret anbefale",
+        "næste 5 år",
+        "de næste 5 år",
+        "gøre de næste",
+        "prioritere",
+        "fokusområde",
+        "fokusområder",
+        "rådgivning",
         "seniorpension",
         "førtidspension",
         "foertidspension",
@@ -426,20 +563,28 @@ def is_in_scope_question(user_text: str) -> bool:
         "dækning",
         "dækninger",
         "kritisk sygdom",
+        "alvorligt syg",
+        "alvorlig sygdom",
+        "tab af erhvervsevne",
+        "erhvervsevne",
         "kræft",
         "kraeft",
         "diagnose",
-        "alvorlig sygdom",
         "sygdom",
         "syg",
         "sygemeldt",
         "fleksjob",
         "arbejdsløs",
         "arbejdslos",
+        "selvstændig",
+        "selvstaendig",
         "nyt job",
         "skifter job",
+        "højere løn",
+        "løn",
         "skilt",
         "skilsmisse",
+        "separeret",
         "børn",
         "boern",
         "måned",
@@ -454,40 +599,224 @@ def is_in_scope_question(user_text: str) -> bool:
     return any(keyword in text for keyword in pension_domain_keywords)
 
 
+
 def is_obviously_out_of_scope(user_text: str) -> bool:
     return not is_in_scope_question(user_text)
 
 
+# ============================================================
+# PROMPT
+# ============================================================
+
+
 SYSTEM_PROMPT = """
-Du er en AI-assistent der rådgiver om pension.
+Du skriver som en erfaren pensionsrådgiver med 15+ års erfaring.
+
+Din stil er:
+- rolig
+- konkret
+- prioriterende
+- analytisk
+- ikke undervisende
+- ikke chatbot-agtig
 
 Du må kun svare ud fra den kontekst, du får udleveret.
-Hvis svaret ikke fremgår af konteksten, skal du sige:
+Hvis kundedata indeholder relevante oplysninger, skal du bruge dem aktivt.
+
+Hvis KUNDEDATA giver et rimeligt grundlag,
+skal du forsøge at give en konkret vejledende vurdering.
+
+Manglende detaljer må ikke automatisk føre til:
 "Det fremgår ikke af mit datagrundlag."
 
+Brug de oplysninger der faktisk findes.
+
+Sig kun:
+
+"Det fremgår ikke af mit datagrundlag."
+
+hvis centrale oplysninger mangler, så spørgsmålet ikke kan besvares meningsfuldt.
+
 Du må ikke gætte eller bruge viden uden for konteksten.
-Svar kort, tydeligt og på dansk.
-
-Du håndterer kun first-level spørgsmål, dvs. generelle og standardiserede spørgsmål om pension.
-Du må ikke give personlig økonomisk, juridisk eller skattemæssig rådgivning.
-
-Hvis der er kundedata i prompten, må du bruge dem til at forklare kundens overblik og konkrete tal.
 Du må ikke opfinde kundedata, der ikke står i KUNDEDATA.
+KUNDEDATA er den primære sandhed for kundens egne tal.
+Hvis der står en samlet pensionsopsparing i KUNDEDATA, skal du bruge dette tal som sandhed.
+Du må ikke selv opfinde, sammenlægge eller ændre kundens tal.
+Du må kun lave simple beregninger, hvis du tydeligt viser beregningen og bruger tal direkte fra KUNDEDATA.
 
-Hvis et spørgsmål kræver personlig vurdering:
-- giv et kort generelt svar
-- skriv tydeligt at det afhænger af brugerens situation
-- anbefal kontakt til rådgiver
+Ved spørgsmål som "bør jeg", "hvad anbefaler du", "hvad er smartest" eller "hvad skal jeg gøre", må du ikke give en endelig personlig anbefaling.
+Du må gerne give en vejledende vurdering baseret på kundedata.
+Brug formuleringer som:
+"Ud fra dine oplysninger peger det på..."
+"Det vil være relevant at undersøge..."
+"Et fornuftigt næste skridt kan være..."
 
-Ved definitionsspørgsmål:
+Svar altid på dansk.
+Svar skal være lette at læse visuelt.
+
+Brug struktur når spørgsmålet er personligt eller komplekst.
+
+Du må bruge:
+- korte overskrifter
+- korte afsnit
+- punktopstillinger
+- nummererede næste skridt
+
+Du må IKKE skrive én lang tekstblok.
+
+Formatér især komplekse/personlige svar som en rådgiver-opsummering.
+
+Du håndterer to typer spørgsmål:
+1. First-level generelle pensionsspørgsmål.
+2. Personlige overbliksspørgsmål, når kundedata er tilgængelige.
+
+Ved generelle spørgsmål:
 - svar neutralt
-- undgå "hos os" eller "PenSam"
+- brug kun generel pensionsviden
+- undgå "hos os" eller "PenSam", medmindre spørgsmålet handler om PenSam-handlinger
 
-Ved handlinger, fx sygdom, dødsfald, samle pension eller kontakt:
+Ved komplekse/personlige svar:
+
+Når KUNDEDATA findes:
+
+START altid analysen i KUNDEDATA.
+
+Brug konkrete kundetal aktivt.
+
+Besvar ikke spørgsmålet generelt først.
+
+Svar først på:
+
+"Hvad betyder kundens konkrete situation?"
+
+før du forklarer generelle regler.
+
+Brug markdown-format.
+
+Brug gerne:
+
+### Overskrift
+
+tekst
+
+### Overskrift
+
+- punkt
+- punkt
+
+### Næste skridt
+
+1. ...
+2. ...
+3. ...
+
+Svar skal ligne et professionelt rådgivningsmøde-notat.
+
+Undgå store tekstblokke.
+
+Hold sektionerne korte og tydelige.
+
+- brug konkrete tal fra KUNDEDATA
+- skriv som en erfaren pensionsrådgiver i et rådgivningsmøde
+- skriv naturligt og forklarende
+- prioriter kundens vigtigste 2-4 forhold
+Vælg aktivt de mest betydningsfulde observationer fra kundedata.
+
+Ikke alle data er lige vigtige.
+
+Spørg dig selv:
+
+"Hvis jeg sad i et rigtigt rådgivningsmøde — hvad ville jeg være mest opmærksom på hos denne kunde?"
+
+Prioritér derefter svaret.
+
+- fremhæv hvad der er mest relevant i netop kundens situation
+- undgå at gennemgå alle mulige pensionsemner
+- undgå punkt-for-punkt rapportstil
+- forklar tallene i almindeligt sprog
+- prioriter de 2-4 vigtigste pointer fremfor lange lister
+- vær konkret og analytisk
+- undgå lange generelle forklaringer
+- forklar hvad tallene betyder for kunden
+- fokuser på de vigtigste konsekvenser
+- giv højst 2-3 korte næste skridt
+
+skriv typisk 120-250 ord.
+
+Korte spørgsmål:
+50-120 ord.
+
+Komplekse/personlige spørgsmål:
+120-250 ord.
+
+Undgå at forklare mere end nødvendigt.
+Svar skal føles som et effektivt rådgivningsmøde — ikke som en rapport.
+
+Stop når kundens vigtigste beslutningspunkter er forklaret.
+
+- stop når de vigtigste pointer er forklaret
+- undgå at gentage kundedata flere gange
+- Skriv altid dine svar som en pensionsrådgiver, der forklarer og rådgiver, ikke som en FAQ-side eller en chatbot
+- afslut med et kort forbehold, hvis valget afhænger af kundens situation
+- hold fokus på brugerens konkrete spørgsmål
+- introducer ikke ekstra pensionsordninger eller regler,
+  medmindre de er direkte relevante
+
+Du må gerne give en vejledende vurdering baseret på kundedata.
+Du må ikke give bindende økonomisk, juridisk eller skattemæssig rådgivning.
+Du må ikke beslutte for kunden.
+Du må ikke anbefale én endelig løsning som den eneste rigtige.
+
+Du må gerne give tydelige prioriterede anbefalinger,
+hvis KUNDEDATA giver et rimeligt grundlag.
+
+Brug formuleringer som:
+
+"Jeg ville især overveje..."
+"Det mest oplagte fokusområde ser ud til at være..."
+"Hvis målet er X, peger dine data især på..."
+
+Undgå at blive unødigt passiv.
+
+Hvis konkrete tal findes i KUNDEDATA:
+
+brug dem præcist.
+
+Opfind aldrig alternative beløb.
+
+Gentjek tal før du svarer.
+
+Hvis et spørgsmål handler om optimering, tidligere pension, højere løn, indbetaling, investering eller risikoprofil:
+- forklar kundens nuværende situation ud fra KUNDEDATA
+- forklar hvilke forhold kunden bør overveje
+- sig ikke kun "kontakt en rådgiver"
+- brug rådgiver-henvisningen som afslutning, ikke som hele svaret
+
+Ved handlinger, fx sygdom, dødsfald, samle pension, ændre begunstigelse eller kontakt:
+- forklar hvad situationen typisk betyder
+- brug kundedata, hvis de er relevante
+- giv konkrete trin
 - du må skrive "hos PenSam" og "kontakt os", hvis det understøttes af konteksten
 
-Skriv i almindelig tekst. Ingen markdown.
+Hvis brugeren spørger:
+
+- hvad du ville være mest bekymret for
+- hvad du ville anbefale
+- hvad der bør prioriteres
+- hvad der bør gøres de næste år
+
+så skal du agere som en erfaren pensionsrådgiver.
+
+Prioritér aktivt de vigtigste 1-3 fokusområder.
+
+Undgå neutrale ikke-svar.
+
 """
+
+
+# ============================================================
+# ROUTES
+# ============================================================
 
 
 @app.get("/")
@@ -689,17 +1018,24 @@ def chat(msg: Message, request: Request):
 Tidligere samtale:
 {conversation_history}
 
+Kundedata:
+{customer_context}
+
 Nyeste spørgsmål:
 {user_text}
 """
 
-        top_k = 3 if question_type == "simple" else 5
-
+        if question_type == "simple":
+            top_k = 3
+        elif question_type == "semi":
+            top_k = 5
+        else:
+            top_k = 7
         top_chunks = retrieve_top_chunks(retrieval_query, top_k=top_k)
 
         if not top_chunks:
             if requires_customer_context and customer_context:
-                context = "Ingen relevant generel pensionsviden fundet i RAG-konteksten."
+                context = "Ingen relevant generel pensionsviden fundet i RAG-konteksten. Brug kun KUNDEDATA og giv et forsigtigt vejledende svar."
                 sources = []
             else:
                 return {
@@ -727,19 +1063,73 @@ Nyeste spørgsmål:
 
         if question_type == "complex":
             extra_instruction = """
-Spørgsmålet kræver en personlig eller kompleks vurdering.
-Brug kundedata forsigtigt, hvis de er tilgængelige.
-Giv kun et vejledende svar.
-Giv ikke endelig økonomisk, juridisk eller skattemæssig rådgivning.
-Anbefal kontakt til en rådgiver ved vigtige valg eller tvivl.
+Ved komplekse personlige spørgsmål:
+
+1. Start med en tydelig rådgivervurdering.
+
+Første 2-3 sætninger skal direkte besvare spørgsmålet.
+
+2. Brug kundens konkrete tal.
+
+3. Forklar vigtigste konsekvenser.
+
+4. Giv en vejledende rådgiveranalyse.
+
+5. Giv 2-3 næste skridt.
+
+Undgå generelle pensionsartikler.
+Undgå FAQ-stil.
+            
+Spørgsmålet kræver personlig vurdering.
+
+FORMATERING ER VIGTIG.
+
+Brug altid tydelig struktur.
+
+Brug typisk:
+
+Kort indledning.
+
+Overskrift: vigtigste forhold
+
+Overskrift: økonomiske konsekvenser
+
+Overskrift: forhold der bør overvejes
+
+Overskrift: næste skridt
+
+Brug gerne bullets ved:
+- konsekvenser
+- fordele
+- ulemper
+- forhold kunden bør overveje
+
+Undgå lange tekstblokke.
+
+Hvis KUNDEDATA findes:
+
+- start med de vigtigste forhold
+- brug konkrete tal
+- forklar hvad tallene betyder
+- sammenlign nuværende situation og alternativ
+- nævn både muligheder og risici
+- giv 2-3 konkrete næste skridt
+
+Afslut med kort forbehold.
+
+Svar skal ligne et svar fra en erfaren pensionsrådgiver — ikke en chatbot.
 """
         elif question_type == "semi":
             extra_instruction = """
 Spørgsmålet handler om en situation eller livsbegivenhed.
+
 Giv:
-- kort forklaring
+- kort forklaring af hvad situationen betyder
 - relevante trin, hvis de fremgår af konteksten
+- brug kundedata, hvis de er tilgængelige og relevante
 - ét tydeligt forbehold
+
+Hvis spørgsmålet handler om sygdom, dækning eller forsikring, så nævn relevante dækninger fra KUNDEDATA, hvis de findes.
 """
         else:
             extra_instruction = """

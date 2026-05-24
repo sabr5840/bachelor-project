@@ -63,7 +63,13 @@ async function restoreAuthenticatedChatHistory() {
       return;
     }
 
+    if (chatBox.dataset.historyLoaded === "true") {
+    return;
+    }
+
+    chatBox.dataset.historyLoaded = "true";
     chatBox.innerHTML = "";
+
     messages.forEach((message) => {
       addMessageToChat(message.role === "user" ? "user" : "bot", message.content);
     });
@@ -224,18 +230,36 @@ function addMessageToChat(sender, text) {
 
   if (sender === "user") {
     messageElement.classList.add("user");
+    messageElement.textContent = text;
   } else {
     messageElement.classList.add("bot");
-  }
 
-  messageElement.textContent = text;
+    if (window.marked) {
+      messageElement.innerHTML = marked.parse(text || "", {
+        breaks: true,
+        gfm: true
+      });
+    } else {
+      messageElement.textContent = text;
+    }
+  }
 
   chatBox.appendChild(messageElement);
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-if (sessionId && !window.__loggedInDataLoaded) {
+async function initLoggedInPage() {
+  if (!sessionId) return;
+
+  if (window.__loggedInDataLoaded) return;
   window.__loggedInDataLoaded = true;
-  loadDashboard();
-  restoreAuthenticatedChatHistory();
+
+  await loadDashboard();
+  await restoreAuthenticatedChatHistory();
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initLoggedInPage);
+} else {
+  initLoggedInPage();
 }

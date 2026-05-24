@@ -894,3 +894,29 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+.message.bot h3{
+    font-size:18px;
+    margin-top:14px;
+    margin-bottom:8px;
+    font-weight:700;
+}
+
+.message.bot ul{
+    padding-left:20px;
+    margin:8px 0;
+}
+
+.message.bot ol{
+    padding-left:20px;
+    margin:8px 0;
+}
+
+.message.bot li{
+    margin-bottom:6px;
+}
+
+.message.bot p{
+    margin-bottom:10px;
+    line-height:1.55;
+}

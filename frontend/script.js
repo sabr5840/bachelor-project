@@ -221,8 +221,11 @@ if (sessionId && customerName && chatBox) {
 
 setChatSuggestions(Boolean(sessionId && customerName));
 
-if (sessionId) {
-  restoreAuthenticatedChatHistory();
+if (
+    sessionId &&
+    !window.location.pathname.includes("logged-in.html")
+) {
+    restoreAuthenticatedChatHistory();
 }
 
 if (chatToggle && chatWidget) {
@@ -311,7 +314,14 @@ function appendMessage(text, sender, shouldPersist = true) {
   const messageDiv = document.createElement("div");
 
   messageDiv.classList.add("message", sender);
-  messageDiv.textContent = text;
+  messageDiv.innerHTML = marked.parse(
+      text || "",
+      {
+          breaks: true,
+          gfm: true
+      }
+  
+  );
 
   chatBox.appendChild(messageDiv);
   chatBox.scrollTop = chatBox.scrollHeight;
