@@ -9,6 +9,7 @@ TEST_FILES = [
     "tests/security/test_sessions.py",
     "tests/security/test_personal_login.py",
     "tests/security/test_guardrails.py",
+    "tests/security/test_rate_limit.py",
     "tests/rag/test_retrieval.py",
     "tests/rag/test_rag.py",
     "tests/rag/test_response_quality.py",

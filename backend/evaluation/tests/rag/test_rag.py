@@ -33,6 +33,20 @@ test_cases = [
         "expected_behavior": "source_match",
         "must_contain_any": ["aldersopsparing", "skattefri", "udbetaling"],
     },
+    {
+        "category": "definition",
+        "question": "Hvad er pensionsafkastskat?",
+        "expected_sources": ["skat_pensionsafkastskat.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["pensionsafkastskat", "PAL", "afkast"],
+    },
+    {
+        "category": "definition",
+        "question": "Hvad er kontorente?",
+        "expected_sources": ["investering_kontorente.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["kontorente", "rente", "opsparing"],
+    },
 
     # ------------------------------------------------------------
     # COMPARISON QUESTIONS
@@ -61,6 +75,43 @@ test_cases = [
         "expected_behavior": "source_match",
         "must_contain_any": ["førtidspension", "seniorpension", "tidlig pension"],
     },
+    {
+        "category": "comparison",
+        "question": "Hvad er forskellen på udbetaling af aldersopsparing, ratepension og livrente?",
+        "expected_sources": [
+            "pension_udbetaling_forskelle.txt",
+            "pensionstype_aldersopsparing.txt",
+            "pensionstype_ratepension.txt",
+            "pensionstype_livsrente.txt",
+        ],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["aldersopsparing", "ratepension", "livrente"],
+    },
+
+    # ------------------------------------------------------------
+    # PENSION SYSTEM / GENERAL KNOWLEDGE
+    # ------------------------------------------------------------
+    {
+        "category": "system",
+        "question": "Hvordan fungerer pensionssystemet i Danmark?",
+        "expected_sources": ["pension_system_danmark.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["folkepension", "arbejdsmarkedspension", "privat"],
+    },
+    {
+        "category": "system",
+        "question": "Hvorfor ændrer pensionsregler sig over tid?",
+        "expected_sources": ["pension_regulering.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["regler", "ændrer", "pensionsalder"],
+    },
+    {
+        "category": "system",
+        "question": "Hvad betyder risiko i pensionsopsparing?",
+        "expected_sources": ["pension_risikostyring.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["risiko", "afkast", "investering"],
+    },
 
     # ------------------------------------------------------------
     # TAX
@@ -86,6 +137,62 @@ test_cases = [
         "expected_behavior": "source_match",
         "must_contain_any": ["indbetaling", "fradrag", "skat"],
     },
+    {
+        "category": "tax",
+        "question": "Hvordan fungerer skat af pension generelt?",
+        "expected_sources": ["skat_overblik_pension.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["indbetaling", "udbetaling", "afkast"],
+    },
+    {
+        "category": "tax",
+        "question": "Hvad betyder modregning i pension?",
+        "expected_sources": [
+            "skat_modregning.txt",
+            "modregning_overblik.txt",
+        ],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["modregning", "offentlige ydelser", "indkomst"],
+    },
+    {
+        "category": "tax",
+        "question": "Hvad sker der med skat, hvis jeg flytter til udlandet?",
+        "expected_sources": ["skat_udland.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["udlandet", "skat", "pension"],
+    },
+
+    # ------------------------------------------------------------
+    # CONTRIBUTION / INDBETALING
+    # ------------------------------------------------------------
+    {
+        "category": "contribution",
+        "question": "Hvordan indbetales pension?",
+        "expected_sources": ["pension_indbetaling_overblik.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["indbetaling", "arbejdsgiver", "pension"],
+    },
+    {
+        "category": "contribution",
+        "question": "Hvordan fungerer arbejdsgiverindbetaling til pension?",
+        "expected_sources": ["pension_indbetaling_arbejdsgiver.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["arbejdsgiver", "indbetaler", "pension"],
+    },
+    {
+        "category": "contribution",
+        "question": "Hvad er indbetalingsloft på pension?",
+        "expected_sources": ["pension_indbetaling_lofter.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["loft", "indbetaling", "pension"],
+    },
+    {
+        "category": "contribution",
+        "question": "Hvad sker der, hvis jeg indbetaler for meget til pension?",
+        "expected_sources": ["pension_indbetaling_for_meget.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["for meget", "afgift", "indbetaling"],
+    },
 
     # ------------------------------------------------------------
     # INVESTMENT
@@ -104,10 +211,38 @@ test_cases = [
         "expected_behavior": "source_match",
         "must_contain_any": ["afkast", "investering", "pension"],
     },
+    {
+        "category": "investment",
+        "question": "Hvad betyder ESG i pensionsinvestering?",
+        "expected_sources": ["investering_esg.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["ESG", "miljø", "social"],
+    },
+    {
+        "category": "investment",
+        "question": "Hvad betyder aktivt ejerskab i pension?",
+        "expected_sources": ["investering_aktivt_ejerskab.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["aktivt ejerskab", "dialog", "investorer"],
+    },
+    {
+        "category": "investment",
+        "question": "Hvad betyder eksklusion i pensionsinvestering?",
+        "expected_sources": ["investering_eksklusion.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["eksklusion", "investering", "virksomheder"],
+    },
 
     # ------------------------------------------------------------
-    # PAYOUT
+    # PAYOUT / UDBETALING
     # ------------------------------------------------------------
+    {
+        "category": "payout",
+        "question": "Hvordan udbetales pension?",
+        "expected_sources": ["pension_udbetaling_overblik.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["udbetaling", "pensionstype", "pensionsalder"],
+    },
     {
         "category": "payout",
         "question": "Kan jeg få pension udbetalt før pensionsalderen?",
@@ -126,39 +261,7 @@ test_cases = [
             "pension_udbetaling_overblik.txt",
         ],
         "expected_behavior": "source_match",
-        "must_contain_any": ["engangsbeløb", "udbetaling", "pension"],
-    },
-
-    # ------------------------------------------------------------
-    # NAVIGATION / HANDLING
-    # ------------------------------------------------------------
-    {
-        "category": "navigation",
-        "question": "Hvad sker der med min pension, hvis jeg skifter job?",
-        "expected_sources": ["situation_nyt_job.txt"],
-        "expected_behavior": "source_match",
-        "must_contain_any": ["nyt job", "skifter job", "pension"],
-    },
-    {
-        "category": "navigation",
-        "question": "Jeg er blevet syg, hvad gør jeg?",
-        "expected_sources": ["situation_sygdom.txt"],
-        "expected_behavior": "source_match",
-        "must_contain_any": ["syg", "kontakte", "pension"],
-    },
-    {
-        "category": "navigation",
-        "question": "Hvordan anmelder jeg kritisk sygdom?",
-        "expected_sources": ["situation_kritisk_sygdom.txt"],
-        "expected_behavior": "source_match",
-        "must_contain_any": ["kritisk sygdom", "anmeld", "dokumentation"],
-    },
-    {
-        "category": "navigation",
-        "question": "Kan man samle sine pensioner?",
-        "expected_sources": ["situation_samle_pension.txt"],
-        "expected_behavior": "source_match",
-        "must_contain_any": ["samle", "pensioner", "pensionsordninger"],
+        "must_contain_any": ["engangsbeløb", "udbetaling", "pensionstype"],
     },
 
     # ------------------------------------------------------------
@@ -174,6 +277,34 @@ test_cases = [
         "expected_behavior": "source_match",
         "must_contain_any": ["dør", "begunstiget", "pårørende"],
     },
+    {
+        "category": "death",
+        "question": "Hvad sker der med pension ved dødsfald?",
+        "expected_sources": ["doedsfald_overblik.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["dødsfald", "efterladte", "begunstigelse"],
+    },
+    {
+        "category": "death",
+        "question": "Får min samlever min pension, hvis jeg dør?",
+        "expected_sources": ["doedsfald_samlever.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["samlever", "begunstigelse", "pension"],
+    },
+    {
+        "category": "death",
+        "question": "Gælder mit testamente for min pension?",
+        "expected_sources": ["doedsfald_testamente.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["testamente", "begunstigelse", "pension"],
+    },
+    {
+        "category": "death",
+        "question": "Skal der betales boafgift af pension ved dødsfald?",
+        "expected_sources": ["doedsfald_skat_boafgift.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["boafgift", "dødsfald", "pension"],
+    },
 
     # ------------------------------------------------------------
     # PUBLIC PENSION
@@ -187,89 +318,124 @@ test_cases = [
     },
     {
         "category": "public_pension",
+        "question": "Hvornår kan jeg få folkepension?",
+        "expected_sources": ["folkepensionsalder_overblik.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["folkepensionsalder", "fødselsår", "pension"],
+    },
+    {
+        "category": "public_pension",
         "question": "Hvad er ATP pension?",
         "expected_sources": ["atp_pension_overblik.txt"],
         "expected_behavior": "source_match",
         "must_contain_any": ["ATP", "pension"],
     },
-
-    # ------------------------------------------------------------
-    # OUT OF SCOPE
-    # ------------------------------------------------------------
     {
-        "category": "out_of_scope",
-        "question": "Hvordan laver jeg pasta?",
-        "expected_sources": [],
-        "expected_behavior": "out_of_scope",
-        "must_contain_any": ["datagrundlag", "fremgår ikke"],
-    },
-    {
-        "category": "out_of_scope",
-        "question": "Hvad er hovedstaden i Frankrig?",
-        "expected_sources": [],
-        "expected_behavior": "out_of_scope",
-        "must_contain_any": ["datagrundlag", "fremgår ikke"],
-    },
-    {
-        "category": "out_of_scope",
-        "question": "Kan du anbefale mig en bestemt aktie?",
-        "expected_sources": [],
-        "expected_behavior": "out_of_scope_or_guardrail",
-        "must_contain_any": ["datagrundlag", "rådgiver", "ikke"],
-    },
-
-    # ------------------------------------------------------------
-    # PERSONAL QUESTIONS WITHOUT LOGIN
-    # ------------------------------------------------------------
-    {
-        "category": "personal_without_login",
-        "question": "Hvor meget har jeg stående på min pension?",
-        "expected_sources": [],
-        "expected_behavior": "requires_login",
-        "must_contain_any": ["logget ind"],
-    },
-    {
-        "category": "personal_without_login",
-        "question": "Hvordan er min pension investeret?",
-        "expected_sources": [],
-        "expected_behavior": "requires_login",
-        "must_contain_any": ["logget ind"],
-    },
-    {
-        "category": "personal_without_login",
-        "question": "Hvad er min risikoprofil?",
-        "expected_sources": [],
-        "expected_behavior": "requires_login",
-        "must_contain_any": ["logget ind"],
-    },
-        # ------------------------------------------------------------
-    # EXTRA TESTS - SYNONYMS / ALTERNATIVE WORDING
-    # ------------------------------------------------------------
-    {
-        "category": "synonym",
-        "question": "Hvad betyder livsvarig pension?",
-        "expected_sources": ["pensionstype_livsrente.txt"],
+        "category": "public_pension",
+        "question": "Hvad er førtidspension?",
+        "expected_sources": ["foertidspension_vilkaar.txt"],
         "expected_behavior": "source_match",
-        "must_contain_any": ["livsvarig", "livrente", "resten af livet"],
+        "must_contain_any": ["førtidspension", "arbejdsevne", "pension"],
     },
     {
-        "category": "synonym",
-        "question": "Hvad er pension i rater?",
-        "expected_sources": ["pensionstype_ratepension.txt"],
+        "category": "public_pension",
+        "question": "Hvad er seniorpension?",
+        "expected_sources": ["seniorpension.txt"],
         "expected_behavior": "source_match",
-        "must_contain_any": ["ratepension", "rater", "periode"],
+        "must_contain_any": ["seniorpension", "arbejdsevne", "folkepensionsalderen"],
     },
     {
-        "category": "synonym",
-        "question": "Hvad betyder pensionsafkastskat?",
-        "expected_sources": ["skat_pensionsafkastskat.txt"],
+        "category": "public_pension",
+        "question": "Hvad er tidlig pension?",
+        "expected_sources": ["tidlig_pension.txt"],
         "expected_behavior": "source_match",
-        "must_contain_any": ["pensionsafkastskat", "PAL", "afkast"],
+        "must_contain_any": ["tidlig pension", "arbejdsmarkedet", "folkepensionsalderen"],
+    },
+    {
+        "category": "public_pension",
+        "question": "Hvad er betingelserne for tidlig pension?",
+        "expected_sources": ["tidlig_pension_betingelser.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["arbejdsmarkedet", "42", "44"],
     },
 
     # ------------------------------------------------------------
-    # EXTRA TESTS - NAVIGATION / LIFE EVENTS
+    # SCENARIOS
     # ------------------------------------------------------------
+    {
+        "category": "scenario",
+        "question": "Kan man arbejde samtidig med pension?",
+        "expected_sources": ["scenarie_arbejde_og_pension.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["arbejde", "pension", "indkomst"],
+    },
+    {
+        "category": "scenario",
+        "question": "Hvad sker der med pensionen, hvis jeg får førtidspension?",
+        "expected_sources": ["scenarie_foertidspension.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["førtidspension", "indbetaling", "arbejdsevne"],
+    },
+    {
+        "category": "scenario",
+        "question": "Hvordan spiller folkepension og privat pension sammen?",
+        "expected_sources": ["scenarie_folkepension.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["folkepension", "privat pension", "indkomst"],
+    },
+    {
+        "category": "scenario",
+        "question": "Hvordan vokser min pensionsopsparing over tid?",
+        "expected_sources": ["scenarie_opsparing.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["opsparing", "indbetalinger", "afkast"],
+    },
+    {
+        "category": "scenario",
+        "question": "Hvad betyder seniorpension for min økonomi?",
+        "expected_sources": ["scenarie_seniorpension.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["seniorpension", "økonomi", "ydelse"],
+    },
+    {
+        "category": "scenario",
+        "question": "Hvad betyder det at gå tidligt på pension?",
+        "expected_sources": ["scenarie_tidlig_pension.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["tidlig pension", "udbetaling", "økonomi"],
+    },
+
+    # ------------------------------------------------------------
+    # NAVIGATION / LIFE EVENTS
+    # ------------------------------------------------------------
+    {
+        "category": "navigation",
+        "question": "Hvad sker der med min pension, hvis jeg skifter job?",
+        "expected_sources": ["situation_nyt_job.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["nyt job", "skifter job", "pension"],
+    },
+    {
+        "category": "navigation",
+        "question": "Jeg er blevet syg, hvad gør jeg?",
+        "expected_sources": ["situation_sygdom.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["syg", "dækning", "pension"],
+    },
+    {
+        "category": "navigation",
+        "question": "Hvordan anmelder jeg kritisk sygdom?",
+        "expected_sources": ["situation_kritisk_sygdom.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["kritisk sygdom", "anmeld", "dokumentation"],
+    },
+    {
+        "category": "navigation",
+        "question": "Kan man samle sine pensioner?",
+        "expected_sources": ["situation_samle_pension.txt"],
+        "expected_behavior": "source_match",
+        "must_contain_any": ["samle", "pensioner", "pensionsordninger"],
+    },
     {
         "category": "navigation",
         "question": "Hvad sker der med min pension, hvis jeg bliver arbejdsløs?",
@@ -328,85 +494,68 @@ test_cases = [
     },
 
     # ------------------------------------------------------------
-    # EXTRA TESTS - PUBLIC PENSION
+    # OUT OF SCOPE
     # ------------------------------------------------------------
     {
-        "category": "public_pension",
-        "question": "Hvornår kan jeg få folkepension?",
-        "expected_sources": ["folkepensionsalder_overblik.txt"],
-        "expected_behavior": "source_match",
-        "must_contain_any": ["folkepensionsalder", "fødselsår", "pension"],
-    },
-    {
-        "category": "public_pension",
-        "question": "Hvad er tidlig pension?",
-        "expected_sources": ["tidlig_pension.txt"],
-        "expected_behavior": "source_match",
-        "must_contain_any": ["tidlig pension", "arbejdsmarkedet", "folkepensionsalderen"],
-    },
-    {
-        "category": "public_pension",
-        "question": "Hvad er seniorpension?",
-        "expected_sources": ["seniorpension.txt"],
-        "expected_behavior": "source_match",
-        "must_contain_any": ["seniorpension", "arbejdsevne", "folkepensionsalderen"],
-    },
-    {
-        "category": "public_pension",
-        "question": "Hvad er førtidspension?",
-        "expected_sources": ["foertidspension_vilkaar.txt"],
-        "expected_behavior": "source_match",
-        "must_contain_any": ["førtidspension", "arbejdsevne", "pension"],
-    },
-
-    # ------------------------------------------------------------
-    # EXTRA TESTS - TAX / MODREGNING / UDLAND
-    # ------------------------------------------------------------
-    {
-        "category": "tax",
-        "question": "Hvad betyder modregning i pension?",
-        "expected_sources": ["skat_modregning.txt"],
-        "expected_behavior": "source_match",
-        "must_contain_any": ["modregning", "offentlige ydelser", "indkomst"],
-    },
-    {
-        "category": "tax",
-        "question": "Hvad sker der med skat, hvis jeg flytter til udlandet?",
-        "expected_sources": ["skat_udland.txt"],
-        "expected_behavior": "source_match",
-        "must_contain_any": ["udlandet", "skat", "pension"],
-    },
-
-    # ------------------------------------------------------------
-    # EXTRA TESTS - GUARDRAILS / PERSONAL ADVICE
-    # ------------------------------------------------------------
-
-    {
-        "category": "guardrail",
-        "question": "Bør jeg vælge ratepension eller livrente?",
+        "category": "out_of_scope",
+        "question": "Hvordan laver jeg pasta?",
         "expected_sources": [],
-        "expected_behavior": "requires_login",
-        "must_contain_any": ["logget ind"],
- 
+        "expected_behavior": "out_of_scope",
+        "must_contain_any": ["datagrundlag", "fremgår ikke"],
     },
     {
-        "category": "guardrail",
-        "question": "Kan det betale sig for mig at gå tidligere på pension?",
+        "category": "out_of_scope",
+        "question": "Hvad er hovedstaden i Frankrig?",
+        "expected_sources": [],
+        "expected_behavior": "out_of_scope",
+        "must_contain_any": ["datagrundlag", "fremgår ikke"],
+    },
+    {
+        "category": "out_of_scope",
+        "question": "Kan du skrive en opskrift på lasagne?",
+        "expected_sources": [],
+        "expected_behavior": "out_of_scope",
+        "must_contain_any": ["datagrundlag", "fremgår ikke"],
+    },
+    {
+        "category": "out_of_scope",
+        "question": "Hvem vandt Champions League?",
+        "expected_sources": [],
+        "expected_behavior": "out_of_scope",
+        "must_contain_any": ["datagrundlag", "fremgår ikke"],
+    },
+    {
+        "category": "out_of_scope",
+        "question": "Kan du anbefale mig en bestemt aktie?",
+        "expected_sources": [],
+        "expected_behavior": "out_of_scope_or_guardrail",
+        "must_contain_any": ["datagrundlag", "rådgiver", "ikke"],
+    },
+
+    # ------------------------------------------------------------
+    # PERSONAL WITHOUT LOGIN
+    # ------------------------------------------------------------
+    {
+        "category": "personal_without_login",
+        "question": "Hvor meget har jeg stående på min pension?",
         "expected_sources": [],
         "expected_behavior": "requires_login",
         "must_contain_any": ["logget ind"],
     },
     {
-        "category": "guardrail",
-        "question": "Har jeg ret til seniorpension?",
+        "category": "personal_without_login",
+        "question": "Hvordan er min pension investeret?",
         "expected_sources": [],
         "expected_behavior": "requires_login",
         "must_contain_any": ["logget ind"],
     },
-
-    # ------------------------------------------------------------
-    # EXTRA TESTS - PERSONAL WITHOUT LOGIN
-    # ------------------------------------------------------------
+    {
+        "category": "personal_without_login",
+        "question": "Hvad er min risikoprofil?",
+        "expected_sources": [],
+        "expected_behavior": "requires_login",
+        "must_contain_any": ["logget ind"],
+    },
     {
         "category": "personal_without_login",
         "question": "Hvilke forsikringer har jeg?",
@@ -430,21 +579,35 @@ test_cases = [
     },
 
     # ------------------------------------------------------------
-    # EXTRA TESTS - OUT OF SCOPE
+    # PERSONAL ADVICE / COMPLEX GUARDRAILS WITHOUT LOGIN
     # ------------------------------------------------------------
     {
-        "category": "out_of_scope",
-        "question": "Kan du skrive en opskrift på lasagne?",
+        "category": "guardrail",
+        "question": "Bør jeg vælge ratepension eller livrente?",
         "expected_sources": [],
-        "expected_behavior": "out_of_scope",
-        "must_contain_any": ["datagrundlag", "fremgår ikke"],
+        "expected_behavior": "requires_login",
+        "must_contain_any": ["logget ind"],
     },
     {
-        "category": "out_of_scope",
-        "question": "Hvem vandt Champions League?",
+        "category": "guardrail",
+        "question": "Kan det betale sig for mig at gå tidligere på pension?",
         "expected_sources": [],
-        "expected_behavior": "out_of_scope",
-        "must_contain_any": ["datagrundlag", "fremgår ikke"],
+        "expected_behavior": "requires_login",
+        "must_contain_any": ["logget ind"],
+    },
+    {
+        "category": "guardrail",
+        "question": "Har jeg ret til seniorpension?",
+        "expected_sources": [],
+        "expected_behavior": "requires_login",
+        "must_contain_any": ["logget ind"],
+    },
+    {
+        "category": "guardrail",
+        "question": "Skal jeg indbetale mere til pension?",
+        "expected_sources": [],
+        "expected_behavior": "requires_login",
+        "must_contain_any": ["logget ind"],
     },
 ]
 
@@ -453,7 +616,10 @@ def call_api(question: str) -> dict:
     try:
         response = requests.post(
             URL,
-            json={"message": question},
+            json={
+                "message": question,
+                "history": [],
+            },
             timeout=120,
         )
 
@@ -484,14 +650,14 @@ def call_api(question: str) -> dict:
             "error": "Request timed out",
         }
 
-    except requests.exceptions.RequestException as e:
+    except requests.exceptions.RequestException as error:
         return {
             "status_code": None,
             "reply": "",
             "sources": [],
             "provider": None,
             "fallback_used": None,
-            "error": str(e),
+            "error": str(error),
         }
 
 
@@ -504,7 +670,7 @@ def evaluate_sources(
         return actual_sources == []
 
     if expected_behavior == "out_of_scope_or_guardrail":
-        return actual_sources == [] or isinstance(actual_sources, list)
+        return actual_sources == []
 
     return any(expected in actual_sources for expected in expected_sources)
 
@@ -528,6 +694,9 @@ def evaluate_behavior(
 ) -> bool:
     reply_lower = reply.lower()
 
+    if expected_behavior == "source_match":
+        return len(sources) > 0
+
     if expected_behavior == "out_of_scope":
         return sources == [] and (
             "datagrundlag" in reply_lower
@@ -538,7 +707,7 @@ def evaluate_behavior(
         return sources == [] and "logget ind" in reply_lower
 
     if expected_behavior == "out_of_scope_or_guardrail":
-        return (
+        return sources == [] and (
             "datagrundlag" in reply_lower
             or "fremgår ikke" in reply_lower
             or "rådgiver" in reply_lower
@@ -621,6 +790,7 @@ def main() -> None:
         print(f"Content match: {content_match}")
         print(f"Behavior match: {behavior_match}")
         print(f"Provider: {api_result['provider']}")
+        print(f"Fallback brugt: {api_result['fallback_used']}")
         print(f"Bestået: {passed}")
 
         if api_result["error"]:
@@ -654,6 +824,22 @@ def main() -> None:
         if result["behavior_match"]
     ]
 
+    category_summary = {}
+
+    for result in results:
+        category = result["category"]
+
+        if category not in category_summary:
+            category_summary[category] = {
+                "total": 0,
+                "passed": 0,
+            }
+
+        category_summary[category]["total"] += 1
+
+        if result["passed"]:
+            category_summary[category]["passed"] += 1
+
     summary = {
         "total_tests": total_tests,
         "passed_tests": passed_tests,
@@ -667,12 +853,15 @@ def main() -> None:
         "correct_guardrail_tests": len(guardrail_correct),
         "guardrail_accuracy_percent": round((len(guardrail_correct) / len(guardrail_tests)) * 100, 2)
         if guardrail_tests else None,
+        "category_summary": category_summary,
     }
 
     output = {
         "summary": summary,
         "results": results,
     }
+
+    OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
 
     with open(OUTPUT_FILE, "w", encoding="utf-8") as file:
         json.dump(output, file, ensure_ascii=False, indent=2)
@@ -686,6 +875,25 @@ def main() -> None:
     print(f"Retrieval accuracy: {summary['retrieval_accuracy_percent']}%")
     print(f"Guardrail accuracy: {summary['guardrail_accuracy_percent']}%")
     print(f"Resultater gemt i: {OUTPUT_FILE}")
+
+    if failed_tests > 0:
+        print("\nFEJLEDE TESTS")
+        print("=" * 90)
+
+        for result in results:
+            if not result["passed"]:
+                print(f"Test {result['number']}: {result['question']}")
+                print(f"Kategori: {result['category']}")
+                print(f"Forventet adfærd: {result['expected_behavior']}")
+                print(f"Forventede kilder: {result['expected_sources']}")
+                print(f"Fundne kilder: {result['actual_sources']}")
+                print(f"Source match: {result['source_match']}")
+                print(f"Content match: {result['content_match']}")
+                print(f"Behavior match: {result['behavior_match']}")
+                print(f"Status code: {result['status_code']}")
+                print(f"Svar: {result['reply']}")
+                print(f"Fejl: {result['error']}")
+                print("-" * 90)
 
 
 if __name__ == "__main__":
