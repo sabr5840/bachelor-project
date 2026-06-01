@@ -1,5 +1,6 @@
 import os
 import logging
+import re
 import secrets
 from datetime import datetime, timedelta, timezone
 from typing import List, Optional
@@ -201,9 +202,201 @@ def check_rate_limit(identifier: str) -> None:
     RATE_LIMIT_STORE[identifier] = recent_requests
 
 
+def save_chat_exchange(customer_id: int | None, user_text: str, reply: str) -> None:
+    if customer_id is None:
+        return
+
+    append_saved_chat_message(customer_id, "user", user_text)
+    append_saved_chat_message(customer_id, "assistant", reply)
+
+
+def remove_repeated_greeting(reply: str, conversation_intent: str) -> str:
+    if conversation_intent == "greeting":
+        return reply
+
+    return re.sub(
+        r"^\s*(hej|hejsa|kære)\s+[^,\n.!?]+[,!.]?\s*\n+",
+        "",
+        reply,
+        count=1,
+        flags=re.IGNORECASE,
+    ).strip()
+
+
+def soften_tax_advice_language(reply: str) -> str:
+    replacements = {
+        "Du bør prioritere at udnytte": "Det kan være relevant at undersøge",
+        "du bør prioritere at udnytte": "det kan være relevant at undersøge",
+        "Du bør udnytte": "Det kan være relevant at undersøge",
+        "du bør udnytte": "det kan være relevant at undersøge",
+        "Du skal udnytte": "Det kan være relevant at undersøge",
+        "du skal udnytte": "det kan være relevant at undersøge",
+    }
+
+    softened = reply
+    for original, replacement in replacements.items():
+        softened = softened.replace(original, replacement)
+
+    return softened
+
+
+def soften_personal_recommendation_language(reply: str) -> str:
+    replacements = {
+        "Jeg ville især overveje": "Det kan være relevant at overveje",
+        "jeg ville især overveje": "det kan være relevant at overveje",
+        "Jeg ville anbefale at": "Det kan være relevant at undersøge, om du skal",
+        "jeg ville anbefale at": "det kan være relevant at undersøge, om du skal",
+        "Jeg ville anbefale": "Det kan være relevant at undersøge",
+        "jeg ville anbefale": "det kan være relevant at undersøge",
+        "Jeg anbefaler at": "Det kan være relevant at undersøge, om du skal",
+        "jeg anbefaler at": "det kan være relevant at undersøge, om du skal",
+        "Jeg anbefaler": "Det kan være relevant at undersøge",
+        "jeg anbefaler": "det kan være relevant at undersøge",
+        "Du bør samle": "Det kan være relevant at undersøge, om du skal samle",
+        "du bør samle": "det kan være relevant at undersøge, om du skal samle",
+        "Du bør flytte": "Det kan være relevant at undersøge, om du skal flytte",
+        "du bør flytte": "det kan være relevant at undersøge, om du skal flytte",
+    }
+
+    softened = reply
+    for original, replacement in replacements.items():
+        softened = softened.replace(original, replacement)
+
+    return softened
+
+
+def move_inline_followup_to_suggestions(
+    reply: str,
+    suggestions: list[dict[str, str]],
+) -> tuple[str, list[dict[str, str]]]:
+    lines = [line.rstrip() for line in reply.strip().splitlines()]
+    updated_suggestions = list(suggestions)
+    extracted_questions: list[str] = []
+
+    def clean_suggestion_line(line: str) -> str:
+        cleaned = line.strip()
+        cleaned = re.sub(r"^[-*\d.)\s]+", "", cleaned)
+        cleaned = re.sub(r"^\[|\]$", "", cleaned)
+        cleaned = re.sub(r"^#+\s*", "", cleaned)
+        cleaned = re.sub(r"<[^>]+>", "", cleaned)
+        return cleaned.strip(" \"'")
+
+    def is_suggestion_line(line: str) -> bool:
+        cleaned = clean_suggestion_line(line)
+        lower = cleaned.lower()
+
+        return (
+            0 < len(cleaned) <= 140
+            and (
+                cleaned.endswith("?")
+                or lower.startswith("fortæl mig")
+                or lower.startswith("spørg")
+                or lower.startswith("skriv")
+                or lower.startswith("hvis du vil vide mere")
+                or lower.startswith("har du spørgsmål")
+            )
+        )
+
+    while lines and not lines[-1].strip():
+        lines.pop()
+
+    while lines and is_suggestion_line(lines[-1]):
+        extracted = clean_suggestion_line(lines.pop())
+
+        if extracted.lower().startswith("har du spørgsmål"):
+            continue
+
+        extracted_questions.insert(0, extracted)
+
+        while lines and not lines[-1].strip():
+            lines.pop()
+
+    if not extracted_questions:
+        return reply, suggestions
+
+    existing_messages = {
+        suggestion.get("message")
+        for suggestion in updated_suggestions
+        if suggestion.get("message")
+    }
+
+    new_suggestions = []
+    for question in extracted_questions:
+        if question in existing_messages:
+            continue
+
+        new_suggestions.append(
+            {
+                "label": question,
+                "message": question,
+            },
+        )
+        existing_messages.add(question)
+
+    updated_suggestions = new_suggestions + updated_suggestions
+
+    cleaned_reply = "\n".join(lines).strip()
+    return cleaned_reply or reply, updated_suggestions
+
+
+def remove_disallowed_chat_sections(reply: str) -> str:
+    lines = reply.strip().splitlines()
+    cleaned_lines = []
+
+    for line in lines:
+        stripped = line.strip()
+        normalized = stripped.lower().strip("*:# ")
+
+        if normalized in {"næste skridt", "næste skridt:"}:
+            break
+
+        if normalized.startswith("næste skridt"):
+            break
+
+        cleaned_lines.append(line)
+
+    return "\n".join(cleaned_lines).strip()
+
+
+def limit_reply_length(reply: str, max_words: int = 85) -> str:
+    paragraphs = [paragraph.strip() for paragraph in reply.split("\n\n") if paragraph.strip()]
+    if len(paragraphs) > 2:
+        reply = "\n\n".join(paragraphs[:2])
+
+    lines = reply.splitlines()
+    bullet_count = 0
+    kept_lines = []
+
+    for line in lines:
+        if line.strip().startswith(("-", "*", "•")):
+            bullet_count += 1
+            if bullet_count > 2:
+                continue
+
+        kept_lines.append(line)
+
+    reply = "\n".join(kept_lines).strip()
+    words = reply.split()
+
+    if len(words) <= max_words:
+        return reply
+
+    shortened = " ".join(words[:max_words]).rstrip(" ,;:")
+    sentence_end = max(shortened.rfind("."), shortened.rfind("?"), shortened.rfind("!"))
+
+    if sentence_end > 40:
+        return shortened[: sentence_end + 1]
+
+    return f"{shortened}."
+
+
 # ============================================================
 # QUESTION CLASSIFICATION
 # ============================================================
+
+
+def normalize_chat_text(user_text: str) -> str:
+    return " ".join(user_text.lower().strip(" !?.").split())
 
 
 def classify_question(user_text: str) -> str:
@@ -500,6 +693,305 @@ def is_closing_message(user_text: str) -> bool:
     return normalized in closing_messages
 
 
+def is_greeting_message(user_text: str) -> bool:
+    normalized = normalize_chat_text(user_text)
+
+    greeting_messages = {
+        "hej",
+        "hejsa",
+        "hej med dig",
+        "godmorgen",
+        "god formiddag",
+        "god eftermiddag",
+        "godaften",
+        "halløj",
+        "hello",
+        "hi",
+    }
+
+    return normalized in greeting_messages
+
+
+
+def is_broad_personal_overview_question(user_text: str) -> bool:
+    text = normalize_chat_text(user_text)
+
+    broad_patterns = [
+        "hvordan ser min pension ud",
+        "giv mig et overblik",
+        "kan du give mig et overblik",
+        "overblik over min pension",
+        "mit pensionsoverblik",
+        "vis mig min pension",
+        "fortæl om min pension",
+        "hvordan står jeg",
+        "hvordan går det med min pension",
+        "status på min pension",
+    ]
+
+    return any(pattern in text for pattern in broad_patterns)
+
+
+def is_life_event_question(user_text: str) -> bool:
+    text = user_text.lower()
+
+    life_event_keywords = [
+        "skifter job",
+        "nyt job",
+        "arbejdsløs",
+        "arbejdslos",
+        "selvstændig",
+        "selvstaendig",
+        "går ned i tid",
+        "gaar ned i tid",
+        "fleksjob",
+        "skilt",
+        "skilsmisse",
+        "separeret",
+        "børn",
+        "boern",
+        "jeg er syg",
+        "alvorligt syg",
+        "kritisk sygdom",
+        "tab af erhvervsevne",
+        "død",
+        "doed",
+        "afdød",
+        "afdoed",
+    ]
+
+    return any(keyword in text for keyword in life_event_keywords)
+
+
+def classify_conversation_intent(user_text: str) -> str:
+    if is_greeting_message(user_text):
+        return "greeting"
+
+    if is_closing_message(user_text):
+        return "closing"
+
+    if is_broad_personal_overview_question(user_text):
+        return "personal_overview"
+
+    if requires_personal_assessment(user_text):
+        return "personal_decision"
+
+    if is_life_event_question(user_text):
+        return "life_event"
+
+    if needs_customer_data(user_text):
+        return "personal_info"
+
+    if is_obviously_out_of_scope(user_text):
+        return "out_of_scope"
+
+    return "general_info"
+
+
+def get_greeting_reply(customer_id: int | None) -> str:
+    if customer_id is not None:
+        return (
+            "Hej. Jeg kan hjælpe med at forklare dine pensionstal eller svare "
+            "på generelle pensionsspørgsmål. Hvad vil du gerne se på?"
+        )
+
+    return (
+        "Hej. Jeg kan hjælpe med generelle spørgsmål om pension. Hvis du spørger "
+        "om dine egne tal, skal du være logget ind."
+    )
+
+
+def get_personal_overview_choice_reply() -> str:
+    return (
+        "Jeg kan give dig et kort overblik over din pension. Hvad vil du helst "
+        "starte med?\n\n"
+        "- Opsparing og indbetaling\n"
+        "- Forventet udbetaling\n"
+        "- Forsikringer og dækninger\n"
+        "- Risiko og investering"
+    )
+
+
+def get_login_required_reply(conversation_intent: str) -> str:
+    if conversation_intent == "personal_overview":
+        return (
+            "Det kræver, at du er logget ind, så jeg kan se dine pensionsoplysninger. Log ind, "
+            "så kan jeg hjælpe dig med overblik over opsparing, udbetaling, "
+            "forsikringer eller risiko."
+        )
+
+    return (
+        "Det kræver, at du er logget ind, så jeg kan se dine pensionsoplysninger. Log ind, "
+        "så kan jeg forklare dine tal."
+    )
+
+
+def get_flow_instruction(conversation_intent: str, customer_id: int | None) -> str:
+    logged_in = customer_id is not None
+
+    if conversation_intent == "general_info":
+        return (
+            "Svar kort: forklaring først, derefter eventuelt én relevant opfølgning. "
+            "Afslut gerne med at kunden kan læse mere på hjemmesiden eller spørge her."
+        )
+
+    if conversation_intent == "personal_info":
+        return (
+            "Svar med kundens konkrete data først. Forklar kort hvad tallet betyder. "
+            "Skriv ikke opfølgende spørgsmål i selve svaret, da de vises som klikbare "
+            "knapper under svaret. Nævn ikke login, når kunden er logget ind."
+            if logged_in
+            else "Bed kunden logge ind for personlige tal."
+        )
+
+    if conversation_intent == "personal_decision":
+        return (
+            "Svar i et meget kort chatformat: 1 sætning med kundens relevante tal, "
+            "og 1 sætning med vurderingen. Skriv ikke opfølgende spørgsmål i selve svaret, "
+            "da de vises som klikbare knapper under svaret. "
+            "Brug markdown. Markér de vigtigste tal med fed, fx **6.200 kr.** og **28.000 kr.**. "
+            "Medtag kun tal, der direkte besvarer spørgsmålet. Undlad årsindkomst, "
+            "alder og ekstra forklaringer, medmindre kunden spørger om det. "
+            "Beslut ikke for kunden. Skriv ikke hilsen eller kundens navn. Nævn ikke "
+            "login, når kunden er logget ind. Hold svaret under cirka 65 ord."
+            if logged_in
+            else "Bed kunden logge ind for personlig vurdering."
+        )
+
+    if conversation_intent == "life_event":
+        return (
+            "Forklar kort hvad situationen typisk betyder, nævn kundedata hvis relevant, "
+            "og hold svaret kort. Skriv ikke 'Næste skridt'. Eventuelle opfølgninger "
+            "vises som klikbare knapper."
+        )
+
+    if conversation_intent == "personal_overview":
+        return (
+            "Brug ikke en lang rapport. Hvis spørgsmålet er bredt, hjælp kunden med at "
+            "vælge næste fokusområde: opsparing, udbetaling, forsikringer eller risiko."
+        )
+
+    return "Svar kort. Skriv ikke opfølgende spørgsmål i selve svaret, da forslag vises som klikbare knapper."
+
+
+def build_suggestion(label: str, message: str | None = None) -> dict[str, str]:
+    return {
+        "label": label,
+        "message": message or label,
+    }
+
+
+def filter_chat_suggestions(
+    suggestions: list[dict[str, str]],
+    user_text: str,
+    max_count: int = 3,
+) -> list[dict[str, str]]:
+    normalized_user_text = normalize_chat_text(user_text)
+    seen = set()
+    filtered = []
+
+    for suggestion in suggestions:
+        label = suggestion.get("label", "")
+        message = suggestion.get("message", label)
+        normalized_message = normalize_chat_text(message)
+
+        if not label or normalized_message in seen:
+            continue
+
+        if normalized_message == normalized_user_text:
+            continue
+
+        seen.add(normalized_message)
+        filtered.append(suggestion)
+
+        if len(filtered) >= max_count:
+            break
+
+    return filtered
+
+
+def get_chat_suggestions(conversation_intent: str, user_text: str, customer_id: int | None) -> list[dict[str, str]]:
+    if conversation_intent == "personal_decision" and customer_id is not None:
+        text = user_text.lower()
+
+        if "indbetal" in text:
+            suggestions = [
+                build_suggestion("Hvordan fordeler jeg mine indbetalinger?"),
+                build_suggestion("Hvad betyder det for min udbetaling?"),
+            ]
+        elif "risiko" in text or "invest" in text:
+            suggestions = [
+                build_suggestion("Hvad betyder min risikoprofil?"),
+                build_suggestion("Hvordan er min pension investeret?"),
+            ]
+        elif "udbetal" in text or "pensionist" in text:
+            suggestions = [
+                build_suggestion("Hvad betyder udbetalingsperioden for mig?"),
+                build_suggestion("Hvad får jeg udbetalt om måneden?"),
+            ]
+        else:
+            suggestions = [
+                build_suggestion("Hvad bør jeg være mest opmærksom på?"),
+                build_suggestion("Hvad betyder det for min pension?"),
+            ]
+
+        suggestions.append({"label": "Kontakt rådgiver", "action": "contact_advisor"})
+        return filter_chat_suggestions(suggestions, user_text)
+
+    if conversation_intent == "personal_info" and customer_id is not None:
+        text = user_text.lower()
+
+        if "invest" in text or "risiko" in text or "aktier" in text:
+            suggestions = [
+                build_suggestion("Hvad betyder min risikoprofil?"),
+                build_suggestion("Bør jeg ændre min risikoprofil?"),
+                build_suggestion("Hvad betyder investeringerne for min pension?"),
+            ]
+        elif "indbetal" in text or "betaler jeg" in text:
+            suggestions = [
+                build_suggestion("Hvordan fordeler jeg mine indbetalinger?"),
+                build_suggestion("Bør jeg indbetale mere?"),
+                build_suggestion("Hvad betyder det for min udbetaling?"),
+            ]
+        elif "udbetal" in text or "pensionist" in text:
+            suggestions = [
+                build_suggestion("Hvad betyder udbetalingsperioden for mig?"),
+                build_suggestion("Kan jeg gå tidligere på pension?"),
+                build_suggestion("Hvad påvirker min udbetaling?"),
+            ]
+        elif "forsikring" in text or "dækning" in text or "dækninger" in text:
+            suggestions = [
+                build_suggestion("Hvad dækker mine forsikringer?"),
+                build_suggestion("Hvad sker der, hvis jeg bliver syg?"),
+            ]
+        elif "fordel" in text or "livrente" in text or "ratepension" in text:
+            suggestions = [
+                build_suggestion("Hvad betyder udbetalingsperioden for mig?"),
+                build_suggestion("Hvad er forskellen på livrente og ratepension?"),
+            ]
+        elif "sparet" in text or "opsparing" in text or "stående" in text:
+            suggestions = [
+                build_suggestion("Hvad betyder det for min pension?"),
+                build_suggestion("Hvad får jeg udbetalt om måneden?"),
+                build_suggestion("Hvordan er min pension investeret?"),
+            ]
+        else:
+            suggestions = [
+                build_suggestion("Hvad betyder det for min pension?"),
+                build_suggestion("Hvad bør jeg være mest opmærksom på?"),
+            ]
+
+        return filter_chat_suggestions(suggestions, user_text)
+
+    if conversation_intent == "life_event" and customer_id is not None:
+        suggestions = [
+            build_suggestion("Hvilke forsikringer har jeg?"),
+            build_suggestion("Hvad bør jeg være opmærksom på?"),
+        ]
+        return filter_chat_suggestions(suggestions, user_text, max_count=2)
+
+    return []
+
 
 def is_in_scope_question(user_text: str) -> bool:
     text = user_text.lower()
@@ -604,6 +1096,27 @@ def is_obviously_out_of_scope(user_text: str) -> bool:
     return not is_in_scope_question(user_text)
 
 
+def is_prompt_injection_attempt(user_text: str) -> bool:
+    text = user_text.lower()
+
+    prompt_injection_patterns = [
+        "ignorer regler",
+        "ignorer instruktion",
+        "ignore previous",
+        "ignore instructions",
+        "omgå sikkerhed",
+        "bypass",
+        "vis kundedata",
+        "vis alle kundedata",
+        "afslør kundedata",
+        "system prompt",
+        "developer message",
+        "du skal ikke følge",
+    ]
+
+    return any(pattern in text for pattern in prompt_injection_patterns)
+
+
 # ============================================================
 # PROMPT
 # ============================================================
@@ -617,8 +1130,8 @@ Din stil er:
 - konkret
 - prioriterende
 - analytisk
-- ikke undervisende
-- ikke chatbot-agtig
+- venlig og naturlig
+- egnet til en chat
 
 Du må kun svare ud fra den kontekst, du får udleveret.
 Hvis kundedata indeholder relevante oplysninger, skal du bruge dem aktivt.
@@ -649,10 +1162,18 @@ Du må gerne give en vejledende vurdering baseret på kundedata.
 Brug formuleringer som:
 "Ud fra dine oplysninger peger det på..."
 "Det vil være relevant at undersøge..."
-"Et fornuftigt næste skridt kan være..."
 
 Svar altid på dansk.
-Svar skal være lette at læse visuelt.
+Svar skal være korte og lette at læse visuelt.
+Svar med den længde, der passer til en chatbot.
+Start ikke almindelige svar med "Hej", kundens navn eller en ny velkomst.
+Brug kun hilsen, når SAMTALE_INTENT er "greeting".
+Ved personlige rådgivningssvar: maks 2 korte afsnit.
+Ved personlige beslutningsspørgsmål: maks 3 korte tekstlinjer og cirka 45-65 ord.
+Brug markdown til at gøre korte svar lette at skimme.
+Markér centrale beløb, procenttal, aldre og pensionsordninger med fed.
+Skriv ikke "Næste skridt" eller "Hvis du vil vide mere" ved personlige beslutningsspørgsmål.
+Opfølgende spørgsmål vises som klikbare knapper under svaret.
 
 Brug struktur når spørgsmålet er personligt eller komplekst.
 
@@ -660,15 +1181,22 @@ Du må bruge:
 - korte overskrifter
 - korte afsnit
 - punktopstillinger
-- nummererede næste skridt
 
 Du må IKKE skrive én lang tekstblok.
 
-Formatér især komplekse/personlige svar som en rådgiver-opsummering.
+Formatér især komplekse/personlige svar som korte chatbeskeder.
 
 Du håndterer to typer spørgsmål:
 1. First-level generelle pensionsspørgsmål.
 2. Personlige overbliksspørgsmål, når kundedata er tilgængelige.
+
+Samtaleflow:
+- Start med at besvare det kunden faktisk spørger om
+- Giv derefter højst én relevant opfølgning eller ét næste valg
+- Ved brede spørgsmål skal du hjælpe kunden med at vælge fokus i stedet for at skrive en lang rapport
+- Brug normalt højst 2 korte afsnit eller 2 bullets
+- Ved personlige beslutningsspørgsmål: brug maks 3 korte tekstlinjer og derefter stop
+- Foreslå kun rådgiverkontakt, når spørgsmålet kræver endelig personlig beslutning eller handling
 
 Ved generelle spørgsmål:
 - svar neutralt
@@ -691,7 +1219,7 @@ Svar først på:
 
 før du forklarer generelle regler.
 
-Brug markdown-format.
+Brug markdown-format, men kun når det gør svaret lettere at skimme.
 
 Brug gerne:
 
@@ -704,13 +1232,7 @@ tekst
 - punkt
 - punkt
 
-### Næste skridt
-
-1. ...
-2. ...
-3. ...
-
-Svar skal ligne et professionelt rådgivningsmøde-notat.
+Svar skal ligne en kort rådgiverbesked i en chat.
 
 Undgå store tekstblokke.
 
@@ -719,7 +1241,7 @@ Hold sektionerne korte og tydelige.
 - brug konkrete tal fra KUNDEDATA
 - skriv som en erfaren pensionsrådgiver i et rådgivningsmøde
 - skriv naturligt og forklarende
-- prioriter kundens vigtigste 2-4 forhold
+- prioriter kundens vigtigste 1-3 forhold
 Vælg aktivt de mest betydningsfulde observationer fra kundedata.
 
 Ikke alle data er lige vigtige.
@@ -734,20 +1256,20 @@ Prioritér derefter svaret.
 - undgå at gennemgå alle mulige pensionsemner
 - undgå punkt-for-punkt rapportstil
 - forklar tallene i almindeligt sprog
-- prioriter de 2-4 vigtigste pointer fremfor lange lister
+- prioriter de 1-3 vigtigste pointer fremfor lange lister
 - vær konkret og analytisk
 - undgå lange generelle forklaringer
 - forklar hvad tallene betyder for kunden
 - fokuser på de vigtigste konsekvenser
-- giv højst 2-3 korte næste skridt
+- skriv ikke "Næste skridt"
 
-skriv typisk 120-250 ord.
+skriv typisk 40-90 ord.
 
 Korte spørgsmål:
-50-120 ord.
+20-70 ord.
 
 Komplekse/personlige spørgsmål:
-120-250 ord.
+45-80 ord.
 
 Undgå at forklare mere end nødvendigt.
 Svar skal føles som et effektivt rådgivningsmøde — ikke som en rapport.
@@ -766,15 +1288,19 @@ Du må gerne give en vejledende vurdering baseret på kundedata.
 Du må ikke give bindende økonomisk, juridisk eller skattemæssig rådgivning.
 Du må ikke beslutte for kunden.
 Du må ikke anbefale én endelig løsning som den eneste rigtige.
+Du må ikke skrive "Jeg ville anbefale", "Jeg anbefaler", "Jeg ville især overveje" eller lignende personlige anbefalingsformuleringer.
+Brug i stedet "Det kan være relevant at undersøge...", "En mulighed er..." eller "Det afhænger af...".
+Du må ikke skrive, at kunden "bør prioritere", "bør udnytte" eller "skal udnytte" skattefradrag, indbetalingslofter eller andre skatteforhold.
+Ved skattefradrag, indbetalingslofter og PAL-skat må du kun skrive, at det kan være relevant at undersøge eller tale med en rådgiver om.
+Formulér økonomiske og skattemæssige valg som muligheder og forhold, kunden skal være opmærksom på, ikke som instruktioner.
 
-Du må gerne give tydelige prioriterede anbefalinger,
-hvis KUNDEDATA giver et rimeligt grundlag.
+Du må gerne prioritere relevante forhold, hvis KUNDEDATA giver et rimeligt grundlag, men du må ikke formulere det som en personlig anbefaling.
 
 Brug formuleringer som:
 
-"Jeg ville især overveje..."
-"Det mest oplagte fokusområde ser ud til at være..."
-"Hvis målet er X, peger dine data især på..."
+"Det kan være relevant at undersøge..."
+"Et muligt fokusområde er..."
+"Hvis målet er X, peger dine data på, at du bør undersøge..."
 
 Undgå at blive unødigt passiv.
 
@@ -791,6 +1317,20 @@ Hvis et spørgsmål handler om optimering, tidligere pension, højere løn, indb
 - forklar hvilke forhold kunden bør overveje
 - sig ikke kun "kontakt en rådgiver"
 - brug rådgiver-henvisningen som afslutning, ikke som hele svaret
+- skriv ikke at kunden bør udnytte fradrag eller indbetalingslofter
+- skriv i stedet "det kan være relevant at undersøge fradrag og indbetalingslofter"
+
+Hvis SESSION_STATUS siger, at kunden er logget ind:
+- skriv ikke, at kunden skal logge ind
+- skriv ikke, at kunden skal logge ind på Mit PenSam eller Mit Pensam
+- svar ud fra kundedata og den generelle kontekst, der findes
+
+Hvis SESSION_STATUS siger, at kunden ikke er logget ind, og spørgsmålet kræver kundedata:
+- sig kort, at kunden skal være logget ind for personlige oplysninger
+
+Ved generelle emner må du gerne afslutte kort med:
+"Du kan også læse mere på hjemmesiden eller spørge her."
+Brug kun denne afslutning, når den føles relevant, og ikke i alle svar.
 
 Ved handlinger, fx sygdom, dødsfald, samle pension, ændre begunstigelse eller kontakt:
 - forklar hvad situationen typisk betyder
@@ -963,19 +1503,67 @@ def chat(msg: Message, request: Request):
         )
 
         customer_id = get_customer_id_from_session(msg.session_id)
+        conversation_intent = classify_conversation_intent(user_text)
 
-        if is_closing_message(user_text):
-            reply = "Selv tak. Er der andet, jeg kan hjælpe med?"
+        if is_prompt_injection_attempt(user_text):
+            return {
+                "reply": "Jeg kan ikke vise kundedata eller omgå sikkerhedsregler.",
+                "sources": [],
+                "provider": None,
+                "fallback_used": False,
+                "suggestions": [],
+            }
 
-            if customer_id is not None:
-                append_saved_chat_message(customer_id, "user", user_text)
-                append_saved_chat_message(customer_id, "assistant", reply)
+        if conversation_intent == "greeting":
+            reply = get_greeting_reply(customer_id)
+            save_chat_exchange(customer_id, user_text, reply)
 
             return {
                 "reply": reply,
                 "sources": [],
                 "provider": None,
                 "fallback_used": False,
+                "suggestions": [],
+            }
+
+        if conversation_intent == "closing":
+            reply = "Selv tak. Er der andet, jeg kan hjælpe med?"
+            save_chat_exchange(customer_id, user_text, reply)
+
+            return {
+                "reply": reply,
+                "sources": [],
+                "provider": None,
+                "fallback_used": False,
+                "suggestions": [],
+            }
+
+        if conversation_intent == "personal_overview" and customer_id is not None:
+            reply = get_personal_overview_choice_reply()
+            save_chat_exchange(customer_id, user_text, reply)
+
+            return {
+                "reply": reply,
+                "sources": [],
+                "provider": None,
+                "fallback_used": False,
+                "suggestions": [
+                    {"label": "Opsparing og indbetaling", "message": "Opsparing og indbetaling"},
+                    {"label": "Forventet udbetaling", "message": "Forventet udbetaling"},
+                    {"label": "Forsikringer", "message": "Forsikringer og dækninger"},
+                    {"label": "Risiko", "message": "Risiko og investering"},
+                ],
+            }
+
+        if conversation_intent == "personal_overview" and customer_id is None:
+            reply = get_login_required_reply(conversation_intent)
+
+            return {
+                "reply": reply,
+                "sources": [],
+                "provider": None,
+                "fallback_used": False,
+                "suggestions": [],
             }
 
         requires_customer_context = (
@@ -987,27 +1575,33 @@ def chat(msg: Message, request: Request):
         )
 
         if requires_customer_context and customer_id is None:
+            reply = get_login_required_reply(conversation_intent)
+
             return {
-                "reply": "Du skal være logget ind for at få svar på personlige spørgsmål om din pension.",
+                "reply": reply,
                 "sources": [],
                 "provider": None,
                 "fallback_used": False,
+                "suggestions": [],
             }
 
-        if is_obviously_out_of_scope(user_text):
+        if conversation_intent == "out_of_scope":
             return {
-                "reply": "Det fremgår ikke af mit datagrundlag.",
+                "reply": "Jeg kan kun hjælpe med spørgsmål om pension og pensionsordninger. Det fremgår derfor ikke af mit datagrundlag.",
                 "sources": [],
                 "provider": None,
                 "fallback_used": False,
+                "suggestions": [],
             }
 
         question_type = classify_question(user_text)
+        flow_instruction = get_flow_instruction(conversation_intent, customer_id)
 
         logger.info(
-            "[%s] Question classified as %s",
+            "[%s] Question classified as %s / %s",
             request_id,
             question_type,
+            conversation_intent,
         )
 
         customer_context = ""
@@ -1043,6 +1637,7 @@ Nyeste spørgsmål:
                     "sources": [],
                     "provider": None,
                     "fallback_used": False,
+                    "suggestions": [],
                 }
         else:
             context = build_context(top_chunks)
@@ -1065,59 +1660,43 @@ Nyeste spørgsmål:
             extra_instruction = """
 Ved komplekse personlige spørgsmål:
 
-1. Start med en tydelig rådgivervurdering.
+1. Start med kun de kundetal, der direkte besvarer spørgsmålet.
 
-Første 2-3 sætninger skal direkte besvare spørgsmålet.
+Første sætning skal direkte besvare spørgsmålet.
 
-2. Brug kundens konkrete tal.
+2. Forklar kun den vigtigste betydning for kunden i én kort sætning.
 
-3. Forklar vigtigste konsekvenser.
+3. Stop efter vurderingen. Opfølgende spørgsmål vises som klikbare knapper under svaret.
 
-4. Giv en vejledende rådgiveranalyse.
-
-5. Giv 2-3 næste skridt.
+Format:
+- kundetal og status
+- kort vurdering
 
 Undgå generelle pensionsartikler.
 Undgå FAQ-stil.
             
-Spørgsmålet kræver personlig vurdering.
+Spørgsmålet kræver personlig vurdering, men svaret skal stadig føles som en kort chatbesked.
 
-FORMATERING ER VIGTIG.
-
-Brug altid tydelig struktur.
-
-Brug typisk:
-
-Kort indledning.
-
-Overskrift: vigtigste forhold
-
-Overskrift: økonomiske konsekvenser
-
-Overskrift: forhold der bør overvejes
-
-Overskrift: næste skridt
-
-Brug gerne bullets ved:
-- konsekvenser
-- fordele
-- ulemper
-- forhold kunden bør overveje
+Brug kun bullets, hvis det gør svaret kortere.
 
 Undgå lange tekstblokke.
 
 Hvis KUNDEDATA findes:
 
 - start med de vigtigste forhold
-- brug konkrete tal
-- forklar hvad tallene betyder
-- sammenlign nuværende situation og alternativ
-- nævn både muligheder og risici
-- giv 2-3 konkrete næste skridt
+- brug kun konkrete tal der direkte besvarer spørgsmålet
+- markér de vigtigste tal med fed markdown
+- undlad årsindkomst, alder og andre ekstra oplysninger, medmindre kunden spørger om dem
+- forklar kun den vigtigste betydning
+- undgå "overvej dit pensionsbudget" og andre abstrakte råd
+- undgå formuleringer som "du bør prioritere", "du bør udnytte fradrag" og "du skal udnytte fradrag"
+- ved fradrag og indbetalingslofter: skriv kun at kunden kan undersøge det eller tale med rådgiver
 
 Afslut med kort forbehold.
 
-Svar skal ligne et svar fra en erfaren pensionsrådgiver — ikke en chatbot.
+Skriv ikke "Hej" eller kundens navn.
+Skriv ikke "Næste skridt" eller "Hvis du vil vide mere" ved personlige beslutningsspørgsmål.
+Svar skal være meget kort og typisk under 70 ord.
 """
         elif question_type == "semi":
             extra_instruction = """
@@ -1128,13 +1707,15 @@ Giv:
 - relevante trin, hvis de fremgår af konteksten
 - brug kundedata, hvis de er tilgængelige og relevante
 - ét tydeligt forbehold
+- hold svaret på cirka 60-130 ord
 
 Hvis spørgsmålet handler om sygdom, dækning eller forsikring, så nævn relevante dækninger fra KUNDEDATA, hvis de findes.
 """
         else:
             extra_instruction = """
 Spørgsmålet er simpelt.
-Giv kort og direkte svar.
+Giv kort og direkte svar på cirka 20-80 ord.
+Hvis det er et generelt emne, må du kort foreslå, at kunden kan læse mere på hjemmesiden eller spørge her.
 """
 
         prompt = f"""
@@ -1148,6 +1729,15 @@ GENEREL PENSIONSVIDEN:
 
 KUNDEDATA:
 {customer_context if customer_context else "Ingen kundedata tilgængelige."}
+
+SESSION_STATUS:
+{"Kunden er logget ind." if customer_id is not None else "Kunden er ikke logget ind."}
+
+SAMTALE_INTENT:
+{conversation_intent}
+
+SAMTALEFLOW:
+{flow_instruction}
 
 SAMTALEHISTORIK:
 {conversation_history}
@@ -1168,17 +1758,22 @@ BRUGERENS SPØRGSMÅL:
                 llm_result["provider"],
             )
 
-        reply = llm_result["reply"]
+        reply = remove_repeated_greeting(llm_result["reply"], conversation_intent)
+        reply = soften_tax_advice_language(reply)
+        reply = soften_personal_recommendation_language(reply)
+        reply = remove_disallowed_chat_sections(reply)
+        reply = limit_reply_length(reply)
+        suggestions = get_chat_suggestions(conversation_intent, user_text, customer_id)
+        reply, suggestions = move_inline_followup_to_suggestions(reply, suggestions)
 
-        if customer_id is not None:
-            append_saved_chat_message(customer_id, "user", user_text)
-            append_saved_chat_message(customer_id, "assistant", reply)
+        save_chat_exchange(customer_id, user_text, reply)
 
         return {
             "reply": reply,
             "sources": sources,
             "provider": llm_result["provider"],
             "fallback_used": llm_result["fallback_used"],
+            "suggestions": suggestions,
         }
 
     except Exception as e:

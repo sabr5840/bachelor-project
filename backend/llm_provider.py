@@ -2,7 +2,14 @@ import os
 
 from dotenv import load_dotenv
 from google import genai
-from mistralai import Mistral
+
+try:
+    from mistralai import Mistral
+except ImportError:
+    try:
+        from mistralai.client import Mistral
+    except ImportError:
+        Mistral = None
 
 load_dotenv()
 
@@ -15,11 +22,8 @@ mistral_key = os.getenv("MISTRAL_API_KEY")
 if not gemini_key:
     raise RuntimeError("GEMINI_API_KEY mangler i .env")
 
-if not mistral_key:
-    raise RuntimeError("MISTRAL_API_KEY mangler i .env")
-
 gemini_client = genai.Client(api_key=gemini_key)
-mistral_client = Mistral(api_key=mistral_key)
+mistral_client = Mistral(api_key=mistral_key) if mistral_key and Mistral else None
 
 
 def generate_with_gemini(prompt: str, force_fail: bool = False) -> str:
@@ -43,6 +47,9 @@ def generate_with_gemini(prompt: str, force_fail: bool = False) -> str:
 
 
 def generate_with_mistral(prompt: str) -> str:
+    if not mistral_client:
+        raise RuntimeError("Mistral fallback er ikke konfigureret")
+
     try:
         response = mistral_client.chat.complete(
             model=MISTRAL_MODEL,
