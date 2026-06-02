@@ -308,4 +308,10 @@ if __name__ == "__main__":
 
     # 3) Quick retrieval test
     test_query = "Hvad er forskellen på ratepension og livrente?"
-    results = retrieve_top_chunks(test_
+    results = retrieve_top_chunks(test_query, top_k=3)
+
+    print("\nTop chunks:")
+    for chunk in results:
+        print(f"- {chunk['chunk_id']} | {chunk['document_title']}")
+        print(chunk["text"][:250])
+        print()

@@ -1801,4 +1801,40 @@ BRUGERENS SPØRGSMÅL:
 
         reply = remove_repeated_greeting(llm_result["reply"], conversation_intent)
         reply = soften_tax_advice_language(reply)
-        reply = soften_personal_recommendation_lang
+        reply = soften_personal_recommendation_language(reply)
+        reply = remove_disallowed_chat_sections(reply)
+        reply = limit_reply_length(reply)
+
+        suggestions = get_chat_suggestions(conversation_intent, user_text, customer_id)
+        reply, suggestions = move_inline_followup_to_suggestions(reply, suggestions)
+
+        save_chat_exchange(customer_id, user_text, reply)
+
+        return {
+            "reply": reply,
+            "sources": sources,
+            "provider": llm_result["provider"],
+            "fallback_used": llm_result["fallback_used"],
+            "suggestions": suggestions,
+        }
+
+    except Exception as e:
+        logger.exception("[%s] Unexpected error in chat endpoint", request_id)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/debug/chat-history")
+def debug_chat_history():
+    cleanup_chat_history()
+
+    return {
+        "note": "Kun til lokal debugging. Chathistorik ligger kun i backend-memory og forsvinder ved restart/reload.",
+        "count": len(CHAT_HISTORY_STORE),
+        "history": {
+            str(customer_id): {
+                "expires_at": history["expires_at"].isoformat(),
+                "messages": history["messages"],
+            }
+            for customer_id, history in CHAT_HISTORY_STORE.items()
+        },
+    }
