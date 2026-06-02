@@ -6,28 +6,59 @@ Kilder:
 - https://www.kk.dk/borger/borgerservice/oekonomi-og-pension/foertidspension
 
 Titel:
-Førtidspension vilkår (krav og betingelser)
+Førtidspension – vilkår og regler
 
-Kort forklaring i naturligt sprog.
-Førtidspension er en offentlig ydelse til personer, der ikke kan arbejde på grund af varigt nedsat arbejdsevne. Der er strenge krav, og det er kommunen, der vurderer og godkender, om du kan få førtidspension.
+Kategori:
+Offentlig pension
+
+Tags:
+førtidspension, offentlig pension, arbejdsevne, sygdom, pension
+
+Kort forklaring i naturligt sprog:
+Førtidspension er en offentlig ydelse til personer med varigt nedsat arbejdsevne. Ordningen kan være relevant, hvis man på grund af sygdom eller andre forhold ikke kan arbejde i almindeligt job.
+
+Definition:
+
+Hvad er førtidspension?
+
+Førtidspension er en offentlig pension til personer med varigt nedsat arbejdsevne.
+
+Definition af førtidspension:
+En person kan få førtidspension, hvis arbejdsevnen vurderes varigt nedsat, og mulighederne for at forbedre arbejdsevnen er udtømte.
 
 Vigtige punkter:
-- Din arbejdsevne skal være varigt og væsentligt nedsat (kan ikke arbejde) 
-- Du skal ikke kunne forsørge dig selv – heller ikke i fleksjob
-- Alle muligheder for at forbedre din arbejdsevne skal være afprøvet (fx behandling, ressourceforløb)   
-- Du skal som udgangspunkt være mellem 18 år og folkepensionsalderen   
-- Førtidspension gives normalt først til personer over 40 år (særlige regler for yngre)   
-- Du skal have bopæl i Danmark og opfylde krav til ophold/statsborgerskab 
-- Det er kommunen, der træffer afgørelse om førtidspension  
-- Pensionen udbetales af Udbetaling Danmark 
-- Du må gerne arbejde lidt, men indkomst kan reducere pensionen 
+
+Sektion: Hvem kan få førtidspension?
+- Personer med varigt nedsat arbejdsevne
+- Arbejdsevnen skal være væsentligt begrænset
+- Kommunen foretager vurderingen
+- Andre muligheder vurderes normalt først
+
+Sektion: Hvordan vurderes førtidspension?
+- Helbred kan indgå i vurderingen
+- Arbejdsevne vurderes samlet
+- Tidligere beskæftigelse kan indgå
+- Kommunen vurderer den konkrete situation
+
+Sektion: Førtidspension og sygdom
+- Alvorlig sygdom kan være relevant
+- Diagnose alene giver ikke automatisk ret
+- Arbejdsevne er centralt i vurderingen
+
+Sektion: Førtidspension og pension
+- Nogle pensionsordninger har forsikringer ved førtidspension
+- Førtidspension kan påvirke privat pension
+- Forsikringsdækninger afhænger af ordning
+
+Sektion: Førtidspension vs andre ordninger
+- Førtidspension er forskellig fra folkepension
+- Førtidspension er forskellig fra seniorpension
+- Regler og vilkår varierer mellem ordninger
 
 Evt. særlige forhold:
-- Personer under 40 år får som udgangspunkt ikke førtidspension, medmindre det er åbenlyst, at arbejdsevnen ikke kan forbedres 
-- Kommunen laver en samlet vurdering af helbred, sociale forhold og arbejdsevne  
-- Førtidspension er en varig ydelse frem til folkepensionsalderen  
+Kommunale vurderinger er centrale i processen omkring førtidspension.
 
 Forbehold:
-- Det er altid en individuel vurdering  
-- Regler og praksis kan ændre sig  
-- AI bør ikke vurdere om en person kan få førtidspension
+- Regler kan ændre sig
+- Ret til førtidspension afhænger af individuel vurdering
+- AI bør ikke foretage juridisk vurdering

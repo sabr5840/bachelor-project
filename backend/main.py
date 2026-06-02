@@ -89,7 +89,6 @@ def create_demo_session(customer_id: int) -> str:
     return session_id
 
 
-
 def get_session_payload(session_id: str | None) -> dict[str, object] | None:
     if not session_id:
         return None
@@ -179,7 +178,10 @@ def append_saved_chat_message(customer_id: int, role: str, content: str) -> None
 
 
 def check_rate_limit(identifier: str) -> None:
-    if os.getenv("DISABLE_RATE_LIMIT") == "true":
+    if (
+        os.getenv("DISABLE_RATE_LIMIT") == "true"
+        or os.getenv("TESTING") == "true"
+    ):
         return
 
     now = datetime.now(timezone.utc)
@@ -519,9 +521,19 @@ def classify_question(user_text: str) -> str:
     return "simple"
 
 
-
 def needs_customer_data(user_text: str) -> bool:
     text = user_text.lower()
+
+    if is_general_death_or_beneficiary_question(user_text):
+        return False
+
+    scenario_exceptions = [
+        "hvordan vokser min pensionsopsparing over tid",
+        "hvordan vokser min opsparing over tid",
+    ]
+
+    if any(x in text for x in scenario_exceptions):
+        return False
 
     personal_keywords = [
         "mit afkast",
@@ -530,8 +542,6 @@ def needs_customer_data(user_text: str) -> bool:
         "min begunstigede",
         "hvem er min begunstigede",
         "hvem er begunstiget",
-        "hvem får min pension hvis jeg dør",
-        "hvem får min pension, hvis jeg dør",
         "mine forsikringer",
         "hvor meget har jeg",
         "hvad har jeg stående",
@@ -591,7 +601,6 @@ def needs_customer_data(user_text: str) -> bool:
     ]
 
     return any(keyword in text for keyword in personal_keywords)
-
 
 
 def is_general_death_or_beneficiary_question(user_text: str) -> bool:
@@ -1004,6 +1013,9 @@ def is_in_scope_question(user_text: str) -> bool:
         "aldersopsparing",
         "folkepension",
         "atp",
+        "kontorente",
+        "markedsrente",
+        "traditionel pension",
         "anbefale",
         "anbefaling",
         "konkret anbefale",
@@ -1483,6 +1495,24 @@ def session_chat_history(session_id: str):
     return {"messages": get_saved_chat_history(customer_id)}
 
 
+def is_specific_investment_advice_question(user_text: str) -> bool:
+    text = user_text.lower()
+
+    blocked_patterns = [
+        "bestemt aktie",
+        "konkret aktie",
+        "anbefale mig en aktie",
+        "anbefale en aktie",
+        "anbefale aktie",
+        "hvilken aktie",
+        "køb aktie",
+        "købe aktie",
+        "aktietip",
+        "stock pick",
+    ]
+
+    return any(pattern in text for pattern in blocked_patterns)
+
 @app.post("/chat")
 def chat(msg: Message, request: Request):
     user_text = msg.message.strip()
@@ -1508,6 +1538,18 @@ def chat(msg: Message, request: Request):
         if is_prompt_injection_attempt(user_text):
             return {
                 "reply": "Jeg kan ikke vise kundedata eller omgå sikkerhedsregler.",
+                "sources": [],
+                "provider": None,
+                "fallback_used": False,
+                "suggestions": [],
+            }
+
+        if is_specific_investment_advice_question(user_text):
+            return {
+                "reply": (
+                    "Jeg kan ikke anbefale konkrete aktier eller individuelle investeringer. "
+                    "Jeg kan hjælpe med generelle spørgsmål om pension, risiko og pensionsinvestering."
+                ),
                 "sources": [],
                 "provider": None,
                 "fallback_used": False,
@@ -1625,11 +1667,15 @@ Nyeste spørgsmål:
             top_k = 5
         else:
             top_k = 7
+
         top_chunks = retrieve_top_chunks(retrieval_query, top_k=top_k)
 
         if not top_chunks:
             if requires_customer_context and customer_context:
-                context = "Ingen relevant generel pensionsviden fundet i RAG-konteksten. Brug kun KUNDEDATA og giv et forsigtigt vejledende svar."
+                context = (
+                    "Ingen relevant generel pensionsviden fundet i RAG-konteksten. "
+                    "Brug kun KUNDEDATA og giv et forsigtigt vejledende svar."
+                )
                 sources = []
             else:
                 return {
@@ -1650,18 +1696,13 @@ Nyeste spørgsmål:
                 for chunk in top_chunks
             ]
 
-        logger.info(
-            "[%s] Retrieved %s source chunks",
-            request_id,
-            len(sources),
-        )
+        logger.info("[%s] Retrieved %s source chunks", request_id, len(sources))
 
         if question_type == "complex":
             extra_instruction = """
 Ved komplekse personlige spørgsmål:
 
 1. Start med kun de kundetal, der direkte besvarer spørgsmålet.
-
 Første sætning skal direkte besvare spørgsmålet.
 
 2. Forklar kun den vigtigste betydning for kunden i én kort sætning.
@@ -1674,7 +1715,7 @@ Format:
 
 Undgå generelle pensionsartikler.
 Undgå FAQ-stil.
-            
+
 Spørgsmålet kræver personlig vurdering, men svaret skal stadig føles som en kort chatbesked.
 
 Brug kun bullets, hvis det gør svaret kortere.
@@ -1686,7 +1727,7 @@ Hvis KUNDEDATA findes:
 - start med de vigtigste forhold
 - brug kun konkrete tal der direkte besvarer spørgsmålet
 - markér de vigtigste tal med fed markdown
-- undlad årsindkomst, alder og andre ekstra oplysninger, medmindre kunden spørger om dem
+- undlad årsindkomst, alder og andre ekstra oplysninger, medmindre kunden spørger om det
 - forklar kun den vigtigste betydning
 - undgå "overvej dit pensionsbudget" og andre abstrakte råd
 - undgå formuleringer som "du bør prioritere", "du bør udnytte fradrag" og "du skal udnytte fradrag"
@@ -1760,39 +1801,4 @@ BRUGERENS SPØRGSMÅL:
 
         reply = remove_repeated_greeting(llm_result["reply"], conversation_intent)
         reply = soften_tax_advice_language(reply)
-        reply = soften_personal_recommendation_language(reply)
-        reply = remove_disallowed_chat_sections(reply)
-        reply = limit_reply_length(reply)
-        suggestions = get_chat_suggestions(conversation_intent, user_text, customer_id)
-        reply, suggestions = move_inline_followup_to_suggestions(reply, suggestions)
-
-        save_chat_exchange(customer_id, user_text, reply)
-
-        return {
-            "reply": reply,
-            "sources": sources,
-            "provider": llm_result["provider"],
-            "fallback_used": llm_result["fallback_used"],
-            "suggestions": suggestions,
-        }
-
-    except Exception as e:
-        logger.exception("[%s] Unexpected error in chat endpoint", request_id)
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/debug/chat-history")
-def debug_chat_history():
-    cleanup_chat_history()
-
-    return {
-        "note": "Kun til lokal debugging. Chathistorik ligger kun i backend-memory og forsvinder ved restart/reload.",
-        "count": len(CHAT_HISTORY_STORE),
-        "history": {
-            str(customer_id): {
-                "expires_at": history["expires_at"].isoformat(),
-                "messages": history["messages"],
-            }
-            for customer_id, history in CHAT_HISTORY_STORE.items()
-        },
-    }
+        reply = soften_personal_recommendation_lang

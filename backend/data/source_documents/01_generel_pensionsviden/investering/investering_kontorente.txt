@@ -10,10 +10,18 @@ Kategori:
 Investering
 
 Tags:
-pension, kontorente, rente, afkast, investering
+pension, kontorente, rente, afkast, investering, markedsrente, traditionel pension
 
 Kort forklaring i naturligt sprog:
-Kontorente er en rente, som pensionsselskabet fastsætter for din opsparing. I stedet for at følge markedet direkte, får du en mere stabil udvikling, hvor afkastet fordeles over tid.
+Kontorente er en rente på pensionsopsparing, som pensionsselskabet fastsætter. Kontorenten bruges typisk i traditionelle pensionsordninger og giver en mere stabil udvikling end markedsbaseret investering.
+
+Definition:
+
+Hvad er kontorente?
+
+Kontorente betyder, at pensionsselskabet fastsætter en rente på pensionsopsparingen.
+
+Kontorenten anvendes ofte i traditionelle pensionsordninger, hvor afkast fordeles mere jævnt over tid.
 
 Vigtige punkter:
 
@@ -21,38 +29,36 @@ Sektion: Hvad er kontorente?
 - Kontorente er en fastsat rente på pensionsopsparing
 - Rentesatsen fastsættes af pensionsselskabet
 - Bruges i visse typer pensionsordninger
-- Giver en mere stabil udvikling end markedsbaseret investering
+- Giver mere stabil udvikling end direkte markedsinvestering
 
-Sektion: Hvordan fungerer det?
+Sektion: Hvordan fungerer kontorente?
 - Afkast fra investeringer samles i en fælles pulje
 - Pensionsselskabet fordeler afkastet over tid
-- Rentesatsen kan justeres løbende
-- Afkast udbetales som en jævn rente
+- Store udsving udjævnes
+- Rentesatsen kan ændres løbende
 
-Sektion: Stabilitet og udsving
-- Kontorente giver mindre udsving i opsparingen
-- Store gevinster og tab udjævnes over tid
-- Giver mere forudsigelig udvikling
-- Kan være relevant tæt på pensionsalderen
-
-Sektion: Sammenligning med markedsrente
-- Kontorente: stabil, mindre udsving
-- Markedsrente: højere udsving, direkte påvirket af markedet
+Sektion: Kontorente vs markedsrente
+- Kontorente giver typisk mindre udsving
+- Markedsrente følger investeringerne mere direkte
+- Markedsrente kan give både højere gevinst og større tab
 - Valget afhænger af risikovillighed og tidshorisont
+
+Sektion: Stabilitet og risiko
+- Kontorente giver mere forudsigelig udvikling
+- Risiko og afkast er stadig relevante forhold
+- Kan være relevant tættere på pensionsalderen
 
 Sektion: Hvad påvirker kontorenten?
 - Pensionsselskabets investeringer
+- Markedsudvikling
 - Økonomiske forhold
-- Markedsudvikling over tid
 - Selskabets beslutninger
 
 Evt. særlige forhold:
-Kontorente bruges typisk i ældre eller mere traditionelle pensionsordninger. Nye ordninger er ofte markedsbaserede.
+Kontorente bruges ofte i ældre eller traditionelle pensionsordninger. Mange nyere ordninger anvender markedsrente.
 
 Forbehold:
 - Kontorenten kan ændre sig
 - Afkast er ikke garanteret
-- Regler afhænger af pensionsordning
-- AI bør ikke anbefale konkrete valg
-
-
+- Regler afhænger af ordning og pensionsselskab
+- AI bør ikke anbefale konkrete investeringsvalg

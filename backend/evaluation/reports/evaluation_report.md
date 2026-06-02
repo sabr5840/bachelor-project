@@ -5,8 +5,8 @@ Evalueringen dækker RAG-retrieval, guardrails, svarkvalitet og korrekt håndter
 
 ## Samlet resultat
 
-- Antal tests: 50
-- Beståede tests: 50
+- Antal tests: 74
+- Beståede tests: 74
 - Fejlede tests: 0
 - Samlet pass rate: 100.0%
 - Retrieval accuracy: 100.0%
@@ -16,32 +16,34 @@ Evalueringen dækker RAG-retrieval, guardrails, svarkvalitet og korrekt håndter
 
 | Kategori | Antal tests | Bestået | Pass rate |
 |---|---:|---:|---:|
-| comparison | 2 | 2 | 100.0% |
-| death | 1 | 1 | 100.0% |
-| definition | 3 | 3 | 100.0% |
-| guardrail | 3 | 3 | 100.0% |
-| investment | 2 | 2 | 100.0% |
+| comparison | 3 | 3 | 100.0% |
+| contribution | 4 | 4 | 100.0% |
+| death | 5 | 5 | 100.0% |
+| definition | 5 | 5 | 100.0% |
+| guardrail | 4 | 4 | 100.0% |
+| investment | 5 | 5 | 100.0% |
 | navigation | 12 | 12 | 100.0% |
 | out_of_scope | 5 | 5 | 100.0% |
-| payout | 2 | 2 | 100.0% |
+| payout | 3 | 3 | 100.0% |
 | personal_without_login | 6 | 6 | 100.0% |
-| public_pension | 6 | 6 | 100.0% |
-| synonym | 3 | 3 | 100.0% |
-| tax | 5 | 5 | 100.0% |
+| public_pension | 7 | 7 | 100.0% |
+| scenario | 6 | 6 | 100.0% |
+| system | 3 | 3 | 100.0% |
+| tax | 6 | 6 | 100.0% |
 
 ## LLM-provider-fordeling
 
 | Provider | Antal svar |
 |---|---:|
-| gemini | 36 |
-| ingen LLM | 14 |
+| gemini | 59 |
+| ingen LLM | 15 |
 
-Fallback blev brugt i 0 ud af 50 tests.
+Fallback blev brugt i 0 ud af 74 tests.
 
 ## Retrieval og guardrails
 
-Retrieval blev testet på 36 spørgsmål, hvor 36 hentede den forventede kilde.
-Guardrails blev testet på 14 spørgsmål, hvor 14 blev håndteret korrekt.
+Retrieval blev testet på 59 spørgsmål, hvor 59 hentede den forventede kilde.
+Guardrails blev testet på 15 spørgsmål, hvor 15 blev håndteret korrekt.
 
 ## Eksempler på beståede tests
 
@@ -66,19 +68,19 @@ Guardrails blev testet på 14 spørgsmål, hvor 14 blev håndteret korrekt.
 - Bestået: True
 - Fundne kilder: pensionstype_aldersopsparing.txt, pension_begreber.txt, pensionstyper_sammenligning.txt
 
-### Test 4: Hvad er forskellen på ratepension, livrente og aldersopsparing?
+### Test 4: Hvad er pensionsafkastskat?
 
-- Kategori: comparison
+- Kategori: definition
 - Forventet adfærd: source_match
 - Bestået: True
-- Fundne kilder: pensionstyper_sammenligning.txt, pension_udbetaling_forskelle.txt, pensionstype_ratepension.txt
+- Fundne kilder: skat_pensionsafkastskat.txt, skat_overblik_pension.txt, investering_afkast.txt
 
-### Test 5: Hvad er forskellen på førtidspension, seniorpension og tidlig pension?
+### Test 5: Hvad er kontorente?
 
-- Kategori: comparison
+- Kategori: definition
 - Forventet adfærd: source_match
 - Bestået: True
-- Fundne kilder: foertid_vs_senior_vs_tidlig_pension.txt, seniorpension.txt, situation_seniorpension.txt
+- Fundne kilder: investering_kontorente.txt, pensionstype_ratepension.txt, pensionstype_livsrente.txt
 
 ## Genererede visualiseringer
 

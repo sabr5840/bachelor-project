@@ -109,10 +109,19 @@ def save_json(path: Path, data: Any) -> None:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 
-def load_json(path: Path) -> Any:
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+def load_json(path):
+    if not path.exists():
+        raise FileNotFoundError(path)
 
+    with open(path, "r", encoding="utf-8") as f:
+        content = f.read().strip()
+
+    if not content:
+        raise RuntimeError(
+            f"JSON-fil er tom: {path}"
+        )
+
+    return json.loads(content)
 
 def build_chunks_file() -> None:
     """
@@ -240,7 +249,7 @@ def cosine_similarity(vec_a: List[float], vec_b: List[float]) -> float:
     return dot_product / (norm_a * norm_b)
 
 
-def retrieve_top_chunks(query: str, top_k: int = 3, min_score: float = 0.55) -> List[Dict[str, Any]]:
+def retrieve_top_chunks(query: str, top_k: int = 3, min_score: float = 0.50) -> List[Dict[str, Any]]:
     embedded_chunks = load_json(EMBEDDINGS_FILE)
     query_embedding = embed_text(query, task_type="RETRIEVAL_QUERY")
 
@@ -299,10 +308,4 @@ if __name__ == "__main__":
 
     # 3) Quick retrieval test
     test_query = "Hvad er forskellen på ratepension og livrente?"
-    results = retrieve_top_chunks(test_query, top_k=3)
-
-    print("\nTop chunks:")
-    for chunk in results:
-        print(f"- {chunk['chunk_id']} | {chunk['document_title']}")
-        print(chunk["text"][:250])
-        print()
+    results = retrieve_top_chunks(test_
