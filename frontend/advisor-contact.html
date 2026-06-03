@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kontakt pensionsrådgiver - PenSam</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="page">
+
+    <header class="topbar">
+      <div class="topbar-left">
+        <a href="index.html" class="logo-link">
+          <img src="Billeder/Pensam_logo.png" alt="PenSam logo" class="logo-img" />
+        </a>
+
+        <nav class="nav">
+          <a href="logged-in.html">Min pension</a>
+          <a href="#">Indbetalinger</a>
+          <a href="#">Forsikringer</a>
+          <a href="#">Dokumenter</a>
+        </nav>
+      </div>
+
+      <div class="topbar-right">
+        <a href="logged-in.html" class="login-btn">Tilbage til Mit PenSam</a>
+      </div>
+    </header>
+
+    <main class="advisor-contact-page">
+      <button id="advisorBackButton" class="advisor-back-button" type="button">
+        ← Tilbage til chatten
+      </button>
+
+      <section class="advisor-contact-hero">
+        <p class="eyebrow">Pensionsrådgivning</p>
+        <h1>Kontakt din pensionsrådgiver</h1>
+        <p>
+          Her kan du tage kontakt, hvis du vil ændre indbetalinger, gennemgå din
+          forventede udbetaling eller få en konkret vurdering af din situation.
+        </p>
+      </section>
+
+      <section class="advisor-contact-layout">
+        <article class="advisor-profile-card">
+          <div class="advisor-avatar" aria-hidden="true">MJ</div>
+          <div>
+            <p class="eyebrow">Din rådgiver</p>
+            <h2>Maja Jensen</h2>
+            <p>Senior pensionsrådgiver</p>
+          </div>
+        </article>
+
+        <article class="advisor-contact-card">
+          <h2>Kontaktoplysninger</h2>
+
+          <div class="advisor-contact-list">
+            <p><strong>Telefon:</strong> 44 39 31 20</p>
+            <p><strong>E-mail:</strong> maja.jensen@demo-pensam.dk</p>
+            <p><strong>Telefontid:</strong> Mandag-torsdag 09.00-15.00</p>
+            <p><strong>Svarfrist:</strong> Inden for 2 hverdage</p>
+          </div>
+
+          <div class="advisor-actions">
+            <a href="tel:+4544393120" class="advisor-primary-action">Ring til rådgiver</a>
+            <a href="mailto:maja.jensen@demo-pensam.dk" class="advisor-secondary-action">Skriv e-mail</a>
+          </div>
+        </article>
+
+        <article class="advisor-contact-card">
+          <h2>Forbered gerne</h2>
+          <ul class="advisor-checklist">
+            <li>Hvad du ønsker at ændre eller forstå</li>
+            <li>Om du vil tale om indbetaling, risiko eller udbetaling</li>
+            <li>Hvornår du forventer at gå på pension</li>
+          </ul>
+        </article>
+      </section>
+    </main>
+
+  </div>
+
+  <button id="chat-toggle" class="chat-toggle" aria-label="Åbn chat">
+    <img src="Billeder/rådgiver_ikon.png" alt="AI rådgiver ikon" />
+  </button>
+
+  <div id="chat-widget" class="chat-widget">
+    <div class="chat-header">
+      <span>Din personlige pensionsrådgiver</span>
+      <button id="chat-close" class="chat-close" aria-label="Minimér chat" title="Minimér chat">−</button>
+    </div>
+
+    <div id="chat-box" class="chat-box">
+      <div class="message bot chat-welcome">
+        <p>Du er på kontaktsiden. Du kan stadig spørge mig om pension her i chatten.</p>
+      </div>
+      <div id="chatSuggestions" class="chat-suggestions" aria-label="Forslag til spørgsmål">
+        <button type="button">Hvad bør jeg spørge rådgiveren om?</button>
+        <button type="button">Hvordan ændrer jeg mine indbetalinger?</button>
+        <button type="button">Hvad får jeg udbetalt om måneden?</button>
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <input type="text" id="user-input" placeholder="Spørg om din pension" />
+      <button type="button" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script src="session-security.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="script.js"></script>
+  <script src="advisor-contact.js"></script>
+
+</body>
+</html>

@@ -15,6 +15,7 @@ const input = document.getElementById("user-input");
 const chatBox = document.getElementById("chat-box");
 const logoutBtn = document.querySelector(".login-btn");
 const shouldKeepChatOpen = sessionStorage.getItem("chat_widget_open") === "true";
+const pendingPersonalQuestion = sessionStorage.getItem("pending_personal_question");
 const suggestionButtons = document.querySelectorAll(".chat-suggestions button");
 const loggedUserName = document.getElementById("loggedUserName");
 const welcomeTitle = document.getElementById("welcomeTitle");
@@ -44,6 +45,98 @@ chatClose.addEventListener("click", () => {
 
 if (shouldKeepChatOpen) {
   chatWidget.classList.add("open");
+}
+
+function resumePendingPersonalQuestion() {
+  if (!sessionId || !pendingPersonalQuestion || !input || !chatBox) {
+    return;
+  }
+
+  sessionStorage.removeItem("pending_personal_question");
+  chatWidget.classList.add("open");
+  sessionStorage.setItem("chat_widget_open", "true");
+
+  addMessageToChat(
+    "bot",
+    `Du spurgte: "${pendingPersonalQuestion}". Nu hvor du er logget ind, fortsætter jeg herfra.`
+  );
+
+  input.value = pendingPersonalQuestion;
+  sendMessage();
+}
+
+function removeChatActionChips() {
+  document.querySelectorAll(".chat-action-chips").forEach((element) => element.remove());
+}
+
+function saveChatActionSuggestions(suggestions = []) {
+  if (!Array.isArray(suggestions) || suggestions.length === 0) {
+    sessionStorage.removeItem("chat_action_suggestions");
+    return;
+  }
+
+  sessionStorage.setItem("chat_action_suggestions", JSON.stringify(suggestions));
+}
+
+function getSavedChatActionSuggestions() {
+  try {
+    return JSON.parse(sessionStorage.getItem("chat_action_suggestions")) || [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function showContactAdvisorMessage() {
+  sessionStorage.setItem("chat_contact_advisor_notice", "true");
+  sessionStorage.setItem("chat_widget_open", "false");
+  sessionStorage.setItem("advisor_return_url", window.location.href);
+  window.location.href = "advisor-contact.html";
+}
+
+function renderChatActionChips(suggestions = []) {
+  if (!chatBox || !Array.isArray(suggestions) || suggestions.length === 0) {
+    saveChatActionSuggestions([]);
+    return;
+  }
+
+  removeChatActionChips();
+  saveChatActionSuggestions(suggestions);
+
+  const chips = document.createElement("div");
+  chips.className = "chat-action-chips";
+  chips.setAttribute("aria-label", "Forslag til næste spørgsmål");
+
+  const hint = document.createElement("p");
+  hint.className = "chat-action-hint";
+  hint.textContent = "Vælg et forslag, eller skriv dit eget spørgsmål.";
+  chips.appendChild(hint);
+
+  suggestions.forEach((suggestion) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = suggestion.label;
+
+    button.addEventListener("click", () => {
+      removeChatActionChips();
+
+      if (suggestion.action === "contact_advisor") {
+        showContactAdvisorMessage();
+        return;
+      }
+
+      sessionStorage.removeItem("chat_action_suggestions");
+
+      if (input && suggestion.message) {
+        input.value = suggestion.message;
+        sendMessage();
+      }
+    });
+
+    chips.appendChild(button);
+  });
+
+  chatBox.appendChild(chips);
+  chatBox.scrollTop = chatBox.scrollHeight;
 }
 
 async function restoreAuthenticatedChatHistory() {
@@ -201,7 +294,9 @@ async function sendMessage() {
 
     const data = await response.json();
 
+    removeChatActionChips();
     addMessageToChat("bot", data.reply);
+    renderChatActionChips(data.suggestions);
 
     chatHistory.push({
       role: "user",
@@ -256,6 +351,14 @@ async function initLoggedInPage() {
 
   await loadDashboard();
   await restoreAuthenticatedChatHistory();
+
+  if (pendingPersonalQuestion) {
+    resumePendingPersonalQuestion();
+  }
+
+  if (chatWidget.classList.contains("open")) {
+    renderChatActionChips(getSavedChatActionSuggestions());
+  }
 }
 
 if (document.readyState === "loading") {

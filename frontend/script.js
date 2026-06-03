@@ -12,8 +12,11 @@ const shouldOpenChat = sessionStorage.getItem("open_chat_after_login") === "true
 const shouldKeepChatOpen = sessionStorage.getItem("chat_widget_open") === "true";
 const shouldShowLoginCompletedMessage = sessionStorage.getItem("chat_login_completed") === "true";
 const shouldShowLoggedOutNotice = sessionStorage.getItem("chat_logged_out_notice") === "true";
+const pendingPersonalQuestion = sessionStorage.getItem("pending_personal_question");
 const topbarRight = document.querySelector(".topbar-right");
 const isLoginPage = document.body.classList.contains("login-body");
+const isAdvisorContactPage = window.location.pathname.endsWith("advisor-contact.html");
+const shouldShowAdvisorContactNotice = sessionStorage.getItem("chat_contact_advisor_notice") === "true";
 
 function getStoredChatMessages() {
   try {
@@ -146,6 +149,105 @@ function setChatSuggestions(isLoggedIn) {
   });
 }
 
+function isLoginRequiredReply(reply) {
+  return (
+    typeof reply === "string" &&
+    reply.includes("kræver") &&
+    reply.toLowerCase().includes("log ind")
+  );
+}
+
+function resumePendingPersonalQuestion() {
+  if (!sessionId || !pendingPersonalQuestion || !chatBox || isLoginPage) {
+    return;
+  }
+
+  sessionStorage.removeItem("pending_personal_question");
+  appendMessage(
+    `Du spurgte: "${pendingPersonalQuestion}". Nu hvor du er logget ind, fortsætter jeg herfra.`,
+    "bot"
+  );
+
+  if (userInput) {
+    userInput.value = pendingPersonalQuestion;
+    sendMessage();
+  }
+}
+
+function removeChatActionChips() {
+  document.querySelectorAll(".chat-action-chips").forEach((element) => element.remove());
+}
+
+function saveChatActionSuggestions(suggestions = []) {
+  if (!Array.isArray(suggestions) || suggestions.length === 0) {
+    sessionStorage.removeItem("chat_action_suggestions");
+    return;
+  }
+
+  sessionStorage.setItem("chat_action_suggestions", JSON.stringify(suggestions));
+}
+
+function getSavedChatActionSuggestions() {
+  try {
+    return JSON.parse(sessionStorage.getItem("chat_action_suggestions")) || [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function showContactAdvisorMessage() {
+  sessionStorage.setItem("chat_contact_advisor_notice", "true");
+  sessionStorage.setItem("chat_widget_open", "false");
+  sessionStorage.setItem("advisor_return_url", window.location.href);
+  window.location.href = "advisor-contact.html";
+}
+
+function renderChatActionChips(suggestions = []) {
+  if (!chatBox || !Array.isArray(suggestions) || suggestions.length === 0) {
+    saveChatActionSuggestions([]);
+    return;
+  }
+
+  removeChatActionChips();
+  saveChatActionSuggestions(suggestions);
+
+  const chips = document.createElement("div");
+  chips.className = "chat-action-chips";
+  chips.setAttribute("aria-label", "Forslag til næste spørgsmål");
+
+  const hint = document.createElement("p");
+  hint.className = "chat-action-hint";
+  hint.textContent = "Vælg et forslag, eller skriv dit eget spørgsmål.";
+  chips.appendChild(hint);
+
+  suggestions.forEach((suggestion) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = suggestion.label;
+
+    button.addEventListener("click", () => {
+      removeChatActionChips();
+
+      if (suggestion.action === "contact_advisor") {
+        showContactAdvisorMessage();
+        return;
+      }
+
+      sessionStorage.removeItem("chat_action_suggestions");
+
+      if (userInput && suggestion.message) {
+        userInput.value = suggestion.message;
+        sendMessage();
+      }
+    });
+
+    chips.appendChild(button);
+  });
+
+  chatBox.appendChild(chips);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
 if (sessionId && customerName && topbarRight) {
   const loginLink = topbarRight.querySelector(".login-btn");
   const loggedUser = document.createElement("a");
@@ -199,6 +301,15 @@ if (
   }
 }
 
+if (isAdvisorContactPage && shouldShowAdvisorContactNotice && chatBox) {
+  appendMessage(
+    "Du har valgt Kontakt rådgiver. Du er nu på kontaktsiden med rådgiverens oplysninger.",
+    "bot",
+    false
+  );
+  sessionStorage.removeItem("chat_contact_advisor_notice");
+}
+
 if (sessionId && customerName && shouldShowLoginCompletedMessage && chatBox && !isLoginPage) {
   chatBox.innerHTML = "";
   appendMessage(
@@ -228,6 +339,10 @@ if (
     restoreAuthenticatedChatHistory();
 }
 
+if (sessionId && pendingPersonalQuestion) {
+  setTimeout(resumePendingPersonalQuestion, 300);
+}
+
 if (chatToggle && chatWidget) {
   chatToggle.addEventListener("click", () => {
     chatWidget.classList.toggle("open");
@@ -236,10 +351,17 @@ if (chatToggle && chatWidget) {
   });
 }
 
-if ((shouldOpenChat || shouldKeepChatOpen) && chatWidget) {
+if ((shouldOpenChat || (shouldKeepChatOpen && !isAdvisorContactPage)) && chatWidget) {
   chatWidget.classList.add("open");
   sessionStorage.setItem("chat_widget_open", "true");
   sessionStorage.removeItem("open_chat_after_login");
+} else if (isAdvisorContactPage && chatWidget) {
+  chatWidget.classList.remove("open");
+  sessionStorage.setItem("chat_widget_open", "false");
+}
+
+if (chatWidget && chatWidget.classList.contains("open")) {
+  setTimeout(() => renderChatActionChips(getSavedChatActionSuggestions()), 300);
 }
 
 if (chatClose && chatWidget) {
@@ -295,7 +417,15 @@ async function sendMessage() {
     const data = await response.json();
 
     loadingElement.remove();
+    removeChatActionChips();
     appendMessage(data.reply, "bot");
+    renderChatActionChips(data.suggestions);
+
+    if (!sessionId && isLoginRequiredReply(data.reply)) {
+      sessionStorage.setItem("pending_personal_question", message);
+      sessionStorage.setItem("chat_return_url", window.location.href);
+      sessionStorage.setItem("chat_widget_open", "true");
+    }
 
     chatHistory.push({
       role: "assistant",

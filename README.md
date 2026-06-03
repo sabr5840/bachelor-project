@@ -780,6 +780,30 @@ within a domain-specific AI system.
 
 ---
 
+# Local Development
+
+The Python virtual environment is not committed to Git. After pulling changes from another developer, update the local backend environment from the committed dependency file:
+
+```bash
+cd backend
+venv/bin/python -m pip install -r requirements.txt
+venv/bin/python -m uvicorn main:app --reload
+```
+
+If the virtual environment is missing, create it first:
+
+```bash
+cd backend
+python3 -m venv venv
+venv/bin/python -m pip install -r requirements.txt
+```
+
+Local secrets belong in `backend/.env`. Use `backend/.env.example` as the template, but do not commit real API keys.
+
+When adding or changing a Python package, update `backend/requirements.txt` in the same commit as the code that needs it.
+
+---
+
 # Project Structure
 
 ```text
