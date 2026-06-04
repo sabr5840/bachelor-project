@@ -228,6 +228,9 @@ def main():
     print(f"Bestået: {passed_tests}/{total_tests}")
     print(f"Pass rate: {pass_rate}%")
 
+    if passed_tests != total_tests:
+        raise SystemExit(1)
+
 
 if __name__ == "__main__":
     main()

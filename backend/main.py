@@ -30,14 +30,18 @@ logger = logging.getLogger("pension-ai-backend")
 
 app = FastAPI()
 
+allowed_origins = os.getenv(
+    "ALLOWED_ORIGINS",
+    "http://127.0.0.1:5500,http://localhost:5500,http://127.0.0.1:3000,http://localhost:3000"
+).split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 class ChatMessage(BaseModel):
     role: str
@@ -1381,11 +1385,11 @@ def health_check():
     return {
         "status": "ok",
         "service": "pension-ai-backend",
+        "version": "1.0.0",
         "sessions_active": len(SESSION_STORE),
         "chat_histories_active": len(CHAT_HISTORY_STORE),
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
-
 
 @app.post("/mitid/resolve-user")
 def resolve_mitid_user(request: MitidLoginRequest):
@@ -1519,6 +1523,14 @@ def chat(msg: Message, request: Request):
 
     if not user_text:
         raise HTTPException(status_code=400, detail="Beskeden er tom.")
+    
+    MAX_MESSAGE_LENGTH = 2000
+
+    if len(user_text) > MAX_MESSAGE_LENGTH:
+        raise HTTPException(
+            status_code=400,
+            detail="Beskeden er for lang.",
+        )
 
     rate_limit_identifier = msg.session_id or request.client.host
     check_rate_limit(rate_limit_identifier)
@@ -1629,7 +1641,10 @@ def chat(msg: Message, request: Request):
 
         if conversation_intent == "out_of_scope":
             return {
-                "reply": "Jeg kan kun hjælpe med spørgsmål om pension og pensionsordninger. Det fremgår derfor ikke af mit datagrundlag.",
+                "reply": (
+                    "Jeg kan kun hjælpe med spørgsmål om pension og pensionsordninger. "
+                    "Det fremgår derfor ikke af mit datagrundlag."
+                ),
                 "sources": [],
                 "provider": None,
                 "fallback_used": False,
@@ -1668,15 +1683,33 @@ Nyeste spørgsmål:
         else:
             top_k = 7
 
-        top_chunks = retrieve_top_chunks(retrieval_query, top_k=top_k)
+        retrieval_failed = False
+
+        try:
+            top_chunks = retrieve_top_chunks(retrieval_query, top_k=top_k)
+        except Exception as retrieval_error:
+            logger.exception(
+                "[%s] Retrieval failed. Continuing without RAG context: %s",
+                request_id,
+                repr(retrieval_error),
+            )
+            top_chunks = []
+            retrieval_failed = True
 
         if not top_chunks:
+            sources = []
+
             if requires_customer_context and customer_context:
                 context = (
                     "Ingen relevant generel pensionsviden fundet i RAG-konteksten. "
                     "Brug kun KUNDEDATA og giv et forsigtigt vejledende svar."
                 )
-                sources = []
+            elif retrieval_failed:
+                context = (
+                    "RAG-retrieval kunne ikke gennemføres på grund af en teknisk fejl. "
+                    "Svar kun generelt og forsigtigt ud fra den tilgængelige prompt-kontekst. "
+                    "Opfind ikke konkrete regler, beløb eller kundedata."
+                )
             else:
                 return {
                     "reply": "Det fremgår ikke af mit datagrundlag.",
@@ -1822,9 +1855,11 @@ BRUGERENS SPØRGSMÅL:
         logger.exception("[%s] Unexpected error in chat endpoint", request_id)
         raise HTTPException(status_code=500, detail=str(e))
 
-
 @app.get("/debug/chat-history")
 def debug_chat_history():
+    if os.getenv("ENVIRONMENT", "development") != "development":
+        raise HTTPException(status_code=404, detail="Not found")
+
     cleanup_chat_history()
 
     return {

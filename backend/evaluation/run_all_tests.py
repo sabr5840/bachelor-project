@@ -26,7 +26,9 @@ def run_test_file(filename: str) -> dict:
     print("=" * 90)
 
     env = os.environ.copy()
-    env["DISABLE_RATE_LIMIT"] = "true"
+
+    if filename != "tests/security/test_rate_limit.py":
+        env["DISABLE_RATE_LIMIT"] = "true"
 
     result = subprocess.run(
         [sys.executable, str(path)],

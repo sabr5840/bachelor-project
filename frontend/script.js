@@ -291,7 +291,7 @@ if (
 ) {
   chatBox.innerHTML = "";
   appendMessage(
-    `hej ${customerName}! Du kan her stillede generelle eller personlige spørgsmål om din pension`,
+    `hej ${customerName}! Du kan her stille generelle eller personlige spørgsmål om din pension`,
     "bot",
     false
   );

@@ -14,6 +14,33 @@ jobs:
   backend-tests:
     runs-on: ubuntu-latest
 
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: "Y"
+          SA_PASSWORD: "StrongPassword123"
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P StrongPassword123 -C -Q 'SELECT 1'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      PENSION_DB_HOST: 127.0.0.1
+      PENSION_DB_PORT: 1433
+      PENSION_DB_NAME: pension_ai
+      PENSION_DB_USER: sa
+      PENSION_DB_PASSWORD: StrongPassword123
+      ENVIRONMENT: development
+      TESTING: "true"
+      DISABLE_RATE_LIMIT: "true"
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+      ALLOWED_ORIGINS: http://127.0.0.1:5500,http://localhost:5500,http://127.0.0.1:3000,http://localhost:3000
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -27,10 +54,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
-
-      - name: Install static analysis tools
-        run: |
-          pip install ruff bandit
+          pip install ruff bandit requests matplotlib
 
       - name: Check Python syntax
         run: |
@@ -43,3 +67,22 @@ jobs:
       - name: Run Bandit security scan
         run: |
           bandit -r backend -s B101,B603,B607,B404
+
+      - name: Initialize database
+        run: |
+          chmod +x backend/database/init_database.sh
+          ./backend/database/init_database.sh
+
+      - name: Start backend
+        run: |
+          cd backend
+          uvicorn main:app --host 127.0.0.1 --port 8000 &
+          sleep 10
+
+      - name: Check backend health
+        run: |
+          curl --fail http://127.0.0.1:8000/health
+
+      - name: Run backend evaluation tests
+        run: |
+          python backend/evaluation/run_all_tests.py

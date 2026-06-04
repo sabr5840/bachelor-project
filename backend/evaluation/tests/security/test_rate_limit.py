@@ -27,6 +27,7 @@ for i in range(11):
         print("Rate limiting aktiveret korrekt.")
         print("Svar:", response.json())
 
+
 print("\n==============================")
 print(f"Succesfulde requests: {successful_requests}")
 print(f"Rate limiting aktiveret: {rate_limited}")
